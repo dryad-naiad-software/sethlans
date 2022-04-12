@@ -83,11 +83,40 @@
               <fa-icon [icon]="faFlagCheckered"></fa-icon>
             </button>
           </li>
+          <li>
+            <button [ngClass]="nodeWizardProgress == NodeWizardProgress.ADD
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
+                    class="btn btn-lg btn-circle"
+                    type="button">
+              <fa-icon [icon]="faPlus"></fa-icon>
+            </button>
+          </li>
+          <li>
+            <button [ngClass]="nodeWizardProgress == NodeWizardProgress.SUMMARY
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
+                    class="btn btn-lg btn-circle"
+                    type="button">
+              <fa-icon [icon]="faRectangleList"></fa-icon>
+            </button>
+          </li>
+          <li>
+            <button [ngClass]="nodeWizardProgress == NodeWizardProgress.FINISHED
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
+                    class="btn btn-lg btn-circle"
+                    type="button">
+              <fa-icon [icon]="faCheck"></fa-icon>
+            </button>
+          </li>
         </ul>
-        <div *ngIf="nodeWizardProgress == NodeWizardProgress.START">
-          <div class="alert-primary">
-            <p>Server API Key: </p>
+        <div *ngIf="nodeWizardProgress == NodeWizardProgress.START" class="pt-2">
+          <div class="alert alert-primary">
+            <p class="mb-0 text-center">Server API Key:<span class="ms-2"><strong>{{sethlansAPIKey}}</strong></span>
+              <button class="ms-2 btn btn-outline-secondary btn-sm" ngbTooltip="Copy to Clipboard" placement="top">
+                <fa-icon [icon]="faClipboard"></fa-icon>
+              </button>
+            </p>
           </div>
+          <h6>Which action would you like to perform?</h6>
         </div>
       </div>
       <div class="card-footer">

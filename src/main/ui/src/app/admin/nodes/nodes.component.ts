@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {faDownload, faFlagCheckered, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faDownload, faFlagCheckered, faPlus, faRectangleList} from "@fortawesome/free-solid-svg-icons";
+import {faClipboard} from "@fortawesome/free-regular-svg-icons";
 import {Node} from "../../models/system/node.model";
 import {SethlansService} from "../../services/sethlans.service";
 import {NodeWizardProgress} from "../../enums/nodewizardprogress.enum";
@@ -13,7 +14,10 @@ import {NodeWizardProgress} from "../../enums/nodewizardprogress.enum";
 export class NodesComponent implements OnInit {
   faPlus = faPlus;
   faDownload = faDownload;
+  faCheck = faCheck;
   faFlagCheckered = faFlagCheckered;
+  faClipboard = faClipboard;
+  faRectangleList = faRectangleList;
   nodeList = new Array<Node>();
   nodeWizardScreen = false;
   nodeWizardProgress: NodeWizardProgress = NodeWizardProgress.START;
@@ -27,13 +31,14 @@ export class NodesComponent implements OnInit {
     this.sethlansService.getCurrentNodeList().subscribe((data: any) => {
       this.nodeList = data;
     })
+    this.sethlansService.getServerAPIKey().subscribe((data: any) => {
+      this.sethlansAPIKey = data.api_key;
+    })
   }
 
   startNodeWizard() {
     this.nodeWizardScreen = true;
-    this.sethlansService.getServerAPIKey().subscribe((data: any) => {
-      this.sethlansAPIKey = data.api_key;
-    })
+
   }
 
   cancelNodeWizard() {
