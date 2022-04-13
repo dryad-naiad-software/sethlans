@@ -100,7 +100,7 @@ public class NetworkUtils {
 
     public static Node getNodeViaJson(String ip, String port) {
         try {
-            var path = "/api/v1/info/node_info";
+            var path = "/api/v1/info/node_info?api-key=" + ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY);
             log.info("Retrieving node information from " + ip + ":" + port);
             var objectMapper = new ObjectMapper();
             return objectMapper.readValue(getJSONFromURL(path, ip, port, true), new TypeReference<>() {

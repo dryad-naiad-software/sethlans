@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -96,19 +97,22 @@ public class InfoController {
 
     @GetMapping("/node_info")
     @Profile({"NODE", "DUAL"})
-    public Node getNodeInfo() {
-        var systemInfo = QueryUtils.getCurrentSystemInfo();
-        return Node.builder()
-                .nodeType(PropertiesUtils.getNodeType())
-                .os(QueryUtils.getOS())
-                .ipAddress(systemInfo.getIpAddress())
-                .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
-                .hostname(systemInfo.getHostname())
-                .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
-                .cpu(systemInfo.getCpu())
-                .selectedGPUs(PropertiesUtils.getSelectedGPUs())
-                .selectedCores(PropertiesUtils.getSelectedCores())
-                .build();
+    public Node getNodeInfo(@RequestParam("api-key") String apiKey) {
+        if (apiKey.equals(ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY))) {
+            var systemInfo = QueryUtils.getCurrentSystemInfo();
+            return Node.builder()
+                    .nodeType(PropertiesUtils.getNodeType())
+                    .os(QueryUtils.getOS())
+                    .ipAddress(systemInfo.getIpAddress())
+                    .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                    .hostname(systemInfo.getHostname())
+                    .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
+                    .cpu(systemInfo.getCpu())
+                    .selectedGPUs(PropertiesUtils.getSelectedGPUs())
+                    .selectedCores(PropertiesUtils.getSelectedCores())
+                    .build();
+        }
+        return null;
     }
 
     @GetMapping("/is_first_time")
