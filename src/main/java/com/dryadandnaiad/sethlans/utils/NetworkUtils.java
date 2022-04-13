@@ -31,10 +31,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static io.restassured.RestAssured.*;
 
@@ -100,10 +97,12 @@ public class NetworkUtils {
 
     public static Node getNodeViaJson(String ip, String port) {
         try {
-            var path = "/api/v1/info/node_info?api-key=" + ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY);
+            var path = "/api/v1/info/node_info";
             log.info("Retrieving node information from " + ip + ":" + port);
             var objectMapper = new ObjectMapper();
-            return objectMapper.readValue(getJSONFromURL(path, ip, port, true), new TypeReference<>() {
+            Map<String, String> params = new HashMap<>();
+            params.put("api-key", ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY));
+            return objectMapper.readValue(getJSONWithParams(path, ip, port, params, true), new TypeReference<>() {
             });
         } catch (IOException e) {
             log.error(e.getMessage());

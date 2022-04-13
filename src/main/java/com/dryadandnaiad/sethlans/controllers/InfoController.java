@@ -97,7 +97,7 @@ public class InfoController {
 
     @GetMapping("/node_info")
     @Profile({"NODE", "DUAL"})
-    public Node getNodeInfo(@RequestParam("api-key") String apiKey) {
+    public Node getNodeInfo(@RequestParam(value = "api-key") String apiKey) {
         if (apiKey.equals(ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY))) {
             var systemInfo = QueryUtils.getCurrentSystemInfo();
             return Node.builder()
