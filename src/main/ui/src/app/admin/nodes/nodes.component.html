@@ -54,7 +54,8 @@
               <td><span *ngFor="let gpu of node.selectedGPUs">{{gpu.model}}<br/></span></td>
               <td>{{node.totalRenderingSlots}}</td>
               <td>
-                <span *ngIf="node.benchmarkPending" class="text-warning">Pending</span>
+                <span *ngIf="!node.benchmarkPending && !node.benchmarkComplete" class="text-warning">Waiting</span>
+                <span *ngIf="node.benchmarkPending" class="text-info">In Progress</span>
                 <span *ngIf="node.benchmarkComplete" class="text-success">Complete</span>
 
               </td>

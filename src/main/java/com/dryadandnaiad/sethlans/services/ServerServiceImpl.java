@@ -140,6 +140,7 @@ public class ServerServiceImpl implements ServerService {
                     .ipAddress(QueryUtils.getIP())
                     .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
                     .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                    .apiKey(ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY))
                     .build();
 
             var objectMapper = new ObjectMapper();
