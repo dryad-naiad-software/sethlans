@@ -20,7 +20,7 @@
       </div>
       <div class="card-body">
         <div class="col-md-12 m-auto">
-          <table class="table table-striped">
+          <table class="table table-responsive-md">
             <thead>
             <tr>
               <th scope="col">Status</th>
@@ -53,8 +53,26 @@
               <td>{{node.selectedCores}}</td>
               <td><span *ngFor="let gpu of node.selectedGPUs">{{gpu.model}}<br/></span></td>
               <td>{{node.totalRenderingSlots}}</td>
-              <td>N/A</td>
-              <td>N/A</td>
+              <td>
+                <span *ngIf="node.benchmarkPending" class="text-warning">Pending</span>
+                <span *ngIf="node.benchmarkComplete" class="text-success">Complete</span>
+
+              </td>
+              <td>
+                <div class="btn-group-vertical">
+                  <button *ngIf="!node.active" class="btn btn-outline-success btn-sm"
+                          type="button">
+                    Enable
+                  </button>
+                  <button *ngIf="node.active" class="btn btn-outline-warning btn-sm"
+                          type="button">
+                    Disable
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm" type="button">
+                    Delete
+                  </button>
+                </div>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -101,7 +119,7 @@
           </li>
           <li>
             <button [ngClass]="nodeWizardProgress == NodeWizardProgress.FINISHED
-                      ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      ? 'btn-outline-success' : 'btn-outline-secondary'"
                     class="btn btn-lg btn-circle"
                     type="button">
               <fa-icon [icon]="faCheck"></fa-icon>
@@ -186,7 +204,14 @@
             Manual
           </div>
         </div>
-        <div *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY">
+        <div
+          *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY || nodeWizardProgress == NodeWizardProgress.FINISHED">
+          <div *ngIf="nodeWizardProgress == NodeWizardProgress.FINISHED">
+            <div class="alert alert-success text-center" role="alert">
+              <span>Adding Selected Nodes to the Server</span>
+              <div aria-hidden="true" class="ms-2 spinner-border spinner-border-sm text-center" role="status"></div>
+            </div>
+          </div>
           <h4 class="pt-2 pb-2">Selected Nodes:</h4>
           <table class="table table-responsive-md">
             <thead>
@@ -221,6 +246,7 @@
             </tbody>
           </table>
         </div>
+
       </div>
       <div class="card-footer">
         <button (click)="cancelNodeWizard()"
@@ -231,12 +257,15 @@
                 *ngIf="nodeWizardProgress != NodeWizardProgress.START"
                 class="btn btn-outline-dark float-start">Previous
         </button>
-        <button (click)="next()" *ngIf="nodeWizardProgress != NodeWizardProgress.SUMMARY
+        <button (click)="next()"
+                *ngIf="nodeWizardProgress != NodeWizardProgress.SUMMARY
         && nodeWizardProgress != NodeWizardProgress.FINISHED"
                 [disabled]="nextDisabled"
                 class="btn btn-outline-primary float-end">Next
         </button>
-        <button *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY"
+        <button (click)="submitNodes()"
+                *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY"
+                [disabled]="submitDisabled"
                 class="btn btn-outline-primary float-end">Submit Node(s) to Server
         </button>
       </div>
@@ -244,9 +273,10 @@
   </div>
 </div>
 
-<div>
-  Debugging:
-  <!--  <pre>{{ nodeList | json }}</pre>-->
-  <!--  <pre>{{networkNodeList | json}}</pre>-->
-  <pre>{{selectedNodeList | json}}</pre>
-</div>
+<!--<div>-->
+<!--  Debugging:-->
+<pre>{{ nodeList | json }}</pre>
+<!--  <pre>{{networkNodeList | json}}</pre>-->
+<!--  <pre>{{selectedNodeList | json}}</pre>-->
+<!--  <pre>{{nodeFormList | json}}</pre>-->
+<!--</div>-->

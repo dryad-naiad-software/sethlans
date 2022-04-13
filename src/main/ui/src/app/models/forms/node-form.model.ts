@@ -26,11 +26,9 @@
 export class NodeForm {
   ipAddress: string;
   networkPort: string;
-  apiKey: string;
 
   constructor() {
     this.ipAddress = '';
     this.networkPort = '';
-    this.apiKey = '';
   }
 }

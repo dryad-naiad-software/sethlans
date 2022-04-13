@@ -58,7 +58,7 @@ public class ServerServiceImpl implements ServerService {
     }
 
     @Override
-    public ResponseEntity<String> addNodes(List<NodeForm> selectedNodes) {
+    public ResponseEntity<Void> addNodes(List<NodeForm> selectedNodes) {
         log.info("Adding Nodes: " + selectedNodes);
         try {
             var server = Server.builder()

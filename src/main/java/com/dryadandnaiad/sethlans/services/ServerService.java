@@ -29,7 +29,7 @@ import java.util.List;
  * Project: sethlans
  */
 public interface ServerService {
-    ResponseEntity<String> addNodes(List<NodeForm> selectedNodes);
+    ResponseEntity<Void> addNodes(List<NodeForm> selectedNodes);
 
     void pendingBenchmarksToSend() throws InterruptedException;
 }

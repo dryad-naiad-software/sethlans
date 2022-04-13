@@ -28,11 +28,11 @@ export class NodesComponent implements OnInit {
   nodeWizardType: NodeWizardType = NodeWizardType.SCAN;
   NodeWizardType = NodeWizardType;
   nodeFormList = new Array<NodeForm>();
-  nodeForm = new NodeForm();
   networkNodeList = new Array<Node>();
   scanning: boolean = false;
   selectedNodeList = new Array<Node>();
-  nextDisabled = false;
+  nextDisabled: boolean = false;
+  submitDisabled: boolean = false;
 
 
   constructor(private sethlansService: SethlansService) {
@@ -109,6 +109,23 @@ export class NodesComponent implements OnInit {
         }
         break;
     }
+  }
+
+  submitNodes() {
+    this.submitDisabled = true;
+    this.selectedNodeList.forEach((node) => {
+      let nodeForm = new NodeForm();
+      nodeForm.ipAddress = node.ipAddress;
+      nodeForm.networkPort = node.networkPort;
+      this.nodeFormList.push(nodeForm);
+    })
+    this.nodeWizardProgress = NodeWizardProgress.FINISHED
+    this.sethlansService.addNodesToServer(this.nodeFormList).subscribe((response) => {
+      if (response.statusText == "Created") {
+        window.location.href = '/admin/nodes';
+      }
+    })
+
 
   }
 

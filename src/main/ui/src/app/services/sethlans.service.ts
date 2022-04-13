@@ -23,6 +23,7 @@ import {Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {HandleError, HttpErrorHandler} from './http-error-handler.service';
 import {NodeSettings} from "../models/settings/nodesettings.model";
+import {NodeForm} from "../models/forms/node-form.model";
 
 
 @Injectable({
@@ -140,6 +141,17 @@ export class SethlansService {
       {headers: headers, observe: "response"})
       .pipe(
         catchError(this.handleError('submitSetup', setupForm)))
+
+  }
+
+  addNodesToServer(selectedNodes: Array<NodeForm>): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<Array<NodeForm>>(this.rootURL + "/management/add_nodes_to_server", JSON.stringify(selectedNodes),
+      {headers: headers, observe: "response"})
+      .pipe(
+        catchError(this.handleError('submitSetup', selectedNodes)))
 
   }
 
