@@ -31,6 +31,8 @@ export class NodesComponent implements OnInit {
   nodeForm = new NodeForm();
   networkNodeList = new Array<Node>();
   scanning: boolean = false;
+  selectedNodeList = new Array<Node>();
+  nextDisabled = false;
 
 
   constructor(private sethlansService: SethlansService) {
@@ -53,6 +55,21 @@ export class NodesComponent implements OnInit {
 
   }
 
+  addNode(node: Node, $event: MouseEvent) {
+    ($event.target as HTMLButtonElement).disabled = true;
+    this.selectedNodeList.push(node);
+    if (this.selectedNodeList.length > 0) {
+      this.nextDisabled = false;
+    }
+  }
+
+  removeNode(node: Node) {
+    this.selectedNodeList = this.selectedNodeList.filter(function (obj) {
+      return obj.systemID !== node.systemID;
+    })
+
+  }
+
   startNodeWizard() {
     this.nodeWizardScreen = true;
 
@@ -63,19 +80,36 @@ export class NodesComponent implements OnInit {
   }
 
   next() {
-    if (this.nodeWizardProgress == NodeWizardProgress.START) {
-      this.nodeWizardProgress = NodeWizardProgress.ADD;
-      if (this.nodeWizardType == NodeWizardType.SCAN) {
-        this.scanning = true;
-        this.getNetworkNodeList();
-      }
+    switch (this.nodeWizardProgress) {
+      case NodeWizardProgress.START:
+        this.nodeWizardProgress = NodeWizardProgress.ADD;
+        if (this.nodeWizardType == NodeWizardType.SCAN) {
+          this.scanning = true;
+          this.nextDisabled = true;
+          this.getNetworkNodeList();
+        }
+        break;
+      case NodeWizardProgress.ADD:
+        this.nodeWizardProgress = NodeWizardProgress.SUMMARY;
+        break;
     }
   }
 
   previous() {
-    if (this.nodeWizardProgress == NodeWizardProgress.ADD) {
-      this.nodeWizardProgress = NodeWizardProgress.START;
+    switch (this.nodeWizardProgress) {
+      case NodeWizardProgress.ADD:
+        this.nodeWizardProgress = NodeWizardProgress.START
+        break;
+      case NodeWizardProgress.SUMMARY:
+        this.nodeWizardProgress = NodeWizardProgress.ADD
+        if (this.nodeWizardType == NodeWizardType.SCAN) {
+          this.scanning = true;
+          this.selectedNodeList = new Array<Node>();
+          this.getNetworkNodeList();
+        }
+        break;
     }
+
   }
 
 

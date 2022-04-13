@@ -148,7 +148,7 @@
             </div>
           </div>
           <div *ngIf="!scanning">
-            <table class="table table-striped">
+            <table class="table table-responsive-md">
               <thead>
               <tr>
                 <th colspan="col">Hostname</th>
@@ -159,6 +159,7 @@
                 <th colspan="col">CPU</th>
                 <th colspan="col">Core(s)</th>
                 <th colspan="col">GPU(s)</th>
+                <th colspan=""></th>
               </tr>
               </thead>
               <tbody>
@@ -171,16 +172,54 @@
                 <td>{{node.cpu.name}}</td>
                 <td>{{node.selectedCores}}</td>
                 <td><span *ngFor="let gpu of node.selectedGPUs">{{gpu.model}}<br/></span></td>
-
+                <td>
+                  <button (click)="addNode(node, $event)"
+                          class="btn btn-primary">Select
+                  </button>
+                </td>
               </tr>
               </tbody>
-
             </table>
 
           </div>
           <div *ngIf="nodeWizardType == NodeWizardType.MANUAL">
             Manual
           </div>
+        </div>
+        <div *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY">
+          <h4 class="pt-2 pb-2">Selected Nodes:</h4>
+          <table class="table table-responsive-md">
+            <thead>
+            <tr>
+              <th colspan="col">Hostname</th>
+              <th colspan="col">IP Address</th>
+              <th colspan="col">Port</th>
+              <th colspan="col">OS</th>
+              <th colspan="col">Compute</th>
+              <th colspan="col">CPU</th>
+              <th colspan="col">Core(s)</th>
+              <th colspan="col">GPU(s)</th>
+              <th colspan=""></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let node of selectedNodeList">
+              <td>{{node.hostname}}</td>
+              <td>{{node.ipAddress}}</td>
+              <td>{{node.networkPort}}</td>
+              <td>{{node.os}}</td>
+              <td>{{node.nodeType}}</td>
+              <td>{{node.cpu.name}}</td>
+              <td>{{node.selectedCores}}</td>
+              <td><span *ngFor="let gpu of node.selectedGPUs">{{gpu.model}}<br/></span></td>
+              <td>
+                <button (click)="removeNode(node)"
+                        class="btn btn-danger">Remove
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="card-footer">
@@ -192,8 +231,13 @@
                 *ngIf="nodeWizardProgress != NodeWizardProgress.START"
                 class="btn btn-outline-dark float-start">Previous
         </button>
-        <button (click)="next()"
+        <button (click)="next()" *ngIf="nodeWizardProgress != NodeWizardProgress.SUMMARY
+        && nodeWizardProgress != NodeWizardProgress.FINISHED"
+                [disabled]="nextDisabled"
                 class="btn btn-outline-primary float-end">Next
+        </button>
+        <button *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY"
+                class="btn btn-outline-primary float-end">Submit Node(s) to Server
         </button>
       </div>
     </div>
@@ -203,5 +247,6 @@
 <div>
   Debugging:
   <!--  <pre>{{ nodeList | json }}</pre>-->
-  <pre>{{networkNodeList | json}}</pre>
+  <!--  <pre>{{networkNodeList | json}}</pre>-->
+  <pre>{{selectedNodeList | json}}</pre>
 </div>
