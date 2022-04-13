@@ -4,6 +4,8 @@ import {faClipboard} from "@fortawesome/free-regular-svg-icons";
 import {Node} from "../../models/system/node.model";
 import {SethlansService} from "../../services/sethlans.service";
 import {NodeWizardProgress} from "../../enums/nodewizardprogress.enum";
+import {NodeWizardType} from "../../enums/nodewizardtype.enum";
+import {NodeForm} from "../../models/forms/node-form.model";
 
 
 @Component({
@@ -22,7 +24,14 @@ export class NodesComponent implements OnInit {
   nodeWizardScreen = false;
   nodeWizardProgress: NodeWizardProgress = NodeWizardProgress.START;
   NodeWizardProgress = NodeWizardProgress;
-  sethlansAPIKey: string = ''
+  sethlansAPIKey: string = '';
+  nodeWizardType: NodeWizardType = NodeWizardType.SCAN;
+  NodeWizardType = NodeWizardType;
+  nodeFormList = new Array<NodeForm>();
+  nodeForm = new NodeForm();
+  networkNodeList = new Array<Node>();
+  scanning: boolean = false;
+
 
   constructor(private sethlansService: SethlansService) {
   }
@@ -36,6 +45,14 @@ export class NodesComponent implements OnInit {
     })
   }
 
+  getNetworkNodeList() {
+    this.sethlansService.networkNodeScan().subscribe((data: any) => {
+      this.networkNodeList = data;
+      this.scanning = false;
+    })
+
+  }
+
   startNodeWizard() {
     this.nodeWizardScreen = true;
 
@@ -44,5 +61,22 @@ export class NodesComponent implements OnInit {
   cancelNodeWizard() {
     this.nodeWizardScreen = false;
   }
+
+  next() {
+    if (this.nodeWizardProgress == NodeWizardProgress.START) {
+      this.nodeWizardProgress = NodeWizardProgress.ADD;
+      if (this.nodeWizardType == NodeWizardType.SCAN) {
+        this.scanning = true;
+        this.getNetworkNodeList();
+      }
+    }
+  }
+
+  previous() {
+    if (this.nodeWizardProgress == NodeWizardProgress.ADD) {
+      this.nodeWizardProgress = NodeWizardProgress.START;
+    }
+  }
+
 
 }

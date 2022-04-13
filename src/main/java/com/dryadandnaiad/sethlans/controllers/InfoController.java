@@ -107,6 +107,7 @@ public class InfoController {
                 .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
                 .cpu(systemInfo.getCpu())
                 .selectedGPUs(PropertiesUtils.getSelectedGPUs())
+                .selectedCores(PropertiesUtils.getSelectedCores())
                 .build();
     }
 

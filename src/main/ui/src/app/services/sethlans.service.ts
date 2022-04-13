@@ -82,6 +82,10 @@ export class SethlansService {
     return this.http.get(this.rootURL + "/management/authorized_server_on_node")
   }
 
+  networkNodeScan() {
+    return this.http.get(this.rootURL + "/management/network_node_scan")
+  }
+
   getCurrentNodeList() {
     return this.http.get(this.rootURL + "/management/current_node_list")
   }
