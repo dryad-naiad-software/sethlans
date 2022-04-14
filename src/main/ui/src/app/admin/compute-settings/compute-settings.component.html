@@ -32,23 +32,23 @@
                 <td>Compute Type</td>
                 <td>{{nodeDashboard.nodeType}}</td>
               </tr>
-              <tr *ngIf="nodeDashboard.nodeType">
+              <tr *ngIf="nodeDashboard.nodeType != NodeType.GPU">
                 <td>Rendering Cores</td>
                 <td>{{nodeDashboard.selectedCores}}</td>
               </tr>
-              <tr>
+              <tr *ngIf="nodeDashboard.nodeType != NodeType.GPU">
                 <td>Tile Size: CPU</td>
                 <td>{{nodeDashboard.tileSizeCPU}}</td>
               </tr>
-              <tr>
+              <tr *ngIf="nodeDashboard.nodeType != NodeType.CPU">
                 <td>Tile Size: GPU</td>
                 <td>{{nodeDashboard.tileSizeGPU}}</td>
               </tr>
-              <tr>
+              <tr *ngIf="nodeDashboard.nodeType != NodeType.CPU">
                 <td>Selected GPUs</td>
                 <td><span *ngFor="let gpu of nodeDashboard.selectedGPUModels">{{gpu}}<br/></span></td>
               </tr>
-              <tr>
+              <tr *ngIf="nodeDashboard.nodeType != NodeType.CPU">
                 <td>Combined GPU Rendering</td>
                 <td>{{nodeDashboard.gpuCombined}}</td>
               </tr>
