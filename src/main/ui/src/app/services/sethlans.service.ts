@@ -108,6 +108,11 @@ export class SethlansService {
       .pipe(catchError(this.handleError('setNodeSettings', nodeSettings)))
   }
 
+  getProjects() {
+    return this.http.get(this.rootURL + "/project/project_list")
+
+  }
+
   getServerAPIKey() {
     return this.http.get(this.rootURL + "/management/server_api_key")
   }
@@ -143,6 +148,7 @@ export class SethlansService {
         catchError(this.handleError('submitSetup', setupForm)))
 
   }
+
 
   addNodesToServer(selectedNodes: Array<NodeForm>): Observable<any> {
     let headers = new HttpHeaders({

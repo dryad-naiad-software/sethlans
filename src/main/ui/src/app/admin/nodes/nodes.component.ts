@@ -45,6 +45,11 @@ export class NodesComponent implements OnInit {
     this.sethlansService.getServerAPIKey().subscribe((data: any) => {
       this.sethlansAPIKey = data.api_key;
     })
+    setTimeout(() => {
+      if (this.nodeWizardScreen == false)
+        location.reload();
+    }, 30000);
+
   }
 
   getNetworkNodeList() {
@@ -76,7 +81,7 @@ export class NodesComponent implements OnInit {
   }
 
   cancelNodeWizard() {
-    this.nodeWizardScreen = false;
+    window.location.href = '/admin/nodes';
   }
 
   next() {
