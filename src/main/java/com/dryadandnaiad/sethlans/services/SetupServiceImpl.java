@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
@@ -65,22 +66,34 @@ public class SetupServiceImpl implements SetupService {
             if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.SERVER)) {
                 var blenderInstallers = BlenderUtils.getInstallersList();
                 var os = QueryUtils.getOS();
-                String md5 = null;
+                String windowsMd5 = null;
+                String linuxMd5 = null;
+                String macMd5 = null;
                 for (BlenderInstallers blenderInstaller : blenderInstallers) {
                     if (blenderInstaller.getBlenderVersion().equals(setupForm.getServerSettings().getBlenderVersion())) {
-                        switch (os) {
-                            case WINDOWS_64 -> md5 = blenderInstaller.getMd5Windows64();
-                            case LINUX_64 -> md5 = blenderInstaller.getMd5Linux64();
-                            case MACOS -> md5 = blenderInstaller.getMd5MacOS();
-                        }
+                        windowsMd5 = blenderInstaller.getMd5Windows64();
+                        linuxMd5 = blenderInstaller.getMd5Linux64();
+                        macMd5 = blenderInstaller.getMd5MacOS();
                     }
 
 
                 }
                 blenderArchiveRepository.save(BlenderArchive.builder()
-                        .blenderOS(QueryUtils.getOS())
+                        .blenderOS(OS.WINDOWS_64)
                         .downloaded(false)
-                        .blenderFileMd5(md5)
+                        .blenderFileMd5(windowsMd5)
+                        .blenderVersion(setupForm.getServerSettings().getBlenderVersion())
+                        .build());
+                blenderArchiveRepository.save(BlenderArchive.builder()
+                        .blenderOS(OS.LINUX_64)
+                        .downloaded(false)
+                        .blenderFileMd5(linuxMd5)
+                        .blenderVersion(setupForm.getServerSettings().getBlenderVersion())
+                        .build());
+                blenderArchiveRepository.save(BlenderArchive.builder()
+                        .blenderOS(OS.MACOS)
+                        .downloaded(false)
+                        .blenderFileMd5(macMd5)
                         .blenderVersion(setupForm.getServerSettings().getBlenderVersion())
                         .build());
             }
