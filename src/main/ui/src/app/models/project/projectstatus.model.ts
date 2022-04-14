@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import {ProjectState} from "../../enums/projectstate.enum";
+
 /**
  * File created by Mario Estrella on 4/13/2022
  * Dryad and Naiad Software LLC
@@ -23,6 +25,37 @@
  * Project: sethlans_ui
  */
 export class ProjectStatus {
+  currentPercentage: number;
+  completedFrames: number;
+  totalQueueSize: number;
+  remainingQueueSize: number;
+  renderedQueueItems: number;
+  queueIndex: number;
+  currentFrame: number;
+  currentPart: number;
+  totalRenderTime: number;
+  totalProjectTime: number;
+  timerStart: number;
+  timerEnd: number;
+  allImagesProcessed: boolean;
+  reEncode: boolean;
+  projectState: ProjectState;
+
   constructor() {
+    this.currentPercentage = 0;
+    this.completedFrames = 0;
+    this.totalQueueSize = 0;
+    this.remainingQueueSize = 0;
+    this.renderedQueueItems = 0;
+    this.queueIndex = 0;
+    this.currentFrame = 0;
+    this.currentPart = 0;
+    this.totalRenderTime = 0;
+    this.totalProjectTime = 0;
+    this.timerStart = 0;
+    this.timerEnd = 0;
+    this.allImagesProcessed = false;
+    this.reEncode = false;
+    this.projectState = ProjectState.ADDED;
   }
 }

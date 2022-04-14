@@ -16,6 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import {BlenderEngine} from "../../enums/blenderengine.enum";
+import {ComputeOn} from "../../enums/computeon.enum";
+import {AnimationType} from "../../enums/animationtype.enum";
+import {VideoSettings} from "./videosettings.model";
+import {ImageSettings} from "./imagesettings.model";
+
 /**
  * File created by Mario Estrella on 4/13/2022
  * Dryad and Naiad Software LLC
@@ -23,6 +29,41 @@
  * Project: sethlans_ui
  */
 export class ProjectSettings {
+  blenderEngine: BlenderEngine;
+  computeOn: ComputeOn;
+  animationType: AnimationType;
+  startFrame: number;
+  endFrame: number;
+  stepFrame: number
+  samples: number;
+  partsPerFrame: number;
+  totalNumberOfFrames: number;
+  useParts: boolean;
+  blendFilename: string;
+  blendFilenameMD5Sum: string;
+  blenderVersion: string;
+  blenderZipFilename: string;
+  blenderZipFilenameMD5Sum: string;
+  videoSettings: VideoSettings;
+  imageSettings: ImageSettings;
+
   constructor() {
+    this.blenderEngine = BlenderEngine.CYCLES;
+    this.computeOn = ComputeOn.HYBRID;
+    this.animationType = AnimationType.IMAGES;
+    this.startFrame = 0;
+    this.endFrame = 0;
+    this.stepFrame = 0;
+    this.samples = 0;
+    this.partsPerFrame = 0;
+    this.totalNumberOfFrames = 0;
+    this.useParts = true;
+    this.blendFilename = '';
+    this.blendFilenameMD5Sum = '';
+    this.blenderVersion = '';
+    this.blenderZipFilename = '';
+    this.blenderZipFilenameMD5Sum = '';
+    this.videoSettings = new VideoSettings();
+    this.imageSettings = new ImageSettings();
   }
 }
