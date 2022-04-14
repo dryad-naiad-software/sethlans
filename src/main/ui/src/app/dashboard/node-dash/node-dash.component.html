@@ -27,7 +27,8 @@
     <ul>
       <li>Processor: <i>{{nodeDashboard.cpuName}}</i></li>
       <li>Memory: <i>{{nodeDashboard.totalMemory}}</i></li>
-      <li *ngIf="nodeDashboard.availableGPUModels.length > 0">Installed Graphics Card(s):
+      <li *ngIf="nodeDashboard.nodeType != NodeType.CPU && nodeDashboard.availableGPUModels.length > 0">Installed
+        Graphics Card(s):
         <ul>
           <li *ngFor="let gpu of nodeDashboard.availableGPUModels"><i>{{gpu}}</i></li>
         </ul>
