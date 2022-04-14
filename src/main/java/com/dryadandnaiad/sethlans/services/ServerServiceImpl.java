@@ -94,10 +94,6 @@ public class ServerServiceImpl implements ServerService {
                         node.setSystemID(systemID);
                         log.debug("Adding the following node to server: " + node);
                         nodeRepository.save(node);
-                        var checkBenchmark = new Thread(() -> {
-                            pendingBenchmarksToSend();
-                        });
-                        checkBenchmark.start();
                     }
                 } else {
                     log.error("Unable to add " + selectedNode.getIpAddress());
@@ -107,6 +103,8 @@ public class ServerServiceImpl implements ServerService {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
             }
+            var checkBenchmark = new Thread(this::pendingBenchmarksToSend);
+            checkBenchmark.start();
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
