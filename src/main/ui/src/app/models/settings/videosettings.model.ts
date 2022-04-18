@@ -16,6 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import {VideoCodec} from "../../enums/videocodec.enum";
+import {PixelFormat} from "../../enums/pixelformat.enum";
+import {VideoOutputFormat} from "../../enums/videooutputformat.enum";
+import {VideoQuality} from "../../enums/videoquality.enum";
+
 /**
  * File created by Mario Estrella on 4/13/2022
  * Dryad and Naiad Software LLC
@@ -23,6 +28,28 @@
  * Project: sethlans_ui
  */
 export class VideoSettings {
+  frameRate: number;
+  codec: VideoCodec;
+  pixelFormat: PixelFormat;
+  videoOutputFormat: VideoOutputFormat;
+  videoQuality: VideoQuality;
+  videoFileLocation: string;
+
   constructor() {
+    this.frameRate = 30;
+    this.codec = VideoCodec.LIBX264;
+    this.pixelFormat = PixelFormat.YUV420P;
+    this.videoOutputFormat = VideoOutputFormat.MP4;
+    this.videoQuality = VideoQuality.LOW_X264;
+    this.videoFileLocation = '';
+  }
+
+  setVideoSettings(obj: any) {
+    this.frameRate = obj.frameRate;
+    this.codec = obj.codec;
+    this.pixelFormat = obj.pixelFormat;
+    this.videoOutputFormat = obj.videoOutputFormat;
+    this.videoQuality = obj.videoQuality;
+    this.videoFileLocation = obj.videoFileLocation;
   }
 }

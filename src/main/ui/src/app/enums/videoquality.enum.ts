@@ -16,35 +16,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {ImageOutputFormat} from "../../enums/imageoutputformat.enum";
-
 /**
- * File created by Mario Estrella on 4/13/2022
+ * File created by Mario Estrella on 4/17/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
-export class ImageSettings {
-  resolutionX: number;
-  resolutionY: number;
-  resPercentage: number;
-  imageOutputFormat: ImageOutputFormat;
-  imageZipFileLocation: string;
 
-  constructor() {
-    this.resolutionX = 0;
-    this.resolutionY = 0;
-    this.resPercentage = 0;
-    this.imageOutputFormat = ImageOutputFormat.PNG;
-    this.imageZipFileLocation = ''
-  }
-
-  setImageSettings(obj: any) {
-    this.resolutionX = obj.resolutionX;
-    this.resolutionY = obj.resolutionY;
-    this.resPercentage = obj.resPercentage;
-    this.imageOutputFormat = obj.imageOutputFormat;
-    this.imageZipFileLocation = obj.imageZipFileLocation;
-  }
+export enum VideoQuality {
+  LOW_X264 = 'LOW_X264',
+  LOW_X265 = 'LOW_X265',
+  MEDIUM_X264 = 'MEDIUM_X264',
+  MEDIUM_X265 = 'MEDIUM_X265',
+  HIGH_X264 = 'HIGH_X264',
+  HIGH_X265 = 'HIGH_X265',
+  LOSSLESS_X264 = 'LOSSLESS_X264',
+  LOSSLESS_X265 = 'LOSSLESS_X265'
 
 }
