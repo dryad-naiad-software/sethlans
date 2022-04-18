@@ -130,7 +130,8 @@
         <div *ngIf="nodeWizardProgress == NodeWizardProgress.START" class="pt-2">
           <div class="alert alert-info" role="alert">
             <p class="mb-0 text-center">Server API Key:<span class="ms-2"><strong>{{sethlansAPIKey}}</strong></span>
-              <button class="ms-2 btn btn-outline-secondary btn-sm" ngbTooltip="Copy to Clipboard" placement="top">
+              <button (click)="copyAPIKey()" class="ms-2 btn btn-outline-secondary btn-sm"
+                      ngbTooltip="Copy to Clipboard" placement="top">
                 <fa-icon [icon]="faClipboard"></fa-icon>
               </button>
             </p>

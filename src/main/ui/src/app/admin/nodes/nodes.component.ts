@@ -6,6 +6,7 @@ import {SethlansService} from "../../services/sethlans.service";
 import {NodeWizardProgress} from "../../enums/nodewizardprogress.enum";
 import {NodeWizardType} from "../../enums/nodewizardtype.enum";
 import {NodeForm} from "../../models/forms/node-form.model";
+import {Clipboard} from "@angular/cdk/clipboard";
 
 
 @Component({
@@ -35,7 +36,7 @@ export class NodesComponent implements OnInit {
   submitDisabled: boolean = false;
 
 
-  constructor(private sethlansService: SethlansService) {
+  constructor(private sethlansService: SethlansService, private clipboard: Clipboard) {
   }
 
   ngOnInit(): void {
@@ -57,6 +58,11 @@ export class NodesComponent implements OnInit {
       this.networkNodeList = data;
       this.scanning = false;
     })
+
+  }
+
+  copyAPIKey() {
+    this.clipboard.copy(this.sethlansAPIKey)
 
   }
 

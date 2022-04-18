@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.DownloadService;
 import com.dryadandnaiad.sethlans.services.ProjectService;
+import com.dryadandnaiad.sethlans.services.ServerQueueService;
 import com.dryadandnaiad.sethlans.services.ServerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -39,17 +40,20 @@ public class ServerBackgroundComponent {
     private final DownloadService downloadService;
     private final ServerService serverService;
     private final ProjectService projectService;
+    private final ServerQueueService serverQueueService;
 
     public ServerBackgroundComponent(DownloadService downloadService, ServerService serverService,
-                                     ProjectService projectService) {
+                                     ProjectService projectService, ServerQueueService serverQueueService) {
         this.downloadService = downloadService;
         this.serverService = serverService;
         this.projectService = projectService;
+        this.serverQueueService = serverQueueService;
     }
 
     @PostConstruct
     public void startBackgroundServices() {
         try {
+            serverQueueService.updatePendingQueueLimit();
             downloadService.downloadBlenderFilesAsync();
             serverService.pendingBenchmarksToSend();
             projectService.processCompletedRenders();
