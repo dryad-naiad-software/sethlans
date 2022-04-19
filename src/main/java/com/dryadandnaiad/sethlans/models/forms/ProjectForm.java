@@ -24,6 +24,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * File created by Mario Estrella on 12/28/2020.
  * Dryad and Naiad Software LLC
@@ -38,6 +40,7 @@ public class ProjectForm {
     private String projectName;
     private ProjectType projectType;
     private ProjectSettings projectSettings;
+    private List<String> installedBlenderVersions;
     private String projectID;
     private String originalFile;
     private String projectFileLocation;

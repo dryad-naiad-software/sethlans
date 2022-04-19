@@ -73,11 +73,11 @@
             </button>
           </li>
           <li>
-            <button [ngClass]="projectWizardProgress == ProjectWizardProgress.RENDER_SETTINGS
+            <button [ngClass]="projectWizardProgress == ProjectWizardProgress.SETTINGS
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                     class="btn btn-lg btn-circle"
                     type="button">
-              <fa-icon [icon]="faCube"></fa-icon>
+              <fa-icon [icon]="faGear"></fa-icon>
             </button>
           </li>
           <li>
@@ -90,6 +90,10 @@
           </li>
         </ul>
         <div *ngIf="projectWizardProgress == ProjectWizardProgress.UPLOAD" class="pt-2">
+          <div *ngIf="showInvalidFileAlert" class="alert alert-danger" role="alert">
+            <p class="mb-0 text-center">File uploaded was not a valid blend or zip file in the correct format!
+            </p>
+          </div>
           <h5>Project Upload</h5>
           <ul>
             <li>
@@ -112,15 +116,164 @@
               </ul>
             </li>
           </ul>
+          <div class="text-center">
+            <p-fileUpload #fileUpload (onError)="resetUpload(fileUpload)" (onUpload)="loadProjectDetails($event)"
+                          [withCredentials]="true"
+                          accept=".blend,.zip" chooseLabel="Browse"
+                          mode="basic"
+                          name="project_file"
+                          url="/api/v1/project/upload_project_file/"></p-fileUpload>
+          </div>
+        </div>
+        <!--        Project Details Page-->
+        <div *ngIf="projectWizardProgress == ProjectWizardProgress.PROJECT_DETAILS" class="pt-2">
+          <div class="row py-1">
+            <div class="col-md-12">
+              <label for="projectName">Project Name</label>
+              <input [(ngModel)]="projectForm.projectName"
+                     class="form-control form-control-sm"
+                     id="projectName"
+                     name="projectName"
+                     placeholder="Project Name"
+                     required type="text"/>
+            </div>
+
+          </div>
+
+          <div class="row py-1">
+            <div class="col-md-12">
+              <label for="blenderVersion">Blender Version for Rendering</label>
+              <select [(ngModel)]="projectForm.projectSettings.blenderVersion" class="form-select form-select-sm"
+                      id="blenderVersion">
+                <option *ngFor="let version of projectForm.installedBlenderVersions"
+                        ngValue="{{version}}">{{version}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="row py-2">
+            <div class="col-md-6">
+              <label for="projectTypeGroup">Project Type</label>
+              <div class="form-check pt-1" id="projectTypeGroup"
+                   ngbTooltip="Sethlans will act as a server and as a node" placement="left">
+                <label class="form-check-label">
+                  <input [(ngModel)]="projectForm.projectType"
+                         [value]="ProjectType.STILL_IMAGE"
+                         class="form-check-input"
+                         name="projectType"
+                         required
+                         type="radio">Still Image
+                </label>
+              </div>
+              <div class="form-check" ngbTooltip="Sethlans will be configured as a server" placement="left">
+                <label class="form-check-label">
+                  <input (click)="setToPNG()"
+                         [(ngModel)]="projectForm.projectType"
+                         [value]="ProjectType.ANIMATION"
+                         class="form-check-input"
+                         name="projectType"
+                         required
+                         type="radio">Animation
+                </label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="outputFormat">Image Output Format</label>
+              <select [(ngModel)]="projectForm.projectSettings.imageSettings.imageOutputFormat"
+                      class="form-select form-select-sm pt-1"
+                      id="outputFormat">
+                <option [value]="ImageOutputFormat.PNG">PNG</option>
+                <option *ngIf="projectForm.projectType == ProjectType.STILL_IMAGE" [value]="ImageOutputFormat.HDR">HDR
+                </option>
+                <option *ngIf="projectForm.projectType == ProjectType.STILL_IMAGE" [value]="ImageOutputFormat.TIFF">
+                  TIFF
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row py-2">
+            <div class="col-md-4">
+              <label for="startFrame">Start Frame</label>
+              <input [(ngModel)]="projectForm.projectSettings.startFrame" class="form-control form-control-sm"
+                     id="startFrame" name="startFrame"
+                     pattern="^[1-9][0-9]*$" type="number">
+            </div>
+            <div class="col-md-4">
+              <label for="endFrame">End Frame</label>
+              <input [(ngModel)]="projectForm.projectSettings.endFrame" class="form-control form-control-sm"
+                     id="endFrame" name="endFrame"
+                     pattern="^[1-9][0-9]*$" type="number">
+            </div>
+            <div class="col-md-4">
+              <label for="stepFrame">Step Frame</label>
+              <input [(ngModel)]="projectForm.projectSettings.stepFrame" class="form-control form-control-sm"
+                     id="stepFrame" name="stepFrame"
+                     pattern="^[1-9][0-9]*$" type="number">
+            </div>
+          </div>
+        </div>
+        <!--        Settings Page-->
+        <div *ngIf="projectWizardProgress == ProjectWizardProgress.SETTINGS">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <span (click)="showVideoSettings=false"
+                      [ngClass]="showVideoSettings
+                      ? '' : 'active'"
+                      class="nav-link"
+                >Render Settings</span>
+            </li>
+            <li *ngIf="projectForm.projectType == ProjectType.ANIMATION" class="nav-item">
+                <span (click)="showVideoSettings=true"
+                      [ngClass]="showVideoSettings
+                      ? 'active' : ''"
+                      class="nav-link"
+                >Video Settings</span>
+            </li>
+          </ul>
+          <div [hidden]="showVideoSettings" class="pt-2">
+            <div class="row py-1">
+              <div class="col-md-12">
+                <label for="renderingEngine">Rendering Engine</label>
+                <select [(ngModel)]="projectForm.projectSettings.blenderEngine" class="form-select form-select-sm"
+                        id="renderingEngine">
+                  <option [value]="BlenderEngine.CYCLES">CYCLES</option>
+                  <option *ngIf="projectForm.projectSettings.blenderVersion != '2.79b'"
+                          [value]="BlenderEngine.BLENDER_EEVEE">EEVEE
+                  </option>
+                  <option *ngIf="projectForm.projectSettings.blenderVersion == '2.79b'"
+                          [value]="BlenderEngine.BLENDER_RENDER">BLENDER RENDER
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div [hidden]="!showVideoSettings" class="pt-2">
+            <div class="row py-1">
+            </div>
+          </div>
         </div>
 
 
       </div>
       <div class="card-footer">
-        <button
-          class="btn btn-outline-dark float-start">Cancel
+        <button (click)="cancelProjectWizard()"
+                *ngIf="projectWizardProgress == ProjectWizardProgress.UPLOAD || projectWizardProgress == ProjectWizardProgress.PROJECT_DETAILS"
+                class="btn btn-outline-dark float-start">Cancel
+        </button>
+        <button (click)="previous()"
+                *ngIf="projectWizardProgress == ProjectWizardProgress.SETTINGS || projectWizardProgress == ProjectWizardProgress.SUMMARY"
+                class="btn btn-outline-dark float-start">Previous
+        </button>
+        <button (click)="next()"
+                *ngIf="projectWizardProgress != ProjectWizardProgress.UPLOAD" class="btn btn-outline-primary float-end">
+          Next
         </button>
       </div>
     </div>
   </div>
 </div>
+<div *ngIf="projectWizardScreen">
+  Debugging:
+  <pre>{{ projectForm | json }}</pre>
+</div>
+
+

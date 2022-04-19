@@ -347,12 +347,13 @@ public class ProjectServiceImpl implements ProjectService {
                     .build();
 
             var blenderArchiveList = blenderArchiveRepository.findAllByDownloadedIsTrue();
-            var versions = new ArrayList<String>();
+            var versions = new HashSet<String>();
             for (BlenderArchive blenderArchive : blenderArchiveList) {
                 versions.add(blenderArchive.getBlenderVersion());
             }
-            versions.sort(new AlphaNumericComparator());
-            Collections.reverse(versions);
+            var versionList = new ArrayList<String>(versions);
+            versionList.sort(new AlphaNumericComparator());
+            Collections.reverse(versionList);
             log.info(blendFilename);
 
 
@@ -366,7 +367,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .stepFrame(blendFile.getFrameSkip())
                     .imageSettings(imageSettings)
                     .blenderEngine(blendFile.getEngine())
-                    .blenderVersion(versions.get(0))
+                    .blenderVersion(versionList.get(0))
                     .blendFilename(blendFilename)
                     .build();
 
@@ -374,6 +375,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectForm.setProjectType(ProjectType.STILL_IMAGE);
             projectForm.setProjectID(UUID.randomUUID().toString());
             projectForm.setProjectName("");
+            projectForm.setInstalledBlenderVersions(versionList);
             log.info(projectForm.toString());
 
             return new ResponseEntity<>(projectForm, HttpStatus.CREATED);

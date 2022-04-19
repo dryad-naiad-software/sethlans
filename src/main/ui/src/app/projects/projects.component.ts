@@ -1,8 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {SethlansService} from "../services/sethlans.service";
 import {ProjectView} from "../models/project/projectview.model";
-import {faCube, faPlus, faPuzzlePiece, faRectangleList, faUpload} from "@fortawesome/free-solid-svg-icons";
+import {faGear, faPlus, faPuzzlePiece, faRectangleList, faUpload} from "@fortawesome/free-solid-svg-icons";
 import {ProjectWizardProgress} from "../enums/projectwizardprogress.enum";
+import {ProjectForm} from "../models/forms/project-form.model";
+import {ProjectType} from "../enums/projectype.enum";
+import {ImageOutputFormat} from "../enums/imageoutputformat.enum";
+import {BlenderEngine} from "../enums/blenderengine.enum";
 
 
 @Component({
@@ -15,11 +19,18 @@ export class ProjectsComponent implements OnInit {
   faPlus = faPlus;
   faUpload = faUpload;
   faPuzzlePiece = faPuzzlePiece;
-  faCube = faCube;
+  faGear = faGear;
   faRectangleList = faRectangleList;
   projectWizardScreen: boolean = false;
   projectWizardProgress: ProjectWizardProgress = ProjectWizardProgress.UPLOAD;
   ProjectWizardProgress = ProjectWizardProgress;
+  projectForm: ProjectForm = new ProjectForm();
+  BlenderEngine = BlenderEngine;
+  showInvalidFileAlert: boolean = false;
+  ProjectType = ProjectType;
+  ImageOutputFormat = ImageOutputFormat;
+  showVideoSettings = false;
+
 
   constructor(private sethlansService: SethlansService) {
 
@@ -34,6 +45,42 @@ export class ProjectsComponent implements OnInit {
 
   startProjectWizard() {
     this.projectWizardScreen = true;
+  }
+
+  loadProjectDetails($event: any) {
+    this.projectForm.setProjectForm($event.originalEvent.body)
+    console.log(this.projectForm)
+    this.projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS;
+
+  }
+
+  resetUpload(fileUpload: any) {
+    fileUpload.clear();
+    this.showInvalidFileAlert = true;
+  }
+
+  setToPNG() {
+    this.projectForm.projectSettings.imageSettings.imageOutputFormat = ImageOutputFormat.PNG;
+  }
+
+  cancelProjectWizard() {
+    window.location.href = '/projects';
+  }
+
+  next() {
+    switch (this.projectWizardProgress) {
+      case ProjectWizardProgress.PROJECT_DETAILS:
+        this.projectWizardProgress = ProjectWizardProgress.SETTINGS;
+    }
+
+  }
+
+  previous() {
+    switch (this.projectWizardProgress) {
+      case ProjectWizardProgress.SETTINGS:
+        this.projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS;
+    }
+
   }
 
 }

@@ -23,5 +23,5 @@
  * Project: sethlans_ui
  */
 export enum ProjectWizardProgress {
-  UPLOAD, PROJECT_DETAILS, RENDER_SETTINGS, VIDEO_SETTINGS, SUMMARY
+  UPLOAD, PROJECT_DETAILS, SETTINGS, SUMMARY
 }
