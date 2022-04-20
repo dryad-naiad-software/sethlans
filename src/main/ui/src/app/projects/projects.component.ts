@@ -7,6 +7,7 @@ import {ProjectForm} from "../models/forms/project-form.model";
 import {ProjectType} from "../enums/projectype.enum";
 import {ImageOutputFormat} from "../enums/imageoutputformat.enum";
 import {BlenderEngine} from "../enums/blenderengine.enum";
+import {ComputeOn} from "../enums/computeon.enum";
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ProjectsComponent implements OnInit {
   ProjectType = ProjectType;
   ImageOutputFormat = ImageOutputFormat;
   showVideoSettings = false;
+  ComputeOn = ComputeOn;
 
 
   constructor(private sethlansService: SethlansService) {

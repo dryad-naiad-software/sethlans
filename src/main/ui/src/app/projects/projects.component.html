@@ -245,6 +245,81 @@
                 </select>
               </div>
             </div>
+            <div class="row py-1">
+              <div class="col-md-12">
+                <label for="computeOn">Compute On</label>
+                <select [(ngModel)]="projectForm.projectSettings.computeOn" class="form-select form-select-sm"
+                        id="computeOn">
+                  <option [value]="ComputeOn.HYBRID">HYBRID</option>
+                  <option
+                    [value]="ComputeOn.CPU">CPU
+                  </option>
+                  <option
+                    [value]="ComputeOn.GPU">GPU
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row py-2">
+              <div class="col-md-12">
+                <label for="samples">Samples</label>
+                <input [(ngModel)]="projectForm.projectSettings.samples" class="form-control form-control-sm"
+                       id="samples" name="samples"
+                       pattern="^[1-9][0-9]*$" type="number">
+              </div>
+            </div>
+            <div class="row py-2">
+              <div class="col-md-4">
+                <label>Render Resolution</label>
+                <div class="input-group">
+                  <input [(ngModel)]="projectForm.projectSettings.imageSettings.resolutionX" class="form-control"
+                         id="resolutionX" name="resolution"
+                         pattern="^[1-9][0-9]*$" type="number">
+                  <span class="input-group-text">x</span>
+                  <input [(ngModel)]="projectForm.projectSettings.imageSettings.resolutionY" class="form-control"
+                         id="resolutionY" name="resolutionY"
+                         pattern="^[1-9][0-9]*$" type="number">
+                </div>
+
+              </div>
+              <div class="col-md-4">
+                <label>Render Scaling</label>
+                <div class="input-group">
+                  <input [(ngModel)]="projectForm.projectSettings.imageSettings.resPercentage" class="form-control"
+                         id="resolutionPercentage" name="resolutionPercentage"
+                         pattern="^[1-9][0-9]*$" type="number">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="row pt-3">
+                <div class="col-md-4">
+                  <div class="form-check form-switch pt-1">
+                    <input [(ngModel)]="projectForm.projectSettings.useParts" class="form-check-input" id="useParts"
+                           role="switch"
+                           type="checkbox">
+                    <label class="form-check-label" for="useParts">Use Parts For Rendering</label>
+                  </div>
+                </div>
+                <div class="row pt-1">
+                  <div class="col-md-4">
+                    <div class="pt-1">
+                      <label for="partsPerFrame">Parts Per Frame</label>
+                      <select [(ngModel)]="projectForm.projectSettings.partsPerFrame"
+                              [disabled]="!projectForm.projectSettings.useParts" class="form-select form-select-sm"
+                              id="partsPerFrame">
+                        <option value="4">4</option>
+                        <option value="9">9</option>
+                        <option value="16">16</option>
+                        <option value="25">25</option>
+                        <option value="36">36</option>
+                        <option value="49">49</option>
+                        <option value="64">64</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div [hidden]="!showVideoSettings" class="pt-2">
             <div class="row py-1">
@@ -264,7 +339,8 @@
                 class="btn btn-outline-dark float-start">Previous
         </button>
         <button (click)="next()"
-                *ngIf="projectWizardProgress != ProjectWizardProgress.UPLOAD" class="btn btn-outline-primary float-end">
+                *ngIf="projectWizardProgress != ProjectWizardProgress.UPLOAD"
+                class="btn btn-outline-primary float-end">
           Next
         </button>
       </div>
