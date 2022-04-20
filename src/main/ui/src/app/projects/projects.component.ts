@@ -8,6 +8,12 @@ import {ProjectType} from "../enums/projectype.enum";
 import {ImageOutputFormat} from "../enums/imageoutputformat.enum";
 import {BlenderEngine} from "../enums/blenderengine.enum";
 import {ComputeOn} from "../enums/computeon.enum";
+import {VideoSettings} from "../models/settings/videosettings.model";
+import {VideoOutputFormat} from "../enums/videooutputformat.enum";
+import {VideoCodec} from "../enums/videocodec.enum";
+import {PixelFormat} from "../enums/pixelformat.enum";
+import {VideoQuality} from "../enums/videoquality.enum";
+import {AnimationType} from "../enums/animationtype.enum";
 
 
 @Component({
@@ -32,6 +38,11 @@ export class ProjectsComponent implements OnInit {
   ImageOutputFormat = ImageOutputFormat;
   showVideoSettings = false;
   ComputeOn = ComputeOn;
+  VideoOutputFormat = VideoOutputFormat;
+  VideoCodec = VideoCodec;
+  PixelFormat = PixelFormat;
+  VideoQuality = VideoQuality;
+  AnimationType = AnimationType;
 
 
   constructor(private sethlansService: SethlansService) {
@@ -51,7 +62,8 @@ export class ProjectsComponent implements OnInit {
 
   loadProjectDetails($event: any) {
     this.projectForm.setProjectForm($event.originalEvent.body)
-    console.log(this.projectForm)
+    this.projectForm.projectSettings.videoSettings = new VideoSettings();
+    this.projectForm.projectSettings.animationType = AnimationType.MOVIE;
     this.projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS;
 
   }
@@ -82,6 +94,29 @@ export class ProjectsComponent implements OnInit {
       case ProjectWizardProgress.SETTINGS:
         this.projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS;
     }
+
+  }
+
+  resetCodec() {
+    if (this.projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.AVI) {
+      this.projectForm.projectSettings.videoSettings.codec = VideoCodec.FFV1;
+    }
+    if (this.projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MP4 ||
+      this.projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MKV) {
+      this.projectForm.projectSettings.videoSettings.codec = VideoCodec.LIBX264;
+
+    }
+  }
+
+  resetQuality() {
+
+    if (this.projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX264) {
+      this.projectForm.projectSettings.videoSettings.videoQuality = VideoQuality.LOW_X264;
+    }
+    if (this.projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX265) {
+      this.projectForm.projectSettings.videoSettings.videoQuality = VideoQuality.LOW_X265;
+    }
+
 
   }
 

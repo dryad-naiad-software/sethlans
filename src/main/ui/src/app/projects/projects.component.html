@@ -151,10 +151,9 @@
             </div>
           </div>
           <div class="row py-2">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label for="projectTypeGroup">Project Type</label>
-              <div class="form-check pt-1" id="projectTypeGroup"
-                   ngbTooltip="Sethlans will act as a server and as a node" placement="left">
+              <div class="form-check pt-1" id="projectTypeGroup">
                 <label class="form-check-label">
                   <input [(ngModel)]="projectForm.projectType"
                          [value]="ProjectType.STILL_IMAGE"
@@ -164,7 +163,7 @@
                          type="radio">Still Image
                 </label>
               </div>
-              <div class="form-check" ngbTooltip="Sethlans will be configured as a server" placement="left">
+              <div class="form-check">
                 <label class="form-check-label">
                   <input (click)="setToPNG()"
                          [(ngModel)]="projectForm.projectType"
@@ -176,7 +175,33 @@
                 </label>
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+              <label *ngIf="projectForm.projectType == ProjectType.ANIMATION" for="animationTypeGroup">Animation
+                Type</label>
+              <div *ngIf="projectForm.projectType == ProjectType.ANIMATION" class="form-check pt-1"
+                   id="animationTypeGroup">
+                <label class="form-check-label">
+                  <input [(ngModel)]="projectForm.projectSettings.animationType"
+                         [value]="AnimationType.MOVIE"
+                         class="form-check-input"
+                         name="animationType"
+                         required
+                         type="radio">Movie
+                </label>
+              </div>
+              <div *ngIf="projectForm.projectType == ProjectType.ANIMATION" class="form-check">
+                <label class="form-check-label">
+                  <input
+                    [(ngModel)]="projectForm.projectSettings.animationType"
+                    [value]="AnimationType.IMAGES"
+                    class="form-check-input"
+                    name="animationType"
+                    required
+                    type="radio">Images
+                </label>
+              </div>
+            </div>
+            <div class="col-md-4">
               <label for="outputFormat">Image Output Format</label>
               <select [(ngModel)]="projectForm.projectSettings.imageSettings.imageOutputFormat"
                       class="form-select form-select-sm pt-1"
@@ -221,7 +246,9 @@
                       class="nav-link"
                 >Render Settings</span>
             </li>
-            <li *ngIf="projectForm.projectType == ProjectType.ANIMATION" class="nav-item">
+            <li
+              *ngIf="projectForm.projectType == ProjectType.ANIMATION && projectForm.projectSettings.animationType == AnimationType.MOVIE"
+              class="nav-item">
                 <span (click)="showVideoSettings=true"
                       [ngClass]="showVideoSettings
                       ? 'active' : ''"
@@ -323,6 +350,105 @@
           </div>
           <div [hidden]="!showVideoSettings" class="pt-2">
             <div class="row py-1">
+              <div class="row py-1">
+                <div class="col-md-12">
+                  <label for="videoOutputFormat">Video Output Format</label>
+                  <select (change)="resetCodec()"
+                          [(ngModel)]="projectForm.projectSettings.videoSettings.videoOutputFormat"
+                          class="form-select form-select-sm"
+                          id="videoOutputFormat">
+                    <option [value]="VideoOutputFormat.MP4">MP4</option>
+                    <option [value]="VideoOutputFormat.AVI">AVI</option>
+                    <option [value]="VideoOutputFormat.MKV">MKV</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row py-1">
+                <div class="col-md-2">
+                  <label for="frameRate">Frame Rate</label>
+                  <input [(ngModel)]="projectForm.projectSettings.videoSettings.frameRate"
+                         class="form-control form-control-sm"
+                         id="frameRate" name="frameRate"
+                         pattern="^[1-9][0-9]*$" type="number">
+                </div>
+                <div class="col-md-4">
+                  <label for="videoCodec">Codec</label>
+                  <select (change)="resetQuality()" [(ngModel)]="projectForm.projectSettings.videoSettings.codec"
+                          class="form-select form-select-sm"
+                          id="videoCodec">
+                    <option *ngIf="projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MP4
+|| projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MKV"
+                            [value]="VideoCodec.LIBX264">X264
+                    </option>
+                    <option *ngIf="projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MP4
+|| projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MKV"
+                            [value]="VideoCodec.LIBX265"
+                    >X265
+                    </option>
+                    <option *ngIf="projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.AVI
+|| projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MKV"
+                            [value]="VideoCodec.FFV1">FFV1
+                    </option>
+                    <option *ngIf="projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.AVI"
+                            [value]="VideoCodec.UTVIDEO"
+                    >UTVIDEO
+                    </option>
+
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="pixelFormat">Pixel Format</label>
+                  <select [(ngModel)]="projectForm.projectSettings.videoSettings.pixelFormat"
+                          class="form-select form-select-sm"
+                          id="pixelFormat">
+                    <option [value]="PixelFormat.YUV420P">YUV420P</option>
+                    <option [value]="PixelFormat.YUV422P">YUV422P</option>
+                    <option [value]="PixelFormat.YUV444P">YUV444P</option>
+                  </select>
+                </div>
+              </div>
+              <div *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX264
+              || projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX265" class="row py-1">
+                <div class="col-md-12">
+                  <label for="videoQuality">Video Quality</label>
+                  <select [(ngModel)]="projectForm.projectSettings.videoSettings.videoQuality"
+                          class="form-select form-select-sm"
+                          id="videoQuality">
+                    <option
+                      *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX264"
+                      [value]="VideoQuality.LOW_X264">LOW
+                    </option>
+                    <option
+                      *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX264"
+                      [value]="VideoQuality.MEDIUM_X264">MEDIUM
+                    </option>
+                    <option
+                      *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX264"
+                      [value]="VideoQuality.HIGH_X264">HIGH
+                    </option>
+                    <option
+                      *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX264"
+                      [value]="VideoQuality.LOSSLESS_X264">LOSSLESS
+                    </option>
+                    <option
+                      *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX265"
+                      [value]="VideoQuality.LOW_X265">LOW
+                    </option>
+                    <option
+                      *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX265"
+                      [value]="VideoQuality.MEDIUM_X265">MEDIUM
+                    </option>
+                    <option
+                      *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX265"
+                      [value]="VideoQuality.HIGH_X265">HIGH
+                    </option>
+                    <option
+                      *ngIf="projectForm.projectSettings.videoSettings.codec == VideoCodec.LIBX265"
+                      [value]="VideoQuality.LOSSLESS_X265">LOSSLESS
+                    </option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         </div>
