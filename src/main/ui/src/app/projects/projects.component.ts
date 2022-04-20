@@ -85,6 +85,9 @@ export class ProjectsComponent implements OnInit {
     switch (this.projectWizardProgress) {
       case ProjectWizardProgress.PROJECT_DETAILS:
         this.projectWizardProgress = ProjectWizardProgress.SETTINGS;
+        break;
+      case ProjectWizardProgress.SETTINGS:
+        this.projectWizardProgress = ProjectWizardProgress.SUMMARY;
     }
 
   }

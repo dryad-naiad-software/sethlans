@@ -452,7 +452,110 @@
             </div>
           </div>
         </div>
+        <!--        Summary-->
+        <div *ngIf="projectWizardProgress == ProjectWizardProgress.SUMMARY">
+          <div class="row py-1">
+            <h4 class="text-center">Project Summary</h4>
+            <div class="col-md-6">
+              <table class="table table-responsive">
+                <thead>
+                <tr>
+                  <th scope="col">Setting</th>
+                  <th scope="col">Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>Project Name</td>
+                  <td>{{projectForm.projectName}}</td>
+                </tr>
+                <tr>
+                  <td>Project Type</td>
+                  <td>{{projectForm.projectType}}</td>
+                </tr>
+                <tr>
+                  <td>Selected Blender Version</td>
+                  <td>{{projectForm.projectSettings.blenderVersion}}</td>
+                </tr>
+                <tr>
+                  <td>Image Output Format</td>
+                  <td>{{projectForm.projectSettings.imageSettings.imageOutputFormat}}</td>
+                </tr>
+                <tr>
+                  <td>Start Frame</td>
+                  <td>{{projectForm.projectSettings.startFrame}}</td>
+                </tr>
+                <tr>
+                  <td>End Frame</td>
+                  <td>{{projectForm.projectSettings.endFrame}}</td>
+                </tr>
+                <tr>
+                  <td>Step Frame</td>
+                  <td>{{projectForm.projectSettings.stepFrame}}</td>
+                </tr>
+                <tr>
+                  <td>Compute On</td>
+                  <td>{{projectForm.projectSettings.computeOn}}</td>
+                </tr>
+                <tr>
+                  <td>Rendering Engine</td>
+                  <td>{{projectForm.projectSettings.blenderEngine}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <table class="table table-responsive">
+                <thead>
+                <tr>
+                  <th scope="col">Setting</th>
+                  <th scope="col">Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>Samples</td>
+                  <td>{{projectForm.projectSettings.samples}}</td>
+                </tr>
+                <tr>
+                  <td>Parts Per Frame</td>
+                  <td>{{projectForm.projectSettings.partsPerFrame}}</td>
+                </tr>
+                <tr>
+                  <td>Render Resolution</td>
+                  <td><span>{{projectForm.projectSettings.imageSettings.resolutionX}}</span> x
+                    <span>{{projectForm.projectSettings.imageSettings.resolutionY}}</span></td>
+                </tr>
+                <tr>
+                  <td>Image Scaling Percenrage</td>
+                  <td>{{projectForm.projectSettings.imageSettings.resPercentage}}%</td>
+                </tr>
+                <tr>
+                  <td>Animation Type</td>
+                  <td>{{projectForm.projectSettings.animationType}}</td>
+                </tr>
+                <tr>
+                  <td>Frame Rate</td>
+                  <td>{{projectForm.projectSettings.videoSettings.frameRate}}</td>
+                </tr>
+                <tr>
+                  <td>Codec</td>
+                  <td>{{projectForm.projectSettings.videoSettings.codec}}</td>
+                </tr>
+                <tr>
+                  <td>Pixel Format</td>
+                  <td>{{projectForm.projectSettings.videoSettings.pixelFormat}}</td>
+                </tr>
+                <tr>
+                  <td>Video Output Format</td>
+                  <td>{{projectForm.projectSettings.videoSettings.videoOutputFormat}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
+        </div>
 
       </div>
       <div class="card-footer">
