@@ -24,6 +24,7 @@ import {catchError} from "rxjs/operators";
 import {HandleError, HttpErrorHandler} from './http-error-handler.service';
 import {NodeSettings} from "../models/settings/nodesettings.model";
 import {NodeForm} from "../models/forms/node-form.model";
+import {ProjectForm} from "../models/forms/project-form.model";
 
 
 @Injectable({
@@ -40,7 +41,6 @@ import {NodeForm} from "../models/forms/node-form.model";
 export class SethlansService {
   private handleError: HandleError;
   rootURL = '/api/v1';
-  firstTime: boolean = false;
 
   constructor(private http: HttpClient, httpErrorHandler: HttpErrorHandler) {
     this.handleError = httpErrorHandler.createHandleError('SethlansService');
@@ -166,6 +166,16 @@ export class SethlansService {
       'Content-Type': 'application/json',
     });
     return this.http.get(this.rootURL + "/setup/restart", {headers: headers, observe: "response"})
+  }
+
+  submitProject(projectForm: ProjectForm): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<ProjectForm>(this.rootURL + "/project/create_project",
+      JSON.stringify(projectForm), {headers: headers, observe: "response"})
+      .pipe(
+        catchError(this.handleError('submitSetup', projectForm)))
   }
 
 }

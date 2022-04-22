@@ -43,6 +43,14 @@ export class ProjectsComponent implements OnInit {
   PixelFormat = PixelFormat;
   VideoQuality = VideoQuality;
   AnimationType = AnimationType;
+  projectNameRegEx = new RegExp('.{4,}')
+  detailsDisabled = true;
+  settingsDisabled = true;
+  summaryDisabled = true;
+  submitDisabled = false;
+  nextDisabled: boolean = false;
+  projectNameError: boolean = false;
+  placeholder: any = 'assets/images/placeholder.svg';
 
 
   constructor(private sethlansService: SethlansService) {
@@ -53,6 +61,7 @@ export class ProjectsComponent implements OnInit {
   ngOnInit(): void {
     this.sethlansService.getProjects().subscribe((data: any) => {
       this.projectList = data;
+      console.log(this.projectList)
     })
   }
 
@@ -65,6 +74,14 @@ export class ProjectsComponent implements OnInit {
     this.projectForm.projectSettings.videoSettings = new VideoSettings();
     this.projectForm.projectSettings.animationType = AnimationType.MOVIE;
     this.projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS;
+    this.detailsDisabled = false;
+    this.nextDisabled = true;
+
+  }
+
+  validateProjectName() {
+    this.projectNameError = !this.projectForm.projectName.match(this.projectNameRegEx);
+    this.nextDisabled = this.projectNameError;
 
   }
 
@@ -85,6 +102,7 @@ export class ProjectsComponent implements OnInit {
     switch (this.projectWizardProgress) {
       case ProjectWizardProgress.PROJECT_DETAILS:
         this.projectWizardProgress = ProjectWizardProgress.SETTINGS;
+        this.settingsDisabled = false;
         break;
       case ProjectWizardProgress.SETTINGS:
         this.projectWizardProgress = ProjectWizardProgress.SUMMARY;
@@ -96,6 +114,9 @@ export class ProjectsComponent implements OnInit {
     switch (this.projectWizardProgress) {
       case ProjectWizardProgress.SETTINGS:
         this.projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS;
+        break;
+      case ProjectWizardProgress.SUMMARY:
+        this.projectWizardProgress = ProjectWizardProgress.SETTINGS;
     }
 
   }
@@ -109,6 +130,22 @@ export class ProjectsComponent implements OnInit {
       this.projectForm.projectSettings.videoSettings.codec = VideoCodec.LIBX264;
 
     }
+  }
+
+  submit() {
+    if (this.projectForm.projectType == ProjectType.STILL_IMAGE) {
+      this.projectForm.projectSettings.stepFrame = 1
+      this.projectForm.projectSettings.endFrame = this.projectForm.projectSettings.startFrame;
+      this.projectForm.projectSettings.animationType = AnimationType.IMAGES;
+    }
+    this.submitDisabled = true;
+    this.sethlansService.submitProject(this.projectForm).subscribe((response) => {
+      if (response.statusText == "Created") {
+        window.location.href = '/projects';
+      }
+
+    });
+
   }
 
   resetQuality() {

@@ -34,6 +34,31 @@
             </tr>
             </thead>
             <tbody>
+            <tr *ngFor="let project of projectList">
+              <td>{{project.projectName}}</td>
+              <td>{{project.projectType}}</td>
+              <td>{{project.projectSettings.computeOn}}</td>
+              <td
+                *ngIf="project.projectType == ProjectType.STILL_IMAGE">{{project.projectSettings.imageSettings.imageOutputFormat}}</td>
+              <td *ngIf="project.projectType == ProjectType.ANIMATION">
+                <span
+                  *ngIf="project.projectSettings.animationType == AnimationType.IMAGES">{{project.projectSettings.imageSettings.imageOutputFormat}} </span>
+                <span
+                  *ngIf="project.projectSettings.animationType == AnimationType.MOVIE">{{project.projectSettings.videoSettings.videoOutputFormat}}</span>
+              </td>
+              <td>{{project.projectStatus.projectState}}</td>
+              <td>
+                <ngb-progressbar [max]="100" [showValue]="true"
+                                 [value]="project.projectStatus.currentPercentage"
+                                 type="success"></ngb-progressbar>
+
+              </td>
+              <td><img [src]="placeholder"
+                       alt="placeholder"
+                       class="align-top  py-1"
+                       height="85"></td>
+            </tr>
+
 
             </tbody>
           </table>
@@ -57,7 +82,8 @@
       <div class="card-body">
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
-            <button [ngClass]="projectWizardProgress == ProjectWizardProgress.UPLOAD
+            <button [disabled]="projectWizardProgress != ProjectWizardProgress.UPLOAD"
+                    [ngClass]="projectWizardProgress == ProjectWizardProgress.UPLOAD
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                     class="btn btn-lg btn-circle"
                     type="button">
@@ -65,7 +91,8 @@
             </button>
           </li>
           <li>
-            <button [ngClass]="projectWizardProgress == ProjectWizardProgress.PROJECT_DETAILS
+            <button (click)="projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS" [disabled]="detailsDisabled"
+                    [ngClass]="projectWizardProgress == ProjectWizardProgress.PROJECT_DETAILS
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                     class="btn btn-lg btn-circle"
                     type="button">
@@ -73,7 +100,8 @@
             </button>
           </li>
           <li>
-            <button [ngClass]="projectWizardProgress == ProjectWizardProgress.SETTINGS
+            <button (click)="projectWizardProgress = ProjectWizardProgress.SETTINGS" [disabled]="settingsDisabled"
+                    [ngClass]="projectWizardProgress == ProjectWizardProgress.SETTINGS
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                     class="btn btn-lg btn-circle"
                     type="button">
@@ -81,8 +109,8 @@
             </button>
           </li>
           <li>
-            <button [ngClass]="projectWizardProgress == ProjectWizardProgress.SUMMARY
-                      ? 'btn-outline-success' : 'btn-outline-dark'"
+            <button [disabled]="summaryDisabled" [ngClass]="projectWizardProgress == ProjectWizardProgress.SUMMARY
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
                     class="btn btn-lg btn-circle"
                     type="button">
               <fa-icon [icon]="faRectangleList"></fa-icon>
@@ -133,6 +161,7 @@
               <input [(ngModel)]="projectForm.projectName"
                      class="form-control form-control-sm"
                      id="projectName"
+                     (keyup)="validateProjectName()"
                      name="projectName"
                      placeholder="Project Name"
                      required type="text"/>
@@ -222,13 +251,13 @@
                      id="startFrame" name="startFrame"
                      pattern="^[1-9][0-9]*$" type="number">
             </div>
-            <div class="col-md-4">
+            <div *ngIf="projectForm.projectType == ProjectType.ANIMATION" class="col-md-4">
               <label for="endFrame">End Frame</label>
               <input [(ngModel)]="projectForm.projectSettings.endFrame" class="form-control form-control-sm"
                      id="endFrame" name="endFrame"
                      pattern="^[1-9][0-9]*$" type="number">
             </div>
-            <div class="col-md-4">
+            <div *ngIf="projectForm.projectType == ProjectType.ANIMATION" class="col-md-4">
               <label for="stepFrame">Step Frame</label>
               <input [(ngModel)]="projectForm.projectSettings.stepFrame" class="form-control form-control-sm"
                      id="stepFrame" name="stepFrame"
@@ -456,12 +485,13 @@
         <div *ngIf="projectWizardProgress == ProjectWizardProgress.SUMMARY">
           <div class="row py-1">
             <h4 class="text-center">Project Summary</h4>
-            <div class="col-md-6">
+            <div class="col-md-12">
+              <h6>Project</h6>
               <table class="table table-responsive">
                 <thead>
                 <tr>
-                  <th scope="col">Setting</th>
-                  <th scope="col">Value</th>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -485,14 +515,30 @@
                   <td>Start Frame</td>
                   <td>{{projectForm.projectSettings.startFrame}}</td>
                 </tr>
-                <tr>
+                <tr *ngIf="projectForm.projectType == ProjectType.ANIMATION">
                   <td>End Frame</td>
                   <td>{{projectForm.projectSettings.endFrame}}</td>
                 </tr>
-                <tr>
+                <tr *ngIf="projectForm.projectType == ProjectType.ANIMATION">
                   <td>Step Frame</td>
                   <td>{{projectForm.projectSettings.stepFrame}}</td>
                 </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="row py-1">
+            <div class="col-md-12">
+              <h6>Rendering</h6>
+              <table class="table table-responsive">
+                <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
                 <tr>
                   <td>Compute On</td>
                   <td>{{projectForm.projectSettings.computeOn}}</td>
@@ -501,18 +547,6 @@
                   <td>Rendering Engine</td>
                   <td>{{projectForm.projectSettings.blenderEngine}}</td>
                 </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="col-md-6">
-              <table class="table table-responsive">
-                <thead>
-                <tr>
-                  <th scope="col">Setting</th>
-                  <th scope="col">Value</th>
-                </tr>
-                </thead>
-                <tbody>
                 <tr>
                   <td>Samples</td>
                   <td>{{projectForm.projectSettings.samples}}</td>
@@ -527,13 +561,30 @@
                     <span>{{projectForm.projectSettings.imageSettings.resolutionY}}</span></td>
                 </tr>
                 <tr>
-                  <td>Image Scaling Percenrage</td>
+                  <td>Image Scaling Percentage</td>
                   <td>{{projectForm.projectSettings.imageSettings.resPercentage}}%</td>
                 </tr>
-                <tr>
+                <tr *ngIf="projectForm.projectType == ProjectType.ANIMATION">
                   <td>Animation Type</td>
                   <td>{{projectForm.projectSettings.animationType}}</td>
                 </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div *ngIf="projectForm.projectType == ProjectType.ANIMATION &&
+               projectForm.projectSettings.animationType == AnimationType.MOVIE"
+               class="row py-1">
+            <div class="col-md-12">
+              <h6>Video</h6>
+              <table class="table table-responsive">
+                <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
                 <tr>
                   <td>Frame Rate</td>
                   <td>{{projectForm.projectSettings.videoSettings.frameRate}}</td>
@@ -557,6 +608,7 @@
 
         </div>
 
+
       </div>
       <div class="card-footer">
         <button (click)="cancelProjectWizard()"
@@ -568,9 +620,15 @@
                 class="btn btn-outline-dark float-start">Previous
         </button>
         <button (click)="next()"
-                *ngIf="projectWizardProgress != ProjectWizardProgress.UPLOAD"
+                *ngIf="projectWizardProgress != ProjectWizardProgress.UPLOAD && projectWizardProgress != ProjectWizardProgress.SUMMARY"
+                [disabled]="nextDisabled"
                 class="btn btn-outline-primary float-end">
           Next
+        </button>
+        <button (click)="submit()"
+                *ngIf="projectWizardProgress == ProjectWizardProgress.SUMMARY"
+                class="btn btn-outline-primary float-end">
+          Submit
         </button>
       </div>
     </div>
