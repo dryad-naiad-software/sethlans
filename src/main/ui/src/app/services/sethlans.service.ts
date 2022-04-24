@@ -175,7 +175,13 @@ export class SethlansService {
     return this.http.post<ProjectForm>(this.rootURL + "/project/create_project",
       JSON.stringify(projectForm), {headers: headers, observe: "response"})
       .pipe(
-        catchError(this.handleError('submitSetup', projectForm)))
+        catchError(this.handleError('submitProject', projectForm)))
+  }
+
+  deleteProject(projectID: string): Observable<any> {
+    return this.http.delete(this.rootURL + "/project/delete_project/" + projectID)
+      .pipe(
+        catchError(this.handleError('deleteProject', projectID)))
   }
 
 }

@@ -160,4 +160,13 @@ export class ProjectsComponent implements OnInit {
 
   }
 
+  deleteProject(projectID: string) {
+    this.sethlansService.deleteProject(projectID).subscribe((response) => {
+      if (response.statusText == 'Ok') {
+        window.location.href = 'projects';
+      }
+    })
+
+  }
+
 }
