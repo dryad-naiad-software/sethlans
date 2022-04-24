@@ -232,6 +232,10 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
         queueSize = slots * 2;
 
+        if (queueSize == 0) {
+            queueSize = 1;
+        }
+
 
         if (pendingRenderQueue != null) {
             BlockingQueue<RenderTask> tempQueue = new LinkedBlockingQueue<>(queueSize);
