@@ -184,4 +184,19 @@ export class SethlansService {
         catchError(this.handleError('deleteProject', projectID)))
   }
 
+  startProject(projectID: string): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const params = new HttpParams()
+      .append('projectID', projectID)
+    return this.http.post(this.rootURL + "/project/start_project", '',
+      {
+        headers: headers,
+        params: params,
+        observe: "response"
+      })
+      .pipe(catchError(this.handleError('setNodeAPIKey', projectID)))
+  }
+
 }

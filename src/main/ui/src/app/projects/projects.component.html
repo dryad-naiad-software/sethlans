@@ -11,10 +11,6 @@
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="ms-2">New Project</span>
             </button>
-            <!--            <button class="btn btn-outline-dark float-end me-2">-->
-            <!--              <fa-icon [icon]="faDownload"></fa-icon>-->
-            <!--              <span class="ms-2">Get Logs</span>-->
-            <!--            </button>-->
           </div>
         </div>
       </div>
@@ -59,9 +55,25 @@
                        height="85"></td>
               <td>
                 <div class="btn-group-vertical">
-                  <button class="btn btn-outline-primary float-end">Start</button>
-                  <button (click)="deleteProjectModal(deleteProjectConfirm, project)"
-                          class="btn btn-outline-danger float-end">Delete
+                  <button (click)="startProject(project.projectID)"
+                          *ngIf="project.projectStatus.projectState == ProjectState.ADDED"
+                          class="btn btn-outline-primary float-end">Start
+                  </button>
+                  <button *ngIf="project.projectStatus.projectState == ProjectState.PAUSED"
+                          class="btn btn-outline-success float-end">Resume
+                  </button>
+                  <button
+                    *ngIf="project.projectStatus.projectState == ProjectState.STARTED || project.projectStatus.projectState == ProjectState.RENDERING"
+                    class="btn btn-outline-warning float-end">Pause
+                  </button>
+                  <button
+                    *ngIf="project.projectStatus.projectState != ProjectState.ADDED && project.projectStatus.projectState != ProjectState.FINISHED"
+                    class="btn btn-outline-danger float-end">Stop
+                  </button>
+                  <button
+                    (click)="deleteProjectModal(deleteProjectConfirm, project)"
+                    *ngIf="project.projectStatus.projectState == ProjectState.ADDED || project.projectStatus.projectState == ProjectState.FINISHED"
+                    class="btn btn-outline-danger float-end">Delete
                   </button>
                 </div>
 

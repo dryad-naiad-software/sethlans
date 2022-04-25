@@ -47,7 +47,7 @@ export class NodesComponent implements OnInit {
       this.sethlansAPIKey = data.api_key;
     })
     setTimeout(() => {
-      if (this.nodeWizardScreen == false)
+      if (!this.nodeWizardScreen)
         location.reload();
     }, 30000);
 

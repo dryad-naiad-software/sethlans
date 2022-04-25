@@ -15,6 +15,7 @@ import {PixelFormat} from "../enums/pixelformat.enum";
 import {VideoQuality} from "../enums/videoquality.enum";
 import {AnimationType} from "../enums/animationtype.enum";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ProjectState} from "../enums/projectstate.enum";
 
 
 @Component({
@@ -53,6 +54,7 @@ export class ProjectsComponent implements OnInit {
   projectNameError: boolean = false;
   placeholder: any = 'assets/images/placeholder.svg';
   selectedProject: ProjectView = new ProjectView();
+  ProjectState = ProjectState;
 
 
   constructor(private modalService: NgbModal, private sethlansService: SethlansService) {
@@ -63,8 +65,11 @@ export class ProjectsComponent implements OnInit {
   ngOnInit(): void {
     this.sethlansService.getProjects().subscribe((data: any) => {
       this.projectList = data;
-      console.log(this.projectList)
     })
+    setTimeout(() => {
+      if (this.projectList.length > 0 && !this.projectWizardScreen)
+        location.reload();
+    }, 30000);
   }
 
   startProjectWizard() {
@@ -162,9 +167,16 @@ export class ProjectsComponent implements OnInit {
 
   }
 
+  startProject(projectID: string) {
+    this.sethlansService.startProject(projectID).subscribe((response) => {
+      if (response.statusText == 'Accepted') {
+        window.location.href = 'projects';
+      }
+    })
+  }
+
   deleteProject(projectID: string) {
     this.sethlansService.deleteProject(projectID).subscribe((response) => {
-      console.log(response)
       if (response.statusText == 'OK') {
         this.selectedProject = new ProjectView();
         window.location.href = 'projects';
