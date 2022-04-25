@@ -14,6 +14,7 @@ import {VideoCodec} from "../enums/videocodec.enum";
 import {PixelFormat} from "../enums/pixelformat.enum";
 import {VideoQuality} from "../enums/videoquality.enum";
 import {AnimationType} from "../enums/animationtype.enum";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 
 @Component({
@@ -51,9 +52,10 @@ export class ProjectsComponent implements OnInit {
   nextDisabled: boolean = false;
   projectNameError: boolean = false;
   placeholder: any = 'assets/images/placeholder.svg';
+  selectedProject: ProjectView = new ProjectView();
 
 
-  constructor(private sethlansService: SethlansService) {
+  constructor(private modalService: NgbModal, private sethlansService: SethlansService) {
 
   }
 
@@ -162,11 +164,18 @@ export class ProjectsComponent implements OnInit {
 
   deleteProject(projectID: string) {
     this.sethlansService.deleteProject(projectID).subscribe((response) => {
-      if (response.statusText == 'Ok') {
+      console.log(response)
+      if (response.statusText == 'OK') {
+        this.selectedProject = new ProjectView();
         window.location.href = 'projects';
       }
     })
 
+  }
+
+  deleteProjectModal(content: any, project: ProjectView) {
+    this.selectedProject = project;
+    this.modalService.open(content)
   }
 
 }

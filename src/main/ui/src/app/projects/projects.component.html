@@ -60,7 +60,8 @@
               <td>
                 <div class="btn-group-vertical">
                   <button class="btn btn-outline-primary float-end">Start</button>
-                  <button (click)="deleteProject(project.projectID)" class="btn btn-outline-danger float-end">Delete
+                  <button (click)="deleteProjectModal(deleteProjectConfirm, project)"
+                          class="btn btn-outline-danger float-end">Delete
                   </button>
                 </div>
 
@@ -642,9 +643,26 @@
     </div>
   </div>
 </div>
-<div *ngIf="projectWizardScreen">
-  Debugging:
-  <pre>{{ projectForm | json }}</pre>
-</div>
+<ng-template #deleteProjectConfirm let-modal>
+  <div class="modal-header">
+    <h4 class="clearKeyConfirm" id="clearKeyConfirm">Delete Project</h4>
+    <button (click)="modal.dismiss('Cross click')" aria-label="Close" class="btn-close" type="button"></button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete the following Project?</p>
+    <p><strong>{{selectedProject.projectName}}</strong></p>
+    <button (click)="modal.close('Cancel')" class="btn btn-outline-secondary mr-auto float-start" type="button">No
+    </button>
+    <button (click)="modal.close('Save click');deleteProject(selectedProject.projectID)"
+            class="btn btn-outline-danger ml-auto float-end"
+            type="button">Yes
+    </button>
+  </div>
+
+</ng-template>
+<!--<div *ngIf="projectWizardScreen">-->
+<!--  Debugging:-->
+<!--  <pre>{{ projectForm | json }}</pre>-->
+<!--</div>-->
 
 

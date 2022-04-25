@@ -179,7 +179,7 @@ export class SethlansService {
   }
 
   deleteProject(projectID: string): Observable<any> {
-    return this.http.delete(this.rootURL + "/project/delete_project/" + projectID)
+    return this.http.delete(this.rootURL + "/project/delete_project/" + projectID, {observe: 'response'})
       .pipe(
         catchError(this.handleError('deleteProject', projectID)))
   }
