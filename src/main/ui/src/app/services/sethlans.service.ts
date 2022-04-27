@@ -199,6 +199,36 @@ export class SethlansService {
       .pipe(catchError(this.handleError('startProject', projectID)))
   }
 
+  pauseProject(projectID: string): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const params = new HttpParams()
+      .append('projectID', projectID)
+    return this.http.post(this.rootURL + "/project/pause_project", '',
+      {
+        headers: headers,
+        params: params,
+        observe: "response"
+      })
+      .pipe(catchError(this.handleError('pauseProject', projectID)))
+  }
+
+  resumeProject(projectID: string): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const params = new HttpParams()
+      .append('projectID', projectID)
+    return this.http.post(this.rootURL + "/project/resume_project", '',
+      {
+        headers: headers,
+        params: params,
+        observe: "response"
+      })
+      .pipe(catchError(this.handleError('pauseProject', projectID)))
+  }
+
   stopProject(projectID: string): Observable<any> {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',

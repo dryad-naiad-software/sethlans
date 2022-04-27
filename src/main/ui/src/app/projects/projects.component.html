@@ -66,10 +66,12 @@
                           || project.projectStatus.projectState == ProjectState.STOPPED"
                           class="btn btn-outline-primary float-end">Start
                   </button>
-                  <button *ngIf="project.projectStatus.projectState == ProjectState.PAUSED"
+                  <button (click)="resumeProject(project.projectID)"
+                          *ngIf="project.projectStatus.projectState == ProjectState.PAUSED"
                           class="btn btn-outline-success float-end">Resume
                   </button>
                   <button
+                    (click)="pauseProject(project.projectID)"
                     *ngIf="project.projectStatus.projectState == ProjectState.STARTED
                     || project.projectStatus.projectState == ProjectState.RENDERING"
                     class="btn btn-outline-warning float-end">Pause
@@ -83,10 +85,12 @@
                   </button>
 
                   <button
+                    (click)="downloadProject(project.projectID)"
                     *ngIf="project.projectStatus.projectState == ProjectState.FINISHED"
                     class="btn btn-outline-primary float-end">Download
                   </button>
                   <button
+                    (click)="downloadVideo(project.projectID)"
                     *ngIf="project.projectStatus.projectState == ProjectState.FINISHED
                     && project.projectType == ProjectType.ANIMATION
                     && project.projectSettings.animationType == AnimationType.MOVIE"

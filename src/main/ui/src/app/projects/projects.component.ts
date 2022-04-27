@@ -183,6 +183,32 @@ export class ProjectsComponent implements OnInit {
     })
   }
 
+  pauseProject(projectID: string) {
+    this.sethlansService.pauseProject(projectID).subscribe((response) => {
+      if (response.statusText == 'Accepted') {
+        window.location.href = 'projects'
+      }
+    })
+  }
+
+  resumeProject(projectID: string) {
+    this.sethlansService.resumeProject(projectID).subscribe((response) => {
+      if (response.statusText == 'Accepted') {
+        window.location.href = 'projects'
+      }
+    })
+  }
+
+
+  downloadProject(projectID: string) {
+    window.location.href = '/api/v1/project/' + projectID + '/download_images/'
+  }
+
+  downloadVideo(projectID: string) {
+    window.location.href = '/api/v1/project/' + projectID + '/download_video/'
+
+  }
+
   deleteProject(projectID: string) {
     this.sethlansService.deleteProject(projectID).subscribe((response) => {
       if (response.statusText == 'OK') {
