@@ -49,25 +49,36 @@
                                  type="success"></ngb-progressbar>
 
               </td>
-              <td><img [src]="placeholder"
-                       alt="placeholder"
-                       class="align-top  py-1"
-                       height="85"></td>
+              <td *ngIf="project.projectStatus.completedFrames < 1"><img [src]="placeholder"
+                                                                         alt="placeholder"
+                                                                         class="align-top  py-1"
+                                                                         height="85"></td>
+              <td *ngIf="project.projectStatus.completedFrames >= 1">
+                <img [src]="'/api/v1/project/' + project.projectID + '/thumbnail/'"
+                     class="align-top  py-1"
+                     height="85">
+
+              </td>
               <td>
                 <div class="btn-group-vertical">
                   <button (click)="startProject(project.projectID)"
-                          *ngIf="project.projectStatus.projectState == ProjectState.ADDED"
+                          *ngIf="project.projectStatus.projectState == ProjectState.ADDED
+                          || project.projectStatus.projectState == ProjectState.STOPPED"
                           class="btn btn-outline-primary float-end">Start
                   </button>
                   <button *ngIf="project.projectStatus.projectState == ProjectState.PAUSED"
                           class="btn btn-outline-success float-end">Resume
                   </button>
                   <button
-                    *ngIf="project.projectStatus.projectState == ProjectState.STARTED || project.projectStatus.projectState == ProjectState.RENDERING"
+                    *ngIf="project.projectStatus.projectState == ProjectState.STARTED
+                    || project.projectStatus.projectState == ProjectState.RENDERING"
                     class="btn btn-outline-warning float-end">Pause
                   </button>
                   <button
-                    *ngIf="project.projectStatus.projectState != ProjectState.ADDED && project.projectStatus.projectState != ProjectState.FINISHED"
+                    (click)="stopProject(project.projectID)"
+                    *ngIf="project.projectStatus.projectState != ProjectState.ADDED
+                    && project.projectStatus.projectState != ProjectState.FINISHED
+                    && project.projectStatus.projectState != ProjectState.STOPPED"
                     class="btn btn-outline-danger float-end">Stop
                   </button>
 
@@ -83,7 +94,9 @@
                   </button>
                   <button
                     (click)="deleteProjectModal(deleteProjectConfirm, project)"
-                    *ngIf="project.projectStatus.projectState == ProjectState.ADDED || project.projectStatus.projectState == ProjectState.FINISHED"
+                    *ngIf="project.projectStatus.projectState == ProjectState.ADDED ||
+                    project.projectStatus.projectState == ProjectState.STOPPED
+                    || project.projectStatus.projectState == ProjectState.FINISHED"
                     class="btn btn-outline-danger float-end">Delete
                   </button>
                 </div>
@@ -268,9 +281,12 @@
                       class="form-select form-select-sm pt-1"
                       id="outputFormat">
                 <option [value]="ImageOutputFormat.PNG">PNG</option>
-                <option *ngIf="projectForm.projectType == ProjectType.STILL_IMAGE" [value]="ImageOutputFormat.HDR">HDR
+                <option *ngIf="projectForm.projectType == ProjectType.STILL_IMAGE
+                || projectForm.projectSettings.animationType == AnimationType.IMAGES" [value]="ImageOutputFormat.HDR">
+                  HDR
                 </option>
-                <option *ngIf="projectForm.projectType == ProjectType.STILL_IMAGE" [value]="ImageOutputFormat.TIFF">
+                <option *ngIf="projectForm.projectType == ProjectType.STILL_IMAGE
+                 || projectForm.projectSettings.animationType == AnimationType.IMAGES" [value]="ImageOutputFormat.TIFF">
                   TIFF
                 </option>
               </select>

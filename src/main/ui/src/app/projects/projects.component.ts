@@ -175,6 +175,14 @@ export class ProjectsComponent implements OnInit {
     })
   }
 
+  stopProject(projectID: string) {
+    this.sethlansService.stopProject(projectID).subscribe((response) => {
+      if (response.statusText == 'Accepted') {
+        window.location.href = 'projects'
+      }
+    })
+  }
+
   deleteProject(projectID: string) {
     this.sethlansService.deleteProject(projectID).subscribe((response) => {
       if (response.statusText == 'OK') {

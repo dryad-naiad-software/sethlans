@@ -26,7 +26,10 @@ import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.ImageUtils;
 import com.google.common.base.Throwables;
+import io.restassured.internal.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -40,10 +43,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +73,27 @@ public class ProjectQueryController {
         this.projectToProjectView = projectToProjectView;
         this.userRepository = userRepository;
     }
+
+    @GetMapping("/{id}/thumbnail")
+    public ResponseEntity<byte[]> getFrameThumbnail(@PathVariable String id) {
+        if (projectRepository.getProjectByProjectID(id).isPresent()) {
+            var project = projectRepository.getProjectByProjectID(id).get();
+            log.info(project.toString());
+            if (project.getProjectStatus().getCompletedFrames() >= 1) {
+                var projectDir = project.getProjectRootDir();
+                var thumbsDir = projectDir + File.separator + "thumbnails";
+                var image = getLatestThumbnail(thumbsDir);
+                log.info(image.toString());
+                return sendImage(image);
+
+
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
+
 
     @GetMapping("/nodes_ready")
     public boolean nodesReady() {
@@ -193,5 +216,34 @@ public class ProjectQueryController {
 
         return ImageUtils.getFrameList(project);
 
+    }
+
+    private ResponseEntity<byte[]> sendImage(File image) {
+        try {
+            var in = new BufferedInputStream(new FileInputStream(image));
+            byte[] imageToSend = IOUtils.toByteArray(in);
+            in.close();
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
+
+        } catch (IOException e) {
+            log.error("No Image file found");
+            return null;
+        }
+    }
+
+    public File getLatestThumbnail(String filePath) {
+        File latestThumbnail = null;
+        File dir = new File(filePath);
+        FileFilter fileFilter = new WildcardFileFilter("*.png");
+        File[] files = dir.listFiles(fileFilter);
+
+        assert files != null;
+        if (files.length > 0) {
+            /** The newest file comes first **/
+            Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+            latestThumbnail = files[0];
+        }
+
+        return latestThumbnail;
     }
 }
