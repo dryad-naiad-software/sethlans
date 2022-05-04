@@ -16,54 +16,65 @@
       </div>
       <div class="card-body">
         <div class="col-md-12 m-auto">
-          <table class="table table-responsive-md">
-            <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Type</th>
-              <th scope="col">Compute</th>
-              <th scope="col">File Format</th>
-              <th scope="col">Status</th>
-              <th scope="col">Render Progress</th>
-              <th scope="col">Preview</th>
-              <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let project of projectList">
-              <td>{{project.projectName}}</td>
-              <td>{{project.projectType}}</td>
-              <td>{{project.projectSettings.computeOn}}</td>
-              <td
-                *ngIf="project.projectType == ProjectType.STILL_IMAGE">{{project.projectSettings.imageSettings.imageOutputFormat}}</td>
-              <td *ngIf="project.projectType == ProjectType.ANIMATION">
+          <table [dataSource]="projectDataSource" cdk-table class="table table-responsive-md">
+            <ng-container cdkColumnDef="projectName">
+              <th *cdkHeaderCellDef cdk-header-cell>Name</th>
+              <td *cdkCellDef="let project" cdk-cell>{{project.projectName}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="projectType">
+              <th *cdkHeaderCellDef cdk-header-cell>Type</th>
+              <td *cdkCellDef="let project" cdk-cell>{{project.projectType}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="computeOn">
+              <th *cdkHeaderCellDef cdk-header-cell>Compute</th>
+              <td *cdkCellDef="let project" cdk-cell>{{project.projectSettings.computeOn}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="fileFormat">
+              <th *cdkHeaderCellDef cdk-header-cell>File Format</th>
+              <td *cdkCellDef="let project" cdk-cell>
                 <span
-                  *ngIf="project.projectSettings.animationType == AnimationType.IMAGES">{{project.projectSettings.imageSettings.imageOutputFormat}} </span>
-                <span
-                  *ngIf="project.projectSettings.animationType == AnimationType.MOVIE">{{project.projectSettings.videoSettings.videoOutputFormat}}</span>
+                  *ngIf="project.projectType == ProjectType.STILL_IMAGE">{{project.projectSettings.imageSettings.imageOutputFormat}}</span>
+                <span *ngIf="project.projectType == ProjectType.ANIMATION
+                && project.projectSettings.animationType == AnimationType.IMAGES">{{project.projectSettings.imageSettings.imageOutputFormat}}</span>
+                <span *ngIf="project.projectType == ProjectType.ANIMATION
+                && project.projectSettings.animationType == AnimationType.MOVIE">{{project.projectSettings.videoSettings.videoOutputFormat}}</span>
               </td>
-              <td>{{project.projectStatus.projectState}}</td>
-              <td>
+            </ng-container>
+            <ng-container cdkColumnDef="status">
+              <th *cdkHeaderCellDef cdk-header-cell>Status</th>
+              <td *cdkCellDef="let project" cdk-cell>{{project.projectStatus.projectState}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="progress">
+              <th *cdkHeaderCellDef cdk-header-cell>Render Progress</th>
+              <td *cdkCellDef="let project" cdk-cell>
                 <ngb-progressbar [max]="100" [showValue]="true"
                                  [value]="project.projectStatus.currentPercentage"
                                  type="success"></ngb-progressbar>
-
               </td>
-              <td *ngIf="project.projectStatus.completedFrames < 1"><img [src]="placeholder"
-                                                                         alt="placeholder"
-                                                                         class="align-top  py-1"
-                                                                         height="85"></td>
-              <td *ngIf="project.projectStatus.completedFrames >= 1">
-                <img [src]="'/api/v1/project/' + project.projectID + '/thumbnail/'"
+            </ng-container>
+            <ng-container cdkColumnDef="preview">
+              <th *cdkHeaderCellDef cdk-header-cell>Preview</th>
+
+              <td *cdkCellDef="let project" cdk-cell>
+                <img *ngIf="project.projectStatus.completedFrames < 1"
+                     [src]="placeholder"
+                     alt="placeholder"
                      class="align-top  py-1"
-                     height="85">
+                     height="85"/>
+                <img *ngIf="project.projectStatus.completedFrames >= 1"
+                     [src]="'/api/v1/project/' + project.projectID + '/thumbnail/'"
+                     class="align-top  py-1"
+                     height="85"/>
 
               </td>
-              <td>
+            </ng-container>
+            <ng-container cdkColumnDef="action">
+              <th *cdkHeaderCellDef cdk-header-cell></th>
+              <td *cdkCellDef="let project" cdk-cell>
                 <div class="btn-group-vertical">
                   <button (click)="startProject(project.projectID)"
                           *ngIf="project.projectStatus.projectState == ProjectState.ADDED
-                          || project.projectStatus.projectState == ProjectState.STOPPED"
+                                          || project.projectStatus.projectState == ProjectState.STOPPED"
                           class="btn btn-outline-primary float-end">Start
                   </button>
                   <button (click)="resumeProject(project.projectID)"
@@ -73,14 +84,14 @@
                   <button
                     (click)="pauseProject(project.projectID)"
                     *ngIf="project.projectStatus.projectState == ProjectState.STARTED
-                    || project.projectStatus.projectState == ProjectState.RENDERING"
+                                    || project.projectStatus.projectState == ProjectState.RENDERING"
                     class="btn btn-outline-warning float-end">Pause
                   </button>
                   <button
                     (click)="stopProject(project.projectID)"
                     *ngIf="project.projectStatus.projectState != ProjectState.ADDED
-                    && project.projectStatus.projectState != ProjectState.FINISHED
-                    && project.projectStatus.projectState != ProjectState.STOPPED"
+                                    && project.projectStatus.projectState != ProjectState.FINISHED
+                                    && project.projectStatus.projectState != ProjectState.STOPPED"
                     class="btn btn-outline-danger float-end">Stop
                   </button>
 
@@ -92,25 +103,26 @@
                   <button
                     (click)="downloadVideo(project.projectID)"
                     *ngIf="project.projectStatus.projectState == ProjectState.FINISHED
-                    && project.projectType == ProjectType.ANIMATION
-                    && project.projectSettings.animationType == AnimationType.MOVIE"
+                                    && project.projectType == ProjectType.ANIMATION
+                                    && project.projectSettings.animationType == AnimationType.MOVIE"
                     class="btn btn-outline-primary float-end">Video
                   </button>
                   <button
                     (click)="deleteProjectModal(deleteProjectConfirm, project)"
                     *ngIf="project.projectStatus.projectState == ProjectState.ADDED ||
-                    project.projectStatus.projectState == ProjectState.STOPPED
-                    || project.projectStatus.projectState == ProjectState.FINISHED"
+                                    project.projectStatus.projectState == ProjectState.STOPPED
+                                    || project.projectStatus.projectState == ProjectState.FINISHED"
                     class="btn btn-outline-danger float-end">Delete
                   </button>
                 </div>
 
               </td>
-            </tr>
-
-
-            </tbody>
+            </ng-container>
+            <!-- Header and Row Declarations -->
+            <tr *cdkHeaderRowDef="projectDisplayedColumns.value" cdk-header-row></tr>
+            <tr *cdkRowDef="let row; columns: projectDisplayedColumns.value" cdk-row></tr>
           </table>
+
         </div>
 
       </div>

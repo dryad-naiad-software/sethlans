@@ -20,46 +20,63 @@
       </div>
       <div class="card-body">
         <div class="col-md-12 m-auto">
-          <table class="table table-responsive-md">
-            <thead>
-            <tr>
-              <th scope="col">Status</th>
-              <th scope="col">Hostname</th>
-              <th scope="col">IP Address</th>
-              <th scope="col">Port</th>
-              <th scope="col">OS</th>
-              <th scope="col">Compute</th>
-              <th scope="col">CPU</th>
-              <th scope="col">Core(s)</th>
-              <th scope="col">GPU(s)</th>
-              <th scope="col">Slots</th>
-              <th scope="col">Benchmark State</th>
-              <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <p *ngIf="nodeList.length == 0">No Nodes Configured</p>
-            <tr *ngFor="let node of nodeList">
-              <td>
+          <table [dataSource]="nodeDataSource" cdk-table class="table table-responsive-md">
+            <ng-container cdkColumnDef="status">
+              <th *cdkHeaderCellDef cdk-header-cell>Status</th>
+              <td *cdkCellDef="let node" cdk-cell>
                 <span *ngIf="node.active" class="text-success">Active</span>
                 <span *ngIf="node.active == false" class="text-warning">Paused</span>
               </td>
-              <td>{{node.hostname}}</td>
-              <td>{{node.ipAddress}}</td>
-              <td>{{node.networkPort}}</td>
-              <td>{{node.os}}</td>
-              <td>{{node.nodeType}}</td>
-              <td>{{node.cpu.name}}</td>
-              <td>{{node.selectedCores}}</td>
-              <td><span *ngFor="let gpu of node.selectedGPUs">{{gpu.model}}<br/></span></td>
-              <td>{{node.totalRenderingSlots}}</td>
-              <td>
+            </ng-container>
+            <ng-container cdkColumnDef="hostname">
+              <th *cdkHeaderCellDef cdk-header-cell>Hostname</th>
+              <td *cdkCellDef="let node" cdk-cell>{{node.hostname}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="ipAddress">
+              <th *cdkHeaderCellDef cdk-header-cell>IP Address</th>
+              <td *cdkCellDef="let node" cdk-cell>{{node.ipAddress}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="port">
+              <th *cdkHeaderCellDef cdk-header-cell>Port</th>
+              <td *cdkCellDef="let node" cdk-cell>{{node.networkPort}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="os">
+              <th *cdkHeaderCellDef cdk-header-cell>OS</th>
+              <td *cdkCellDef="let node" cdk-cell>{{node.os}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="compute">
+              <th *cdkHeaderCellDef cdk-header-cell>Compute</th>
+              <td *cdkCellDef="let node" cdk-cell>{{node.nodeType}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="cpu">
+              <th *cdkHeaderCellDef cdk-header-cell>CPU</th>
+              <td *cdkCellDef="let node" cdk-cell>{{node.cpu.name}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="cores">
+              <th *cdkHeaderCellDef cdk-header-cell>Core(s)</th>
+              <td *cdkCellDef="let node" cdk-cell>{{node.selectedCores}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="gpus">
+              <th *cdkHeaderCellDef cdk-header-cell>GPU(s)</th>
+              <td *cdkCellDef="let node" cdk-cell>
+                <span *ngFor="let gpu of node.selectedGPUs">{{gpu.model}}<br/></span>
+              </td>
+            </ng-container>
+            <ng-container cdkColumnDef="slots">
+              <th *cdkHeaderCellDef cdk-header-cell>Slots</th>
+              <td *cdkCellDef="let node" cdk-cell>{{node.totalRenderingSlots}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="benchmarkStatus">
+              <th *cdkHeaderCellDef cdk-header-cell>Benchmark State</th>
+              <td *cdkCellDef="let node" cdk-cell>
                 <span *ngIf="!node.benchmarkPending && !node.benchmarkComplete" class="text-warning">Waiting</span>
                 <span *ngIf="node.benchmarkPending" class="text-info">In Progress</span>
                 <span *ngIf="node.benchmarkComplete" class="text-success">Complete</span>
-
               </td>
-              <td>
+            </ng-container>
+            <ng-container cdkColumnDef="actions">
+              <th *cdkHeaderCellDef cdk-header-cell></th>
+              <td *cdkCellDef="let node" cdk-cell>
                 <div class="btn-group-vertical">
                   <button *ngIf="!node.active" class="btn btn-outline-success btn-sm"
                           type="button">
@@ -74,8 +91,10 @@
                   </button>
                 </div>
               </td>
-            </tr>
-            </tbody>
+            </ng-container>
+            <!-- Header and Row Declarations -->
+            <tr *cdkHeaderRowDef="nodeDisplayedColumns.value" cdk-header-row></tr>
+            <tr *cdkRowDef="let row; columns: nodeDisplayedColumns.value" cdk-row></tr>
           </table>
         </div>
       </div>

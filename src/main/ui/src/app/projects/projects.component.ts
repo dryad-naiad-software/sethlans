@@ -16,6 +16,7 @@ import {VideoQuality} from "../enums/videoquality.enum";
 import {AnimationType} from "../enums/animationtype.enum";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ProjectState} from "../enums/projectstate.enum";
+import {BehaviorSubject} from "rxjs";
 
 
 @Component({
@@ -24,7 +25,6 @@ import {ProjectState} from "../enums/projectstate.enum";
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
-  projectList: Array<ProjectView> = []
   faPlus = faPlus;
   faUpload = faUpload;
   faPuzzlePiece = faPuzzlePiece;
@@ -55,6 +55,17 @@ export class ProjectsComponent implements OnInit {
   placeholder: any = 'assets/images/placeholder.svg';
   selectedProject: ProjectView = new ProjectView();
   ProjectState = ProjectState;
+  projectDataSource = new BehaviorSubject<any[]>([]);
+  projectDisplayedColumns = new BehaviorSubject<string[]>([
+    'projectName',
+    'projectType',
+    'computeOn',
+    'fileFormat',
+    'status',
+    'progress',
+    'preview',
+    'action'
+  ]);
 
 
   constructor(private modalService: NgbModal, private sethlansService: SethlansService) {
@@ -63,12 +74,15 @@ export class ProjectsComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.getProjects()
+  }
+
+  getProjects() {
     this.sethlansService.getProjects().subscribe((data: any) => {
-      this.projectList = data;
+      this.projectDataSource = new BehaviorSubject<any[]>(data);
     })
     setTimeout(() => {
-      if (this.projectList.length > 0 && !this.projectWizardScreen)
-        location.reload();
+      this.getProjects()
     }, 30000);
   }
 

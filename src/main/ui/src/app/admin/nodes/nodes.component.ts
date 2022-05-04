@@ -7,6 +7,7 @@ import {NodeWizardProgress} from "../../enums/nodewizardprogress.enum";
 import {NodeWizardType} from "../../enums/nodewizardtype.enum";
 import {NodeForm} from "../../models/forms/node-form.model";
 import {Clipboard} from "@angular/cdk/clipboard";
+import {BehaviorSubject} from "rxjs";
 
 
 @Component({
@@ -21,7 +22,6 @@ export class NodesComponent implements OnInit {
   faFlagCheckered = faFlagCheckered;
   faClipboard = faClipboard;
   faRectangleList = faRectangleList;
-  nodeList = new Array<Node>();
   nodeWizardScreen = false;
   nodeWizardProgress: NodeWizardProgress = NodeWizardProgress.START;
   NodeWizardProgress = NodeWizardProgress;
@@ -34,23 +34,41 @@ export class NodesComponent implements OnInit {
   selectedNodeList = new Array<Node>();
   nextDisabled: boolean = false;
   submitDisabled: boolean = false;
+  nodeDataSource = new BehaviorSubject<any[]>([]);
+  nodeDisplayedColumns = new BehaviorSubject<string[]>([
+    'status',
+    'hostname',
+    'ipAddress',
+    'port',
+    'os',
+    'compute',
+    'cpu',
+    'cores',
+    'gpus',
+    'slots',
+    'benchmarkStatus',
+    'actions'
+  ]);
 
 
   constructor(private sethlansService: SethlansService, private clipboard: Clipboard) {
   }
 
   ngOnInit(): void {
-    this.sethlansService.getCurrentNodeList().subscribe((data: any) => {
-      this.nodeList = data;
-    })
+    this.getCurrentNodes()
     this.sethlansService.getServerAPIKey().subscribe((data: any) => {
       this.sethlansAPIKey = data.api_key;
     })
-    setTimeout(() => {
-      if (!this.nodeWizardScreen)
-        location.reload();
-    }, 30000);
 
+  }
+
+  getCurrentNodes() {
+    this.sethlansService.getCurrentNodeList().subscribe((data: any) => {
+      this.nodeDataSource = new BehaviorSubject<any[]>(data);
+    })
+    setTimeout(() => {
+      this.getCurrentNodes();
+    }, 30000);
   }
 
   getNetworkNodeList() {
