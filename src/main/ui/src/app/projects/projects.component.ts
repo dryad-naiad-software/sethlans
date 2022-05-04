@@ -74,7 +74,7 @@ export class ProjectsComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getProjects()
+    this.getProjects();
   }
 
   getProjects() {
@@ -184,7 +184,7 @@ export class ProjectsComponent implements OnInit {
   startProject(projectID: string) {
     this.sethlansService.startProject(projectID).subscribe((response) => {
       if (response.statusText == 'Accepted') {
-        window.location.href = 'projects';
+        this.getProjects();
       }
     })
   }
@@ -192,7 +192,7 @@ export class ProjectsComponent implements OnInit {
   stopProject(projectID: string) {
     this.sethlansService.stopProject(projectID).subscribe((response) => {
       if (response.statusText == 'Accepted') {
-        window.location.href = 'projects'
+        this.getProjects();
       }
     })
   }
@@ -200,7 +200,7 @@ export class ProjectsComponent implements OnInit {
   pauseProject(projectID: string) {
     this.sethlansService.pauseProject(projectID).subscribe((response) => {
       if (response.statusText == 'Accepted') {
-        window.location.href = 'projects'
+        this.getProjects();
       }
     })
   }
@@ -208,7 +208,7 @@ export class ProjectsComponent implements OnInit {
   resumeProject(projectID: string) {
     this.sethlansService.resumeProject(projectID).subscribe((response) => {
       if (response.statusText == 'Accepted') {
-        window.location.href = 'projects'
+        this.getProjects();
       }
     })
   }
@@ -227,7 +227,7 @@ export class ProjectsComponent implements OnInit {
     this.sethlansService.deleteProject(projectID).subscribe((response) => {
       if (response.statusText == 'OK') {
         this.selectedProject = new ProjectView();
-        window.location.href = 'projects';
+        this.getProjects();
       }
     })
 

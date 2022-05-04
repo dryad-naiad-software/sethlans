@@ -68,7 +68,7 @@ export class NodesComponent implements OnInit {
     })
     setTimeout(() => {
       this.getCurrentNodes();
-    }, 30000);
+    }, 15000);
   }
 
   getNetworkNodeList() {
