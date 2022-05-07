@@ -41,6 +41,7 @@ import {ComputeSettingsComponent} from './admin/compute-settings/compute-setting
 import {ProjectsComponent} from './projects/projects.component';
 import {FileUploadModule} from "primeng/fileupload";
 import {CdkTableModule} from "@angular/cdk/table";
+import {ProjectDetailsComponent} from './projects/project-details/project-details.component';
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -62,7 +63,8 @@ import {CdkTableModule} from "@angular/cdk/table";
     NodesComponent,
     AuthorizedServerComponent,
     ComputeSettingsComponent,
-    ProjectsComponent],
+    ProjectsComponent,
+    ProjectDetailsComponent],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, NgbModule, CdkTableModule,
     FontAwesomeModule, FormsModule, BrowserAnimationsModule, FileUploadModule,

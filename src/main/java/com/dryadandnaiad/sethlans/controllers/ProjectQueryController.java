@@ -78,7 +78,6 @@ public class ProjectQueryController {
     public ResponseEntity<byte[]> getFrameThumbnail(@PathVariable String id) {
         if (projectRepository.getProjectByProjectID(id).isPresent()) {
             var project = projectRepository.getProjectByProjectID(id).get();
-            log.info(project.toString());
             if (project.getProjectStatus().getCompletedFrames() >= 1) {
                 var projectDir = project.getProjectRootDir();
                 var thumbsDir = projectDir + File.separator + "thumbnails";

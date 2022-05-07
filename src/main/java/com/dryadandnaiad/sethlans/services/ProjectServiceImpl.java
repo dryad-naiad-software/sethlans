@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.services;
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.comparators.AlphaNumericComparator;
 import com.dryadandnaiad.sethlans.converters.ProjectFormToProject;
+import com.dryadandnaiad.sethlans.converters.ProjectToProjectForm;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
@@ -66,18 +67,20 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
     private final BlenderArchiveRepository blenderArchiveRepository;
     private final ProjectFormToProject projectFormToProject;
+    private final ProjectToProjectForm projectToProjectForm;
     private final ServerQueueService serverQueueService;
     private final NodeRepository nodeRepository;
     private final NotificationRepository notificationRepository;
 
     public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository,
                               BlenderArchiveRepository blenderArchiveRepository,
-                              ProjectFormToProject projectFormToProject, ServerQueueService serverQueueService,
+                              ProjectFormToProject projectFormToProject, ProjectToProjectForm projectToProjectForm, ServerQueueService serverQueueService,
                               NodeRepository nodeRepository, NotificationRepository notificationRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.blenderArchiveRepository = blenderArchiveRepository;
         this.projectFormToProject = projectFormToProject;
+        this.projectToProjectForm = projectToProjectForm;
         this.serverQueueService = serverQueueService;
         this.nodeRepository = nodeRepository;
         this.notificationRepository = notificationRepository;
@@ -476,6 +479,20 @@ public class ProjectServiceImpl implements ProjectService {
             e.printStackTrace();
         }
         return true;
+    }
+
+    @Override
+    public ResponseEntity<ProjectForm> editProjectForm(String projectID) {
+        if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
+            var project = projectRepository.getProjectByProjectID(projectID).get();
+            var user = project.getUser();
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth.getAuthorities().toString().contains("ADMINISTRATOR")
+                    || user.getUsername().equals(auth.getName())) {
+                return new ResponseEntity<>(projectToProjectForm.convert(project), HttpStatus.ACCEPTED);
+            }
+        }
+        return null;
     }
 
     @Override

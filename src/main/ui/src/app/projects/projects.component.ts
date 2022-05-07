@@ -1,7 +1,23 @@
 import {Component, OnInit} from '@angular/core';
 import {SethlansService} from "../services/sethlans.service";
 import {ProjectView} from "../models/project/projectview.model";
-import {faGear, faPlus, faPuzzlePiece, faRectangleList, faUpload} from "@fortawesome/free-solid-svg-icons";
+import {
+  faCog,
+  faEdit,
+  faFilm,
+  faForwardStep,
+  faGear,
+  faImages,
+  faPause,
+  faPlay,
+  faPlus,
+  faPuzzlePiece,
+  faRectangleList,
+  faSearchPlus,
+  faStop,
+  faTrashAlt,
+  faUpload
+} from "@fortawesome/free-solid-svg-icons";
 import {ProjectWizardProgress} from "../enums/projectwizardprogress.enum";
 import {ProjectForm} from "../models/forms/project-form.model";
 import {ProjectType} from "../enums/projectype.enum";
@@ -25,10 +41,20 @@ import {BehaviorSubject} from "rxjs";
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
+  faStop = faStop;
+  faTrashAlt = faTrashAlt;
+  faEdit = faEdit;
   faPlus = faPlus;
   faUpload = faUpload;
   faPuzzlePiece = faPuzzlePiece;
+  faFilm = faFilm;
   faGear = faGear;
+  faCog = faCog;
+  faPlay = faPlay;
+  faPause = faPause;
+  faImages = faImages;
+  faSearchPlus = faSearchPlus;
+  faForwardStep = faForwardStep;
   faRectangleList = faRectangleList;
   projectWizardScreen: boolean = false;
   projectWizardProgress: ProjectWizardProgress = ProjectWizardProgress.UPLOAD;
@@ -45,6 +71,7 @@ export class ProjectsComponent implements OnInit {
   PixelFormat = PixelFormat;
   VideoQuality = VideoQuality;
   AnimationType = AnimationType;
+  editProject = false;
   projectNameRegEx = new RegExp('.{4,}')
   detailsDisabled = true;
   settingsDisabled = true;
@@ -236,6 +263,13 @@ export class ProjectsComponent implements OnInit {
   deleteProjectModal(content: any, project: ProjectView) {
     this.selectedProject = project;
     this.modalService.open(content)
+  }
+
+  editProjectWizard(projectID: string) {
+    this.editProject = true;
+    this.projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS;
+    this.projectWizardScreen = true;
+
   }
 
 }

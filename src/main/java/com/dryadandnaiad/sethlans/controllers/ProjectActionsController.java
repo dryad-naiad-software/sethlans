@@ -64,6 +64,11 @@ public class ProjectActionsController {
         return projectService.projectFileUpload(projectFile);
     }
 
+    @GetMapping("/edit_project_form")
+    public ResponseEntity<ProjectForm> editProjectForm(@RequestParam String projectID) {
+        return projectService.editProjectForm(projectID);
+    }
+
     @PostMapping("/create_project")
     public ResponseEntity<Void> createProject(@RequestBody ProjectForm projectForm) {
         if (projectService.createProject(projectForm)) {

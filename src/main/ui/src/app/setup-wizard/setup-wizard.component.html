@@ -529,6 +529,10 @@
         </div>
         <!--Summary Page-->
         <div *ngIf="setupWizardProgress == SetupWizardProgress.SUMMARY" class="row">
+          <div *ngIf="finishClicked" class="alert alert-info text-center" role="alert">
+            <span>Waiting for Setup to Complete</span>
+            <div aria-hidden="true" class="ms-2 spinner-border spinner-border-sm text-center" role="status"></div>
+          </div>
           <div class="col-md-6">
             <table class="table table-striped">
               <thead>

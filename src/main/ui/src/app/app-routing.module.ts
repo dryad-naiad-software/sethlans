@@ -24,6 +24,7 @@ import {NodesComponent} from "./admin/nodes/nodes.component";
 import {AuthorizedServerComponent} from "./admin/authorized-server/authorized-server.component";
 import {ComputeSettingsComponent} from "./admin/compute-settings/compute-settings.component";
 import {ProjectsComponent} from "./projects/projects.component";
+import {ProjectDetailsComponent} from "./projects/project-details/project-details.component";
 
 
 const routes: Routes = [
@@ -32,7 +33,8 @@ const routes: Routes = [
   {path: 'admin/nodes', component: NodesComponent},
   {path: 'admin/server', component: AuthorizedServerComponent},
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},
-  {path: 'projects', component: ProjectsComponent}
+  {path: 'projects', component: ProjectsComponent},
+  {path: 'projects/details/:id', component: ProjectDetailsComponent}
 
 ];
 

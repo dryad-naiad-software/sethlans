@@ -71,49 +71,89 @@
             <ng-container cdkColumnDef="action">
               <th *cdkHeaderCellDef cdk-header-cell></th>
               <td *cdkCellDef="let project" cdk-cell>
-                <div class="btn-group-vertical">
-                  <button (click)="startProject(project.projectID)"
-                          *ngIf="project.projectStatus.projectState == ProjectState.ADDED
+                <div class="btn-group-adjust">
+                  <div class="btn-group btn-group-sm pt-1 pb-5">
+                    <button (click)="startProject(project.projectID)"
+                            *ngIf="project.projectStatus.projectState == ProjectState.ADDED
                                           || project.projectStatus.projectState == ProjectState.STOPPED"
-                          class="btn btn-outline-primary float-end">Start
-                  </button>
-                  <button (click)="resumeProject(project.projectID)"
-                          *ngIf="project.projectStatus.projectState == ProjectState.PAUSED"
-                          class="btn btn-outline-success float-end">Resume
-                  </button>
-                  <button
-                    (click)="pauseProject(project.projectID)"
-                    *ngIf="project.projectStatus.projectState == ProjectState.STARTED
+                            class="btn btn-outline-success btn-sm btn-block"
+                            ngbTooltip="Start" placement="bottom"
+                            type="button">
+                      <fa-icon [icon]="faPlay"></fa-icon>
+                    </button>
+                    <button (click)="resumeProject(project.projectID)"
+                            *ngIf="project.projectStatus.projectState == ProjectState.PAUSED"
+                            class="btn btn-outline-success btn-sm btn-block"
+                            ngbTooltip="Resume" placement="bottom"
+                            type="button">
+                      <fa-icon [icon]="faForwardStep"></fa-icon>
+                    </button>
+                    <button (click)="pauseProject(project.projectID)"
+                            *ngIf="project.projectStatus.projectState == ProjectState.STARTED
                                     || project.projectStatus.projectState == ProjectState.RENDERING"
-                    class="btn btn-outline-warning float-end">Pause
-                  </button>
-                  <button
-                    (click)="stopProject(project.projectID)"
-                    *ngIf="project.projectStatus.projectState != ProjectState.ADDED
-                                    && project.projectStatus.projectState != ProjectState.FINISHED
-                                    && project.projectStatus.projectState != ProjectState.STOPPED"
-                    class="btn btn-outline-danger float-end">Stop
-                  </button>
-
-                  <button
-                    (click)="downloadProject(project.projectID)"
-                    *ngIf="project.projectStatus.projectState == ProjectState.FINISHED"
-                    class="btn btn-outline-primary float-end">Download
-                  </button>
-                  <button
-                    (click)="downloadVideo(project.projectID)"
-                    *ngIf="project.projectStatus.projectState == ProjectState.FINISHED
+                            class="btn btn-outline-warning btn-sm"
+                            ngbTooltip="Pause" placement="bottom" type="button">
+                      <fa-icon [icon]="faPause"></fa-icon>
+                    </button>
+                    <button class="btn btn-outline-dark btn-sm"
+                            ngbTooltip="Details"
+                            placement="bottom" type="button">
+                      <fa-icon [icon]="faSearchPlus"></fa-icon>
+                    </button>
+                    <button (click)="downloadProject(project.projectID)"
+                            *ngIf="project.projectStatus.projectState == ProjectState.FINISHED"
+                            class="btn btn-outline-dark btn-sm"
+                            ngbTooltip="Download Image(s)"
+                            placement="bottom" type="button">
+                      <fa-icon [icon]="faImages"></fa-icon>
+                    </button>
+                    <button (click)="downloadVideo(project.projectID)"
+                            *ngIf="project.projectStatus.projectState == ProjectState.FINISHED
                                     && project.projectType == ProjectType.ANIMATION
                                     && project.projectSettings.animationType == AnimationType.MOVIE"
-                    class="btn btn-outline-primary float-end">Video
-                  </button>
-                  <button
-                    (click)="deleteProjectModal(deleteProjectConfirm, project)"
-                    *ngIf="project.projectStatus.projectState == ProjectState.ADDED ||
+                            class="btn btn-outline-dark btn-sm"
+                            ngbTooltip="Download Video"
+                            placement="bottom" type="button">
+                      <fa-icon [icon]="faFilm"></fa-icon>
+                    </button>
+                    <button *ngIf="project.projectStatus.projectState == ProjectState.FINISHED
+                                    && project.projectType == ProjectType.ANIMATION
+                                    && project.projectSettings.animationType == AnimationType.MOVIE"
+                            class="btn btn-outline-dark btn-sm"
+                            ngbTooltip="Video Settings"
+                            placement="bottom" type="button">
+                      <fa-icon [icon]="faCog"></fa-icon>
+                    </button>
+                    <button (click)="editProjectWizard(project.projectID)"
+                            *ngIf="project.projectStatus.projectState == ProjectState.ADDED
+                                    || project.projectStatus.projectState == ProjectState.STOPPED"
+                            class="btn btn-outline-dark btn-sm"
+                            ngbTooltip="Edit"
+                            placement="bottom" type="button">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <button (click)="deleteProjectModal(deleteProjectConfirm, project)"
+                            *ngIf="project.projectStatus.projectState == ProjectState.ADDED ||
                                     project.projectStatus.projectState == ProjectState.STOPPED
                                     || project.projectStatus.projectState == ProjectState.FINISHED"
-                    class="btn btn-outline-danger float-end">Delete
-                  </button>
+                            class="btn btn-outline-danger btn-sm" ngbTooltip="Delete"
+                            placement="bottom"
+                            type="button">
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>
+                    <button
+                      (click)="stopProject(project.projectID)"
+                      *ngIf="project.projectStatus.projectState != ProjectState.ADDED
+                                    && project.projectStatus.projectState != ProjectState.FINISHED
+                                    && project.projectStatus.projectState != ProjectState.STOPPED"
+                      class="btn btn-outline-danger btn-sm"
+                      ngbTooltip="Stop"
+                      placement="bottom" type="button">
+                      <fa-icon [icon]="faStop"></fa-icon>
+
+                    </button>
+
+                  </div>
                 </div>
 
               </td>
@@ -136,13 +176,14 @@
       <div class="card-header">
         <div class="row">
           <div class="col-md-8">
-            <h4 style="font-family: 'Fjalla One', sans-serif">Create Project Wizard</h4>
+            <h4 *ngIf="!editProject" style="font-family: 'Fjalla One', sans-serif">Create Project Wizard</h4>
+            <h4 *ngIf="editProject" style="font-family: 'Fjalla One', sans-serif">Edit Project Wizard</h4>
           </div>
         </div>
       </div>
       <div class="card-body">
         <ul class="nav nav-tabs justify-content-between pb-3">
-          <li>
+          <li *ngIf="!editProject">
             <button [disabled]="projectWizardProgress != ProjectWizardProgress.UPLOAD"
                     [ngClass]="projectWizardProgress == ProjectWizardProgress.UPLOAD
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
