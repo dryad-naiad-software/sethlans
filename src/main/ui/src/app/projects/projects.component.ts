@@ -181,11 +181,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   submit() {
-    if (this.projectForm.projectType == ProjectType.STILL_IMAGE) {
-      this.projectForm.projectSettings.stepFrame = 1
-      this.projectForm.projectSettings.endFrame = this.projectForm.projectSettings.startFrame;
-      this.projectForm.projectSettings.animationType = AnimationType.IMAGES;
-    }
+    this.projectTypeStillImage();
     this.submitDisabled = true;
     this.sethlansService.submitProject(this.projectForm).subscribe((response) => {
       if (response.statusText == "Created") {
@@ -193,7 +189,14 @@ export class ProjectsComponent implements OnInit {
       }
 
     });
+  }
 
+  projectTypeStillImage() {
+    if (this.projectForm.projectType == ProjectType.STILL_IMAGE) {
+      this.projectForm.projectSettings.stepFrame = 1
+      this.projectForm.projectSettings.endFrame = this.projectForm.projectSettings.startFrame;
+      this.projectForm.projectSettings.animationType = AnimationType.IMAGES;
+    }
   }
 
   resetQuality() {
@@ -266,9 +269,25 @@ export class ProjectsComponent implements OnInit {
   }
 
   editProjectWizard(projectID: string) {
+    this.sethlansService.getprojectForm(projectID).subscribe((data) => {
+      this.projectForm.setProjectForm(data);
+      console.log(data)
+    })
     this.editProject = true;
     this.projectWizardProgress = ProjectWizardProgress.PROJECT_DETAILS;
     this.projectWizardScreen = true;
+
+  }
+
+  submitEdit() {
+    this.submitDisabled = true;
+    this.projectTypeStillImage();
+    this.sethlansService.editProject(this.projectForm).subscribe((response) => {
+      if (response.statusText == "Accepted") {
+        window.location.href = '/projects';
+      }
+
+    });
 
   }
 

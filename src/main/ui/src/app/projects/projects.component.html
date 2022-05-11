@@ -731,7 +731,14 @@
           Next
         </button>
         <button (click)="submit()"
-                *ngIf="projectWizardProgress == ProjectWizardProgress.SUMMARY"
+                [disabled]="submitDisabled"
+                *ngIf="projectWizardProgress == ProjectWizardProgress.SUMMARY && !editProject"
+                class="btn btn-outline-primary float-end">
+          Submit
+        </button>
+        <button (click)="submitEdit()"
+                [disabled]="submitDisabled"
+                *ngIf="projectWizardProgress == ProjectWizardProgress.SUMMARY && editProject"
                 class="btn btn-outline-primary float-end">
           Submit
         </button>

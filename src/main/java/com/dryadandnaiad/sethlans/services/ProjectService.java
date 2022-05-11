@@ -50,8 +50,10 @@ public interface ProjectService {
 
     boolean createProject(ProjectForm projectForm);
 
-    ResponseEntity<ProjectForm> editProjectForm(String projectID);
+    ProjectForm editProjectForm(String projectID);
 
     @Async
     void processCompletedRenders();
+
+    boolean editProject(ProjectForm projectForm);
 }

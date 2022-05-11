@@ -393,78 +393,42 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public boolean createProject(ProjectForm projectForm) {
-        if (projectForm.getProjectName().isEmpty() || projectForm.getProjectName().isBlank()) {
-            return false;
-        }
-        switch (projectForm.getProjectType()) {
-            case ANIMATION -> {
-                if (projectForm.getProjectSettings().getAnimationType() == AnimationType.MOVIE && projectForm.getProjectSettings().getVideoSettings() == null) {
-                    return false;
-                }
-            }
-            case STILL_IMAGE -> {
-                if (projectForm.getProjectSettings().getImageSettings() == null) {
-                    return false;
-                }
-            }
-        }
+        if (projectFormCheck(projectForm)) return false;
         try {
-            var projectDirectory = new File(ConfigUtils.getProperty(ConfigKeys.PROJECT_DIR) + File.separator + projectForm.getProjectID());
+            var projectDirectory = new File(ConfigUtils.getProperty(ConfigKeys.PROJECT_DIR)
+                    + File.separator + projectForm.getProjectID());
             if (projectForm.getProjectFileLocation().contains(".zip")) {
-                org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getOriginalFile()));
+                org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()),
+                        new File(projectDirectory + File.separator + projectForm.getOriginalFile()));
                 projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getOriginalFile());
-                projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectSettings().getBlendFilename())));
-                projectForm.getProjectSettings().setBlendFilename(Paths.get(projectForm.getProjectSettings().getBlendFilename()).getFileName().toString());
+                projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(
+                        new File(projectForm.getProjectSettings().getBlendFilename())));
+                projectForm.getProjectSettings().setBlendFilename(
+                        Paths.get(projectForm.getProjectSettings().getBlendFilename()).getFileName().toString());
                 projectForm.getProjectSettings().setBlenderZipFilename(projectForm.getOriginalFile());
-                projectForm.getProjectSettings().setBlenderZipFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectFileLocation())));
+                projectForm.getProjectSettings().setBlenderZipFilenameMD5Sum(
+                        FileUtils.getMD5ofFile(new File(projectForm.getProjectFileLocation())));
 
             } else {
-                org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename()));
-                projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename());
-                projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename())));
+                org.apache.commons.io.FileUtils.moveFile(
+                        new File(projectForm.getProjectFileLocation()),
+                        new File(projectDirectory + File.separator +
+                                projectForm.getProjectSettings().getBlendFilename()));
+                projectForm.setProjectFileLocation(projectDirectory + File.separator
+                        + projectForm.getProjectSettings().getBlendFilename());
+                projectForm.getProjectSettings().setBlendFilenameMD5Sum(
+                        FileUtils.getMD5ofFile(new File(projectDirectory
+                                + File.separator + projectForm.getProjectSettings().getBlendFilename())));
 
             }
 
             var project = projectFormToProject.convert(projectForm);
-            project.getProjectStatus().setQueueIndex(0);
-            if (project.getProjectType() == ProjectType.STILL_IMAGE) {
-                project.getProjectSettings().setEndFrame(project.getProjectSettings().getStartFrame());
-                project.getProjectSettings().setTotalNumberOfFrames(1);
-                if (project.getProjectSettings().isUseParts()) {
-                    project.getProjectStatus().setTotalQueueSize(project.getProjectSettings().getPartsPerFrame());
-                }
-            } else {
-                var startFrame = project.getProjectSettings().getStartFrame();
-                var endFrame = project.getProjectSettings().getEndFrame();
-                var step = project.getProjectSettings().getStepFrame();
-                int totalFrames = 0;
-                if (startFrame == 1) {
-                    totalFrames = endFrame / step;
-                } else {
-                    for (var i = startFrame; i < endFrame; i += step) {
-                        totalFrames++;
-                    }
-                }
-
-                project.getProjectSettings().setTotalNumberOfFrames(totalFrames);
-                if (project.getProjectSettings().isUseParts()) {
-                    project.getProjectStatus()
-                            .setTotalQueueSize(totalFrames * project.getProjectSettings().getPartsPerFrame());
-
-                } else {
-                    project.getProjectStatus()
-                            .setTotalQueueSize(totalFrames);
-                }
-
-            }
-            project.getProjectStatus().setCurrentFrame(0);
-            project.getProjectStatus().setCurrentPart(0);
-            project.getProjectStatus().setRenderedQueueItems(0);
-            project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getTotalQueueSize());
-
             project.setProjectRootDir(projectDirectory.toString());
+
+            configureProjectOptions(project);
+
             projectRepository.save(project);
-            log.debug("Saving project" + project.toString());
+            log.debug("Saving project" + project);
 
             var notification = Notification.builder()
                     .userID(project.getUser().getUserID())
@@ -476,20 +440,104 @@ public class ProjectServiceImpl implements ProjectService {
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
         }
         return true;
     }
 
+    private void configureProjectOptions(Project project) {
+        project.getProjectStatus().setQueueIndex(0);
+        if (project.getProjectType() == ProjectType.STILL_IMAGE) {
+            project.getProjectSettings().setEndFrame(project.getProjectSettings().getStartFrame());
+            project.getProjectSettings().setTotalNumberOfFrames(1);
+            if (project.getProjectSettings().isUseParts()) {
+                project.getProjectStatus().setTotalQueueSize(project.getProjectSettings().getPartsPerFrame());
+            }
+        } else {
+            var startFrame = project.getProjectSettings().getStartFrame();
+            var endFrame = project.getProjectSettings().getEndFrame();
+            var step = project.getProjectSettings().getStepFrame();
+            int totalFrames = 0;
+            if (startFrame == 1) {
+                totalFrames = endFrame / step;
+            } else {
+                for (var i = startFrame; i < endFrame; i += step) {
+                    totalFrames++;
+                }
+            }
+
+            project.getProjectSettings().setTotalNumberOfFrames(totalFrames);
+            if (project.getProjectSettings().isUseParts()) {
+                project.getProjectStatus()
+                        .setTotalQueueSize(totalFrames * project.getProjectSettings().getPartsPerFrame());
+
+            } else {
+                project.getProjectStatus()
+                        .setTotalQueueSize(totalFrames);
+            }
+
+        }
+        project.getProjectStatus().setCurrentFrame(0);
+        project.getProjectStatus().setCurrentPart(0);
+        project.getProjectStatus().setRenderedQueueItems(0);
+        project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getTotalQueueSize());
+    }
+
     @Override
-    public ResponseEntity<ProjectForm> editProjectForm(String projectID) {
+    public boolean editProject(ProjectForm projectForm) {
+        if (projectRepository.getProjectByProjectID(projectForm.getProjectID()).isPresent()) {
+            if (projectFormCheck(projectForm)) return false;
+            var originalProject = projectRepository.getProjectByProjectID(projectForm.getProjectID()).get();
+            var project = projectFormToProject.convert(projectForm);
+            originalProject.setProjectName(project.getProjectName());
+            originalProject.setProjectSettings(project.getProjectSettings());
+            originalProject.setProjectStatus(project.getProjectStatus());
+            configureProjectOptions(originalProject);
+            projectRepository.save(originalProject);
+            log.debug("Saving project" + project);
+            var notification = Notification.builder()
+                    .userID(project.getUser().getUserID())
+                    .notificationID(UUID.randomUUID().toString())
+                    .messageDate(LocalDateTime.now())
+                    .message(project.getProjectName() + " has been updated.")
+                    .build();
+            notificationRepository.save(notification);
+            return true;
+        }
+        return false;
+    }
+
+
+    private boolean projectFormCheck(ProjectForm projectForm) {
+        if (projectForm.getProjectName().isEmpty() || projectForm.getProjectName().isBlank()) {
+            return true;
+        }
+        switch (projectForm.getProjectType()) {
+            case ANIMATION -> {
+                if (projectForm.getProjectSettings().getAnimationType() == AnimationType.MOVIE
+                        && projectForm.getProjectSettings().getVideoSettings() == null) {
+                    return true;
+                }
+            }
+            case STILL_IMAGE -> {
+                if (projectForm.getProjectSettings().getImageSettings() == null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public ProjectForm editProjectForm(String projectID) {
         if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
             var project = projectRepository.getProjectByProjectID(projectID).get();
             var user = project.getUser();
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth.getAuthorities().toString().contains("ADMINISTRATOR")
                     || user.getUsername().equals(auth.getName())) {
-                return new ResponseEntity<>(projectToProjectForm.convert(project), HttpStatus.ACCEPTED);
+                return projectToProjectForm.convert(project);
             }
         }
         return null;

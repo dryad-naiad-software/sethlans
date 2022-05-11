@@ -21,9 +21,11 @@ import com.dryadandnaiad.sethlans.converters.ProjectToProjectView;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
+import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.dryadandnaiad.sethlans.services.ProjectService;
 import com.dryadandnaiad.sethlans.utils.ImageUtils;
 import com.google.common.base.Throwables;
 import io.restassured.internal.util.IOUtils;
@@ -64,14 +66,17 @@ public class ProjectQueryController {
     private final NodeRepository nodeRepository;
     private final ProjectToProjectView projectToProjectView;
     private final UserRepository userRepository;
+    private final ProjectService projectService;
 
 
     public ProjectQueryController(ProjectRepository projectRepository, NodeRepository nodeRepository,
-                                  ProjectToProjectView projectToProjectView, UserRepository userRepository) {
+                                  ProjectToProjectView projectToProjectView, UserRepository userRepository,
+                                  ProjectService projectService) {
         this.projectRepository = projectRepository;
         this.nodeRepository = nodeRepository;
         this.projectToProjectView = projectToProjectView;
         this.userRepository = userRepository;
+        this.projectService = projectService;
     }
 
     @GetMapping("/{id}/thumbnail")
@@ -215,6 +220,11 @@ public class ProjectQueryController {
 
         return ImageUtils.getFrameList(project);
 
+    }
+
+    @GetMapping("/get_project_form/{project_id}")
+    public ProjectForm getProjectForm(@PathVariable("project_id") String projectID) {
+        return projectService.editProjectForm(projectID);
     }
 
     private ResponseEntity<byte[]> sendImage(File image) {

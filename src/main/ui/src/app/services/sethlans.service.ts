@@ -121,6 +121,10 @@ export class SethlansService {
     return this.http.get(this.rootURL + "/management/node_api_key")
   }
 
+  getprojectForm(projectID: string) {
+    return this.http.get(this.rootURL + "/project/get_project_form/" + projectID)
+  }
+
   setNodeAPIKey(nodeAPIKey: string) {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -176,6 +180,16 @@ export class SethlansService {
       JSON.stringify(projectForm), {headers: headers, observe: "response"})
       .pipe(
         catchError(this.handleError('submitProject', projectForm)))
+  }
+
+  editProject(projectForm: ProjectForm): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<ProjectForm>(this.rootURL + "/project/edit_project",
+      JSON.stringify(projectForm), {headers: headers, observe: "response"})
+      .pipe(
+        catchError(this.handleError('editProject', projectForm)))
   }
 
   deleteProject(projectID: string): Observable<any> {
@@ -243,5 +257,6 @@ export class SethlansService {
       })
       .pipe(catchError(this.handleError('stopProject', projectID)))
   }
+
 
 }

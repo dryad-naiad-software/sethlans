@@ -64,9 +64,12 @@ public class ProjectActionsController {
         return projectService.projectFileUpload(projectFile);
     }
 
-    @GetMapping("/edit_project_form")
-    public ResponseEntity<ProjectForm> editProjectForm(@RequestParam String projectID) {
-        return projectService.editProjectForm(projectID);
+    @PostMapping("/edit_project")
+    public ResponseEntity<Void> editProject(@RequestBody ProjectForm projectForm) {
+        if (projectService.editProject(projectForm)) {
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/create_project")
