@@ -95,9 +95,11 @@
                             ngbTooltip="Pause" placement="bottom" type="button">
                       <fa-icon [icon]="faPause"></fa-icon>
                     </button>
-                    <button class="btn btn-outline-dark btn-sm"
-                            ngbTooltip="Details"
-                            placement="bottom" type="button">
+                    <button
+                      (click)="showDetails(project.projectID)"
+                      class="btn btn-outline-dark btn-sm"
+                      ngbTooltip="Details"
+                      placement="bottom" type="button">
                       <fa-icon [icon]="faSearchPlus"></fa-icon>
                     </button>
                     <button (click)="downloadProject(project.projectID)"

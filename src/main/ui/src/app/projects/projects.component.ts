@@ -286,8 +286,12 @@ export class ProjectsComponent implements OnInit {
       if (response.statusText == "Accepted") {
         window.location.href = '/projects';
       }
-
     });
+
+  }
+
+  showDetails(projectID: string) {
+    window.location.href = '/projects/details/' + projectID;
 
   }
 

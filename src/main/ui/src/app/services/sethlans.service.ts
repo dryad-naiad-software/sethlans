@@ -108,6 +108,10 @@ export class SethlansService {
       .pipe(catchError(this.handleError('setNodeSettings', nodeSettings)))
   }
 
+  getProject(projectID: string) {
+    return this.http.get(this.rootURL + "/project/" + projectID)
+  }
+
   getProjects() {
     return this.http.get(this.rootURL + "/project/project_list")
 

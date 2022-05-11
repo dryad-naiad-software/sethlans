@@ -1,1 +1,75 @@
-<p>project-details works!</p>
+<div class="row">
+  <div class="col-md-10 mx-auto mt-3 mb-3">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-8">
+            <h4 style="font-family: 'Fjalla One', sans-serif">{{project.projectName}}</h4>
+
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col-md-12 m-auto">
+          <table [dataSource]="projectDataSource" cdk-table class="table table-responsive-md">
+            <ng-container cdkColumnDef="projectName">
+              <th *cdkHeaderCellDef cdk-header-cell>Name</th>
+              <td *cdkCellDef="let project" cdk-cell>{{project.projectName}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="projectType">
+              <th *cdkHeaderCellDef cdk-header-cell>Type</th>
+              <td *cdkCellDef="let project" cdk-cell>{{project.projectType}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="computeOn">
+              <th *cdkHeaderCellDef cdk-header-cell>Compute</th>
+              <td *cdkCellDef="let project" cdk-cell>{{project.projectSettings.computeOn}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="fileFormat">
+              <th *cdkHeaderCellDef cdk-header-cell>File Format</th>
+              <td *cdkCellDef="let project" cdk-cell>
+                <span
+                        *ngIf="project.projectType == ProjectType.STILL_IMAGE">{{project.projectSettings.imageSettings.imageOutputFormat}}</span>
+                <span *ngIf="project.projectType == ProjectType.ANIMATION
+                && project.projectSettings.animationType == AnimationType.IMAGES">{{project.projectSettings.imageSettings.imageOutputFormat}}</span>
+                <span *ngIf="project.projectType == ProjectType.ANIMATION
+                && project.projectSettings.animationType == AnimationType.MOVIE">{{project.projectSettings.videoSettings.videoOutputFormat}}</span>
+              </td>
+            </ng-container>
+            <ng-container cdkColumnDef="status">
+              <th *cdkHeaderCellDef cdk-header-cell>Status</th>
+              <td *cdkCellDef="let project" cdk-cell>{{project.projectStatus.projectState}}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="progress">
+              <th *cdkHeaderCellDef cdk-header-cell>Render Progress</th>
+              <td *cdkCellDef="let project" cdk-cell>
+                <ngb-progressbar [max]="100" [showValue]="true"
+                                 [value]="project.projectStatus.currentPercentage"
+                                 type="success"></ngb-progressbar>
+              </td>
+            </ng-container>
+            <ng-container cdkColumnDef="preview">
+              <th *cdkHeaderCellDef cdk-header-cell>Preview</th>
+
+              <td *cdkCellDef="let project" cdk-cell>
+                <img *ngIf="project.projectStatus.completedFrames < 1"
+                     [src]="placeholder"
+                     alt="placeholder"
+                     class="align-top  py-1"
+                     height="85"/>
+                <img *ngIf="project.projectStatus.completedFrames >= 1"
+                     [src]="'/api/v1/project/' + project.projectID + '/thumbnail/'"
+                     class="align-top  py-1"
+                     height="85"/>
+
+              </td>
+            </ng-container>
+            <tr *cdkHeaderRowDef="projectDisplayedColumns.value" cdk-header-row></tr>
+            <tr *cdkRowDef="let row; columns: projectDisplayedColumns.value" cdk-row></tr>
+          </table>
+          <!-- Header and Row Declarations -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
