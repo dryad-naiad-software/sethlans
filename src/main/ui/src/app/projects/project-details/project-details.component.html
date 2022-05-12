@@ -52,20 +52,23 @@
                 <td>{{project.getValue().projectSettings.blenderVersion}}</td>
               </tr>
               <tr>
-                <td>Image Output Format<td>
+                <td>Project Type</td>
+                <td>{{project.getValue().projectType}}</td>
+              </tr>
+              <tr>
+                <td>Render Engine</td>
+                <td>{{project.getValue().projectSettings.blenderEngine}}</td>
+              </tr>
+              <tr>
+                <td>Animation Type</td>
+                <td>{{project.getValue().projectSettings.animationType}}</td>
+              <tr>
+                <td>Image Output Format</td>
                 <td>{{project.getValue().projectSettings.imageSettings.imageOutputFormat}}</td>
               </tr>
               <tr>
-                <td>Start Frame</td>
-                <td>{{project.getValue().projectSettings.startFrame}}</td>
-              </tr>
-              <tr *ngIf="project.getValue().projectType == ProjectType.ANIMATION">
-                <td>End Frame</td>
-                <td>{{project.getValue().projectSettings.endFrame}}</td>
-              </tr>
-              <tr *ngIf="project.getValue().projectType == ProjectType.ANIMATION">
-                <td>Step Frame</td>
-                <td>{{project.getValue().projectSettings.stepFrame}}</td>
+                <td>Video Output Format</td>
+                <td>{{project.getValue().projectSettings.videoSettings.videoOutputFormat}}</td>
               </tr>
               </tbody>
             </table>
@@ -80,11 +83,17 @@
               </tr>
               </thead>
               <tbody>
-              <tr *ngIf="project.getValue().projectStatus.projectState != ProjectState.FINISHED
-              && project.getValue().projectStatus.projectState != ProjectState.ADDED
-              && project.getValue().projectStatus.projectState != ProjectState.STOPPED">
+              <tr>
+                <td>Render Progress</td>
+                <td>{{project.getValue().projectStatus.completedFrames}}
+                  of {{project.getValue().projectSettings.totalNumberOfFrames}} Frames Processed
+                </td>
+              </tr>
+              <tr>
                 <td>Queue Progress</td>
-                <td>{{project.getValue().projectStatus.remainingQueueSize}} of {{project.getValue().projectStatus.totalQueueSize}} Remaining</td>
+                <td>{{project.getValue().projectStatus.remainingQueueSize}}
+                  of {{project.getValue().projectStatus.totalQueueSize}} Remaining
+                </td>
               </tr>
               <tr>
                 <td>Project Duration</td>
@@ -95,7 +104,59 @@
                 <td>{{project.getValue().projectStatus.totalRenderTime | date: 'mm:ss'}}</td>
               </tr>
               </tbody>
-
+            </table>
+          </div>
+          <div class="col-md-4">
+            <strong>Project Settings</strong>
+            <table class="table table-sm">
+              <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Compute</td>
+                <td>{{project.getValue().projectSettings.computeOn}}</td>
+              </tr>
+              <tr>
+                <td>Start Frame</td>
+                <td>{{project.getValue().projectSettings.startFrame}}</td>
+              </tr>
+              <tr *ngIf="project.getValue().projectType == ProjectType.ANIMATION">
+                <td>End Frame</td>
+                <td>{{project.getValue().projectSettings.endFrame}}</td>
+              </tr>
+              <tr *ngIf="project.getValue().projectType == ProjectType.ANIMATION">
+                <td>Step Frame</td>
+                <td>{{project.getValue().projectSettings.stepFrame}}</td>
+              </tr>
+              <tr>
+                <td>Samples</td>
+                <td>{{project.getValue().projectSettings.samples}}</td>
+              </tr>
+              <tr>
+                <td>Render Resolution</td>
+                <td>{{project.getValue().projectSettings.imageSettings.resolutionX}} &times; {{project.getValue().projectSettings.imageSettings.resolutionY}}</td>
+              </tr>
+              <tr>
+                <td>Image Scaling Percentage</td>
+                <td>{{project.getValue().projectSettings.imageSettings.resPercentage}}%</td>
+              </tr>
+              <tr>
+                <td>Video Frame Rate</td>
+                <td>{{project.getValue().projectSettings.videoSettings.frameRate}}</td>
+              </tr>
+              <tr>
+                <td>Video Codec</td>
+                <td>{{project.getValue().projectSettings.videoSettings.codec}}</td>
+              </tr>
+              <tr>
+                <td>Video Pixel Format</td>
+                <td>{{project.getValue().projectSettings.videoSettings.pixelFormat}}</td>
+              </tr>
+              </tbody>
             </table>
           </div>
         </div>
