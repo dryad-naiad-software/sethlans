@@ -5,6 +5,7 @@ import {ProjectView} from "../../models/project/projectview.model";
 import {BehaviorSubject} from "rxjs";
 import {ProjectType} from 'src/app/enums/projectype.enum';
 import {AnimationType} from 'src/app/enums/animationtype.enum';
+import {ProjectState} from "../../enums/projectstate.enum";
 
 @Component({
   selector: 'app-project-details',
@@ -12,22 +13,13 @@ import {AnimationType} from 'src/app/enums/animationtype.enum';
   styleUrls: ['./project-details.component.css']
 })
 export class ProjectDetailsComponent implements OnInit {
-  project: ProjectView = new ProjectView();
+  project = new BehaviorSubject<ProjectView>(new ProjectView())
   ProjectType = ProjectType;
   AnimationType = AnimationType;
   placeholder: any = 'assets/images/placeholder.svg';
   projectID: string = ''
+  ProjectState = ProjectState;
 
-  projectDataSource = new BehaviorSubject<any[]>([]);
-  projectDisplayedColumns = new BehaviorSubject<string[]>([
-    'projectName',
-    'projectType',
-    'computeOn',
-    'fileFormat',
-    'status',
-    'progress',
-    'preview'
-  ]);
 
 
   constructor(private sethlansService: SethlansService, private route: ActivatedRoute) {
@@ -42,13 +34,10 @@ export class ProjectDetailsComponent implements OnInit {
 
   getProject() {
     this.sethlansService.getProject(this.projectID).subscribe((data: any) => {
-      this.project = data;
-      let projectTable: ProjectView[] = [];
-      projectTable.push(this.project)
-      this.projectDataSource = new BehaviorSubject<any[]>(projectTable);
+      this.project.next(data);
     });
     setTimeout(() => {
-      this.getProject()
+      this.getProject();
     }, 30000);
 
   }
