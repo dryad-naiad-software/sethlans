@@ -28,9 +28,7 @@ import io.undertow.util.StatusCodes;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 import java.util.*;
 
 import static io.restassured.RestAssured.*;
@@ -47,14 +45,18 @@ public class NetworkUtils {
 
     public static Set<String> getSethlansMulticastMessages() {
         var detectedNodes = new HashSet<String>();
-        var multicastIP = ConfigUtils.getProperty(ConfigKeys.MULTICAST_IP);
-        var multicastSocketPort =
-                Integer.parseInt(Objects.requireNonNull(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT)));
-        byte[] buffer = new byte[256];
         try {
+            var networkInterface = NetworkInterface.getByInetAddress
+                    (InetAddress.getByName(ConfigUtils.getProperty(ConfigKeys.SETHLANS_IP)));
+
+            var multicastIP = ConfigUtils.getProperty(ConfigKeys.MULTICAST_IP);
+            var multicastSocketPort =
+                    Integer.parseInt(Objects.requireNonNull(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT)));
+            byte[] buffer = new byte[256];
+
             var clientSocket = new MulticastSocket(multicastSocketPort);
             clientSocket.setSoTimeout(10000);
-            clientSocket.joinGroup(InetAddress.getByName(multicastIP));
+            clientSocket.joinGroup(new InetSocketAddress(multicastIP, multicastSocketPort), networkInterface);
             long start_time = System.currentTimeMillis();
             long wait_time = 15000;
             long end_time = start_time + wait_time;
