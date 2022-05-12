@@ -14,11 +14,12 @@ import {ProjectState} from "../../enums/projectstate.enum";
 })
 export class ProjectDetailsComponent implements OnInit {
   project = new BehaviorSubject<ProjectView>(new ProjectView())
+  projectImage = 'assets/images/placeholder.svg'
   ProjectType = ProjectType;
   AnimationType = AnimationType;
-  placeholder: any = 'assets/images/placeholder.svg';
   projectID: string = ''
   ProjectState = ProjectState;
+  timeStamp = new Date().getTime();
 
 
 
@@ -32,13 +33,30 @@ export class ProjectDetailsComponent implements OnInit {
     });
   }
 
+  getThumbnail() {
+    if(this.timeStamp) {
+      return this.projectImage + '?' + this.timeStamp;
+    }
+    return this.projectImage;
+  }
+
+  setThumbnail() {
+    this.projectImage = this.projectImage= '/api/v1/project/' + this.projectID + '/thumbnail/';
+    this.timeStamp = new Date().getTime();
+
+
+  }
+
   getProject() {
     this.sethlansService.getProject(this.projectID).subscribe((data: any) => {
       this.project.next(data);
+      if(this.project.getValue().projectStatus.completedFrames >= 1) {
+        this.setThumbnail();
+      }
     });
     setTimeout(() => {
       this.getProject();
-    }, 30000);
+    }, 15000);
 
   }
 

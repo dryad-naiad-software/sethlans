@@ -40,7 +40,7 @@ export class VideoSettings {
     this.codec = VideoCodec.LIBX264;
     this.pixelFormat = PixelFormat.YUV420P;
     this.videoOutputFormat = VideoOutputFormat.MP4;
-    this.videoQuality = VideoQuality.LOW_X264;
+    this.videoQuality = VideoQuality.MEDIUM_X264;
     this.videoFileLocation = '';
   }
 

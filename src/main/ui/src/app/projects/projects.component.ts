@@ -90,7 +90,6 @@ export class ProjectsComponent implements OnInit {
     'fileFormat',
     'status',
     'progress',
-    'preview',
     'action'
   ]);
 
@@ -110,7 +109,7 @@ export class ProjectsComponent implements OnInit {
     })
     setTimeout(() => {
       this.getProjects()
-    }, 30000);
+    }, 15000);
   }
 
   startProjectWizard() {
@@ -176,6 +175,7 @@ export class ProjectsComponent implements OnInit {
     if (this.projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MP4 ||
       this.projectForm.projectSettings.videoSettings.videoOutputFormat == VideoOutputFormat.MKV) {
       this.projectForm.projectSettings.videoSettings.codec = VideoCodec.LIBX264;
+      this.projectForm.projectSettings.videoSettings.videoQuality = VideoQuality.MEDIUM_X264;
 
     }
   }

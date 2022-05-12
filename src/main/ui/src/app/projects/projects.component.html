@@ -52,27 +52,11 @@
                                  type="success"></ngb-progressbar>
               </td>
             </ng-container>
-            <ng-container cdkColumnDef="preview">
-              <th *cdkHeaderCellDef cdk-header-cell>Preview</th>
-
-              <td *cdkCellDef="let project" cdk-cell>
-                <img *ngIf="project.projectStatus.completedFrames < 1"
-                     [src]="placeholder"
-                     alt="placeholder"
-                     class="align-top  py-1"
-                     height="85"/>
-                <img *ngIf="project.projectStatus.completedFrames >= 1"
-                     [src]="'/api/v1/project/' + project.projectID + '/thumbnail/'"
-                     class="align-top  py-1"
-                     height="85"/>
-
-              </td>
-            </ng-container>
             <ng-container cdkColumnDef="action">
               <th *cdkHeaderCellDef cdk-header-cell></th>
               <td *cdkCellDef="let project" cdk-cell>
                 <div class="btn-group-adjust">
-                  <div class="btn-group btn-group-sm pt-1 pb-5">
+                  <div class="float-end btn-group btn-group-sm pt-1 pb-5">
                     <button (click)="startProject(project.projectID)"
                             *ngIf="project.projectStatus.projectState == ProjectState.ADDED
                                           || project.projectStatus.projectState == ProjectState.STOPPED"
@@ -701,6 +685,10 @@
                 <tr>
                   <td>Video Output Format</td>
                   <td>{{projectForm.projectSettings.videoSettings.videoOutputFormat}}</td>
+                </tr>
+                <tr>
+                  <td>Video Quality</td>
+                  <td>{{projectForm.projectSettings.videoSettings.videoQuality}}</td>
                 </tr>
                 </tbody>
               </table>
