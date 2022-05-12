@@ -399,12 +399,6 @@
                 <select [(ngModel)]="projectForm.projectSettings.blenderEngine" class="form-select form-select-sm"
                         id="renderingEngine">
                   <option [value]="BlenderEngine.CYCLES">CYCLES</option>
-                  <option *ngIf="projectForm.projectSettings.blenderVersion != '2.79b'"
-                          [value]="BlenderEngine.BLENDER_EEVEE">EEVEE
-                  </option>
-                  <option *ngIf="projectForm.projectSettings.blenderVersion == '2.79b'"
-                          [value]="BlenderEngine.BLENDER_RENDER">BLENDER RENDER
-                  </option>
                 </select>
               </div>
             </div>

@@ -124,6 +124,25 @@ public class AdminServerEndPointController {
         return serverService.addNodes(selectedNodes);
     }
 
+    @PostMapping("/reset_node_benchmark")
+    public ResponseEntity<Void> resetNodeBenchmark(@RequestBody String nodeID) {
+        if (nodeRepository.findNodeBySystemIDEquals(nodeID).isPresent()) {
+            var nodeToUpdate = nodeRepository.findNodeBySystemIDEquals(nodeID).get();
+            nodeToUpdate.setBenchmarkPending(false);
+            nodeToUpdate.setBenchmarkComplete(false);
+            nodeToUpdate.setActive(false);
+            nodeRepository.save(nodeToUpdate);
+            try {
+                this.serverService.pendingBenchmarksToSend();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/node_benchmark_status")
     public boolean isNodeBenchmarkComplete(@RequestParam String nodeID) {
         if (nodeRepository.findNodeBySystemIDEquals(nodeID).isPresent()) {

@@ -369,7 +369,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .endFrame(blendFile.getFrameEnd())
                     .stepFrame(blendFile.getFrameSkip())
                     .imageSettings(imageSettings)
-                    .blenderEngine(blendFile.getEngine())
+                    .blenderEngine(BlenderEngine.CYCLES)
                     .blenderVersion(versionList.get(0))
                     .blendFilename(blendFilename)
                     .build();

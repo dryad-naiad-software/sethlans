@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.services.BenchmarkService;
 import com.dryadandnaiad.sethlans.services.NodeService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -154,6 +155,11 @@ public class AdminNodeEndPointController {
     public ResponseEntity<Void> changeNodeSettings(@RequestBody NodeSettings nodeSettings) {
         try {
             PropertiesUtils.writeNodeSettings(nodeSettings);
+            var server = PropertiesUtils.getAuthorizedServer();
+            var path = "/api/v1/management/reset_node_benchmark";
+            NetworkUtils.postJSONToURL(path, server.getIpAddress(), server.getNetworkPort(),
+                    PropertiesUtils.getSystemID(), true);
+
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
