@@ -216,7 +216,7 @@ public class ImageUtils {
                 + frame.getFrameName() + "-thumbnail" + "." + "png");
         log.info("Creating thumbnail for " + originalImage);
         try {
-            Thumbnails.of(originalImage).size(128, 128).toFile(thumbnail);
+            Thumbnails.of(originalImage).size(200, 200).toFile(thumbnail);
             log.info("Thumbnail " + thumbnail + " successfully created.");
             return true;
         } catch (IOException e) {
