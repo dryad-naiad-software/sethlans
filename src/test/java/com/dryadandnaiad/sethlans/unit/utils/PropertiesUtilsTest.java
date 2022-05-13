@@ -136,6 +136,7 @@ class PropertiesUtilsTest {
         var setupSettings = SetupForm.builder()
                 .appURL("https://localhost:7443")
                 .ipAddress("10.10.10.10")
+                .hostname("localhost")
                 .logLevel(LogLevel.DEBUG)
                 .mode(SethlansMode.DUAL)
                 .port("7443").build();
@@ -147,8 +148,7 @@ class PropertiesUtilsTest {
         assertThat(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID)).isNotNull();
         assertThat(ConfigUtils.getProperty(ConfigKeys.SETHLANS_URL)).isEqualTo("https://localhost:7443");
         assertThat(ConfigUtils.getProperty(ConfigKeys.GETTING_STARTED)).isEqualTo("true");
-        assertThat(ConfigUtils.getProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE)).isEqualTo("75");
-        assertThat(PropertiesUtils.getServerCompleteQueueSize()).isEqualTo(75);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE)).isGreaterThan("1");
     }
 
 
