@@ -191,9 +191,20 @@ public class SetupIntegrationTest {
                 .assertThat()
                 .body("mode", equalTo("DUAL"));
 
+        var jsonPath = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/management/server_api_key")
+                .then()
+                .extract().response().jsonPath();
+
+        String apiKey = jsonPath.get("api_key");
+        log.info(apiKey);
+
+
         log.info("Obtaining Node Info");
         var nodeInfo = mapper
-                .readValue(get("/api/v1/info/node_info")
+                .readValue(get("/api/v1/info/node_info?api-key=" + apiKey)
                         .then()
                         .extract()
                         .response()
