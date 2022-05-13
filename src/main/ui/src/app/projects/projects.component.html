@@ -274,6 +274,7 @@
                 <label class="form-check-label">
                   <input [(ngModel)]="projectForm.projectType"
                          [value]="ProjectType.STILL_IMAGE"
+                         (click)="stillImageDefaults()"
                          class="form-check-input"
                          name="projectType"
                          required
@@ -282,7 +283,7 @@
               </div>
               <div class="form-check">
                 <label class="form-check-label">
-                  <input (click)="setToPNG()"
+                  <input (click)="animationDefaults()"
                          [(ngModel)]="projectForm.projectType"
                          [value]="ProjectType.ANIMATION"
                          class="form-check-input"

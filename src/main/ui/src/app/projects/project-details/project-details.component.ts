@@ -6,6 +6,23 @@ import {BehaviorSubject} from "rxjs";
 import {ProjectType} from 'src/app/enums/projectype.enum';
 import {AnimationType} from 'src/app/enums/animationtype.enum';
 import {ProjectState} from "../../enums/projectstate.enum";
+import {
+  faCog,
+  faEdit,
+  faFilm,
+  faForwardStep,
+  faGear,
+  faImages,
+  faPause,
+  faPlay,
+  faPlus,
+  faPuzzlePiece,
+  faRectangleList,
+  faSearchPlus,
+  faStop,
+  faTrashAlt,
+  faUpload
+} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-project-details',
@@ -20,6 +37,21 @@ export class ProjectDetailsComponent implements OnInit {
   projectID: string = ''
   ProjectState = ProjectState;
   timeStamp = new Date().getTime();
+  faStop = faStop;
+  faTrashAlt = faTrashAlt;
+  faEdit = faEdit;
+  faPlus = faPlus;
+  faUpload = faUpload;
+  faPuzzlePiece = faPuzzlePiece;
+  faFilm = faFilm;
+  faGear = faGear;
+  faCog = faCog;
+  faPlay = faPlay;
+  faPause = faPause;
+  faImages = faImages;
+  faSearchPlus = faSearchPlus;
+  faForwardStep = faForwardStep;
+  faRectangleList = faRectangleList;
 
 
 
@@ -57,6 +89,48 @@ export class ProjectDetailsComponent implements OnInit {
     setTimeout(() => {
       this.getProject();
     }, 15000);
+
+  }
+
+  startProject() {
+    this.sethlansService.startProject(this.projectID).subscribe((response) => {
+      if (response.statusText == 'Accepted') {
+        this.getProject();
+      }
+    })
+  }
+
+  stopProject() {
+    this.sethlansService.stopProject(this.projectID).subscribe((response) => {
+      if (response.statusText == 'Accepted') {
+        this.getProject();
+      }
+    })
+  }
+
+  pauseProject() {
+    this.sethlansService.pauseProject(this.projectID).subscribe((response) => {
+      if (response.statusText == 'Accepted') {
+        this.getProject();
+      }
+    })
+  }
+
+  resumeProject() {
+    this.sethlansService.resumeProject(this.projectID).subscribe((response) => {
+      if (response.statusText == 'Accepted') {
+        this.getProject();
+      }
+    })
+  }
+
+
+  downloadProject() {
+    window.location.href = '/api/v1/project/' + this.projectID + '/download_images/'
+  }
+
+  downloadVideo() {
+    window.location.href = '/api/v1/project/' + this.projectID + '/download_video/'
 
   }
 

@@ -137,8 +137,14 @@ export class ProjectsComponent implements OnInit {
     this.showInvalidFileAlert = true;
   }
 
-  setToPNG() {
+  stillImageDefaults() {
+    this.projectForm.projectSettings.useParts = true;
+    this.projectTypeStillImage();
+  }
+
+  animationDefaults(){
     this.projectForm.projectSettings.imageSettings.imageOutputFormat = ImageOutputFormat.PNG;
+    this.projectForm.projectSettings.useParts = false;
   }
 
   cancelProjectWizard() {
