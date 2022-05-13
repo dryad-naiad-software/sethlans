@@ -33,8 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
@@ -90,7 +88,7 @@ public class RenderTest {
     }
 
     @Test
-    @DisabledOnOs(OS.LINUX)
+    @Disabled
     void executeRenderTaskEeveeFrame() {
         var file1 = "wasp_bot.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
@@ -109,7 +107,7 @@ public class RenderTest {
     }
 
     @Test
-    @DisabledOnOs(OS.LINUX)
+    @Disabled
     void executeRenderTaskEeveeFramePart() {
         var file1 = "wasp_bot.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
