@@ -28,6 +28,9 @@ export class NodesComponent implements OnInit {
   sethlansAPIKey: string = '';
   nodeWizardType: NodeWizardType = NodeWizardType.SCAN;
   NodeWizardType = NodeWizardType;
+  manualNode = new NodeForm();
+  addDisabled: boolean = true;
+  manualNodeFormList = new Array<NodeForm>();
   nodeFormList = new Array<NodeForm>();
   networkNodeList = new Array<Node>();
   scanning: boolean = false;
@@ -82,6 +85,11 @@ export class NodesComponent implements OnInit {
   copyAPIKey() {
     this.clipboard.copy(this.sethlansAPIKey)
 
+  }
+
+  manualAddNodeToList() {
+    this.manualNodeFormList.push(this.manualNode);
+    this.manualNode = new NodeForm();
   }
 
   addNode(node: Node, $event: MouseEvent) {

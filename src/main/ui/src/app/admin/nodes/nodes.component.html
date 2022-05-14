@@ -186,7 +186,7 @@
               <div aria-hidden="true" class="ms-2 spinner-border spinner-border-sm text-center" role="status"></div>
             </div>
           </div>
-          <div *ngIf="!scanning">
+          <div *ngIf="!scanning && nodeWizardType == NodeWizardType.SCAN">
             <table class="table table-responsive-md">
               <thead>
               <tr>
@@ -222,7 +222,42 @@
 
           </div>
           <div *ngIf="nodeWizardType == NodeWizardType.MANUAL">
-            Manual
+            <br/>
+            <div class="row">
+              <div class="col">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="manualNode.ipAddress"
+                       placeholder="IP Address or Hostname">
+              </div>
+              <div class="col">
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="manualNode.networkPort"
+                       placeholder="Port">
+              </div>
+              <div class="col">
+                <button class="btn btn-sm btn-outline-dark" (click)="manualAddNodeToList()">Add To List</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <hr/>
+                <table class="table table-sm">
+                  <thead>
+                  <tr>
+                    <th>IP Address/Hostname</th>
+                    <th>Port</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let node of manualNodeFormList">
+                    <td>{{node.ipAddress}}</td>
+                    <td>{{node.networkPort}}</td>
+                  </tr>
+
+                  </tbody>
+
+                </table>
+              </div>
+
+            </div>
           </div>
         </div>
         <div
