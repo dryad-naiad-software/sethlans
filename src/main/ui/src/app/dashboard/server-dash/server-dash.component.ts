@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ServerDashboard} from "../../models/views/server-dashboard.model";
 import {SethlansService} from "../../services/sethlans.service";
+import {ProjectView} from "../../models/project/projectview.model";
+import {ProjectState} from "../../enums/projectstate.enum";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-server-dash',
@@ -9,6 +12,8 @@ import {SethlansService} from "../../services/sethlans.service";
 })
 export class ServerDashComponent implements OnInit {
   serverDashboard = new ServerDashboard();
+  activeProjects: ProjectView[] = [];
+  projectDataSource = new BehaviorSubject<any[]>([]);
   activeNodes = 0;
   chartData: { labels: string[]; datasets: { data: any; backgroundColor: string[]; hoverBackgroundColor: string[] }[] };
 
@@ -34,8 +39,27 @@ export class ServerDashComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDashboard();
+    this.getProjects();
 
   }
+
+  getProjects() {
+    this.sethlansService.getProjects().subscribe((data: any) => {
+      let projects: ProjectView[] = data;
+      this.activeProjects = [];
+      for (const projectsKey in projects) {
+        if (projects[projectsKey].projectStatus.projectState != ProjectState.FINISHED
+          && projects[projectsKey].projectStatus.projectState != ProjectState.STOPPED && projects[projectsKey].projectStatus.projectState != ProjectState.ADDED) {
+          this.activeProjects.push(projects[projectsKey]);
+        }
+      }
+      this.projectDataSource = new BehaviorSubject<any[]>(this.activeProjects);
+    })
+    setTimeout(() => {
+      this.getProjects()
+    }, 15000);
+  }
+
 
   getDashboard() {
     this.sethlansService.getServerDashBoard().subscribe((obj: any) => {
@@ -48,7 +72,7 @@ export class ServerDashComponent implements OnInit {
     })
     setTimeout(() => {
       this.getDashboard();
-    }, 15000);
+    }, 30000);
   }
 
   updateChart() {

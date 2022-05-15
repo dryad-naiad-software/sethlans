@@ -19,7 +19,8 @@
           <table [dataSource]="projectDataSource" cdk-table class="table table-responsive-md">
             <ng-container cdkColumnDef="projectName">
               <th *cdkHeaderCellDef cdk-header-cell>Name</th>
-              <td *cdkCellDef="let project" cdk-cell>{{project.projectName}}</td>
+              <td *cdkCellDef="let project" cdk-cell><a
+                href="/projects/details/{{project.projectID}}">{{project.projectName}}</a></td>
             </ng-container>
             <ng-container cdkColumnDef="projectType">
               <th *cdkHeaderCellDef cdk-header-cell>Type</th>

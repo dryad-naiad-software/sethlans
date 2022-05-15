@@ -1,6 +1,27 @@
 <div class="row">
   <div class="col-lg-4">
-    <h5>Project Status</h5>
+    <h5>Projects In Progress</h5>
+    <table class="table table-sm table-responsive">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Progress</th>
+      </tr>
+      </thead>
+      <tbody *ngIf="activeProjects.length > 0">
+      <tr *ngFor="let project of projectDataSource.getValue()">
+        <td><a href="/projects/details/{{project.projectID}}">{{project.projectName}}</a></td>
+        <td>{{project.projectStatus.projectState}}</td>
+        <td>{{project.projectStatus.currentPercentage}}% Complete</td>
+      </tr>
+      </tbody>
+      <tbody *ngIf="activeProjects.length == 0">
+      <td>No Active Projects</td>
+      <td></td>
+      <td></td>
+      </tbody>
+    </table>
 
   </div>
 

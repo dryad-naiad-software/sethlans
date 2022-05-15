@@ -32,7 +32,7 @@ export class NodeDashComponent implements OnInit {
     })
     setTimeout(() => {
       this.getDashboard();
-    }, 15000);
+    }, 30000);
   }
 
 }

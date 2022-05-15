@@ -42,6 +42,7 @@ import {ProjectsComponent} from './projects/projects.component';
 import {FileUploadModule} from "primeng/fileupload";
 import {CdkTableModule} from "@angular/cdk/table";
 import {ProjectDetailsComponent} from './projects/project-details/project-details.component';
+import {ChartModule} from "primeng/chart";
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -67,7 +68,7 @@ import {ProjectDetailsComponent} from './projects/project-details/project-detail
     ProjectDetailsComponent],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, NgbModule, CdkTableModule,
-    FontAwesomeModule, FormsModule, BrowserAnimationsModule, FileUploadModule,
+    FontAwesomeModule, FormsModule, BrowserAnimationsModule, FileUploadModule, ChartModule,
   ],
   providers: [HttpErrorHandler, MessageService],
   bootstrap: [AppComponent]
