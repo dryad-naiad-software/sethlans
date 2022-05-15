@@ -128,11 +128,7 @@
           <fa-icon [icon]="faBookOpen"></fa-icon>
           <span class="ms-2">Documentation</span></a>
 
-        <a *ngIf="isAdministrator && mode != Mode.NODE" class="dropdown-item" href="/get_started">
-          <fa-icon [icon]="faHourglassStart"></fa-icon>
-          <span class="ms-2">Get Started</span></a>
-
-        <button class="dropdown-item">
+        <button class="dropdown-item" (click)="aboutModal(about)">
           <fa-icon [icon]="faStar"></fa-icon>
           <span class="ms-2">About</span></button>
       </div>
@@ -147,3 +143,33 @@
     </li>
   </ul>
 </nav>
+
+<ng-template #about let-modal>
+  <div class="modal-header">
+    <h4 style="font-family: 'Fjalla One', sans-serif;">About</h4>
+    <button (click)="modal.dismiss('Cross click')" aria-label="Close" class="btn-close" type="button"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-5">
+        <img [src]="logoDark"
+             height="64"
+             class="align-top"
+             alt="logo">
+      </div>
+      <div class="col-7">
+        <p>Sethlans v.{{sethlansVersion}}</p>
+        <p>Distributed render environment for Blender. Running on Java {{javaVersion}}</p>
+        <p>Copyright 2018-{{year}} Dryad and
+          Naiad Software
+          LLC.</p>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="modal-footer">
+    <a href="https://github.com/dryad-naiad-software/sethlans/blob/master/LICENSE" class="mr-auto">Licensing
+      Information</a>
+  </div>
+</ng-template>

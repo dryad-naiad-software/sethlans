@@ -55,6 +55,10 @@ export class SethlansService {
     return this.http.get(this.rootURL + '/info/version');
   }
 
+  javaVersion() {
+    return this.http.get(this.rootURL + '/info/java_version');
+  }
+
   mode() {
     return this.http.get(this.rootURL + "/info/mode")
   }

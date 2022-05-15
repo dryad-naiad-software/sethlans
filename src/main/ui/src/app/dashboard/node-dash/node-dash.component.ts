@@ -31,6 +31,7 @@ export class NodeDashComponent implements OnInit {
       this.nodeDashboard = obj;
     })
     setTimeout(() => {
+      this.nodeDashboard = new NodeDashboard();
       this.getDashboard();
     }, 30000);
   }

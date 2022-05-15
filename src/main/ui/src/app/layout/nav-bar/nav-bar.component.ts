@@ -42,6 +42,8 @@ import {SethlansService} from "../../services/sethlans.service";
 import {Mode} from "../../enums/mode.enum";
 import {UserQuery} from "../../models/user/userquery.model";
 import {Role} from "../../enums/role.enum";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -85,12 +87,21 @@ export class NavBarComponent implements OnInit {
   newNotifications = false;
   mode: Mode = Mode.SETUP;
   Mode = Mode;
+  sethlansVersion: string = "";
+  javaVersion: string = "";
+  year: string = "";
 
 
-  constructor(private sethlansService: SethlansService) {
+  constructor(private modalService: NgbModal, private sethlansService: SethlansService) {
   }
 
   ngOnInit(): void {
+    this.sethlansService.javaVersion().subscribe((data: any) => {
+      this.javaVersion = data.java_version;
+    });
+    this.sethlansService.version().subscribe((data: any) => {
+      this.sethlansVersion = data.version;
+    });
     this.sethlansService.isFirstTime().subscribe((data: any) => {
       this.firstTime = data.first_time;
     })
@@ -110,6 +121,13 @@ export class NavBarComponent implements OnInit {
     this.sethlansService.mode().subscribe((data: any) => {
       this.mode = data.mode;
     });
+    this.sethlansService.year().subscribe((data: any) => {
+      this.year = data.year;
+    });
+  }
+
+  aboutModal(content: any) {
+    this.modalService.open(content)
   }
 
 }

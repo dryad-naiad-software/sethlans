@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +54,11 @@ public class InfoController {
         var mode = new HashMap<String, SethlansMode>();
         mode.put("mode", PropertiesUtils.getMode());
         return mode;
+    }
+
+    @GetMapping("/java_version")
+    public Map getJavaVersion() {
+        return Collections.singletonMap("java_version", System.getProperty("java.version"));
     }
 
     @GetMapping("/node_dashboard")
