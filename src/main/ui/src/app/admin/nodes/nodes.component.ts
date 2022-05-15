@@ -52,6 +52,7 @@ export class NodesComponent implements OnInit {
     'benchmarkStatus',
     'actions'
   ]);
+  nodeListRetrieved: boolean = false;
 
 
   constructor(private sethlansService: SethlansService, private clipboard: Clipboard) {
@@ -74,6 +75,15 @@ export class NodesComponent implements OnInit {
     }, 15000);
   }
 
+  retrieveNodes() {
+    this.sethlansService.retrieveNetworkNodeList(this.manualNodeFormList).subscribe((response: any) => {
+      if (response.statusText == "Accepted") {
+        this.nodeListRetrieved = true;
+        this.selectedNodeList = response.body;
+      }
+    })
+  }
+
   getNetworkNodeList() {
     this.sethlansService.networkNodeScan().subscribe((data: any) => {
       this.networkNodeList = data;
@@ -85,6 +95,15 @@ export class NodesComponent implements OnInit {
   copyAPIKey() {
     this.clipboard.copy(this.sethlansAPIKey)
 
+  }
+
+  checkManualNode() {
+    if (this.manualNode.ipAddress != '' && this.manualNode.networkPort != '') {
+      this.addDisabled = false;
+    }
+    if (this.manualNode.ipAddress == null || this.manualNode.networkPort == null) {
+      this.addDisabled = true;
+    }
   }
 
   manualAddNodeToList() {
@@ -127,6 +146,9 @@ export class NodesComponent implements OnInit {
         }
         break;
       case NodeWizardProgress.ADD:
+        if (this.nodeWizardType == NodeWizardType.MANUAL) {
+          this.retrieveNodes();
+        }
         this.nodeWizardProgress = NodeWizardProgress.SUMMARY;
         break;
     }
@@ -143,6 +165,9 @@ export class NodesComponent implements OnInit {
           this.scanning = true;
           this.selectedNodeList = new Array<Node>();
           this.getNetworkNodeList();
+        }
+        if (this.nodeWizardType == NodeWizardType.MANUAL) {
+          this.nodeListRetrieved = false;
         }
         break;
     }

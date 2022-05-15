@@ -225,15 +225,19 @@
             <br/>
             <div class="row">
               <div class="col">
-                <input type="text" class="form-control form-control-sm" [(ngModel)]="manualNode.ipAddress"
+                <input (keyup)="checkManualNode()" type="text" class="form-control form-control-sm"
+                       [(ngModel)]="manualNode.ipAddress"
                        placeholder="IP Address or Hostname">
               </div>
               <div class="col">
-                <input type="number" class="form-control form-control-sm" [(ngModel)]="manualNode.networkPort"
+                <input (keyup)="checkManualNode()" type="number" class="form-control form-control-sm"
+                       [(ngModel)]="manualNode.networkPort"
                        placeholder="Port">
               </div>
               <div class="col">
-                <button class="btn btn-sm btn-outline-dark" (click)="manualAddNodeToList()">Add To List</button>
+                <button [disabled]="addDisabled" class="btn btn-sm btn-outline-dark" (click)="manualAddNodeToList()">Add
+                  To List
+                </button>
               </div>
             </div>
             <div class="row">
@@ -251,9 +255,7 @@
                     <td>{{node.ipAddress}}</td>
                     <td>{{node.networkPort}}</td>
                   </tr>
-
                   </tbody>
-
                 </table>
               </div>
 
@@ -261,15 +263,23 @@
           </div>
         </div>
         <div
-          *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY || nodeWizardProgress == NodeWizardProgress.FINISHED">
+          *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY
+          || nodeWizardProgress == NodeWizardProgress.FINISHED">
+          <div *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY && !nodeListRetrieved">
+            <div class="alert alert-primary text-center" role="alert">
+              <span>Attempting to contact nodes</span>
+              <div aria-hidden="true" class="ms-2 spinner-border spinner-border-sm text-center" role="status"></div>
+            </div>
+          </div>
           <div *ngIf="nodeWizardProgress == NodeWizardProgress.FINISHED">
             <div class="alert alert-success text-center" role="alert">
               <span>Adding Selected Nodes to the Server</span>
               <div aria-hidden="true" class="ms-2 spinner-border spinner-border-sm text-center" role="status"></div>
             </div>
           </div>
-          <h4 class="pt-2 pb-2">Selected Nodes:</h4>
-          <table class="table table-responsive-md">
+          <h4 *ngIf="nodeWizardType == NodeWizardType.MANUAL && nodeListRetrieved" class="pt-2 pb-2">Selected
+            Nodes:</h4>
+          <table *ngIf="nodeWizardType == NodeWizardType.MANUAL && nodeListRetrieved" class="table table-responsive-md">
             <thead>
             <tr>
               <th colspan="col">Hostname</th>

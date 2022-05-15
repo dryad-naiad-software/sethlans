@@ -101,16 +101,22 @@ public class AdminServerEndPointController {
         return NetworkUtils.discoverNodesViaMulticast();
     }
 
-    @GetMapping("/retrieve_node_detail_list")
-    public Set<Node> nodesSet(@RequestBody List<NodeForm> nodes) {
+    @PostMapping("/retrieve_node_detail_list")
+    public ResponseEntity<Set<Node>> nodesSet(@RequestBody List<NodeForm> nodes) {
         var nodeSet = new HashSet<Node>();
         for (NodeForm node : nodes) {
-            var retrievedNode = NetworkUtils.getNodeViaJson(node.getIpAddress(), node.getNetworkPort());
+            Node retrievedNode = null;
+            try {
+                retrievedNode = NetworkUtils.getNodeViaJson(node.getIpAddress(), node.getNetworkPort());
+            } catch (Exception e) {
+                log.debug("No Node found at " + node.getIpAddress() + ":" + node.getNetworkPort());
+            }
             if (retrievedNode != null) {
+                log.debug(String.valueOf(retrievedNode));
                 nodeSet.add(retrievedNode);
             }
         }
-        return nodeSet;
+        return new ResponseEntity<Set<Node>>(nodeSet, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/current_node_list")

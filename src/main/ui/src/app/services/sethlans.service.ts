@@ -165,7 +165,7 @@ export class SethlansService {
     return this.http.post<Array<NodeForm>>(this.rootURL + "/management/add_nodes_to_server", JSON.stringify(selectedNodes),
       {headers: headers, observe: "response"})
       .pipe(
-        catchError(this.handleError('submitSetup', selectedNodes)))
+        catchError(this.handleError('submitNodes', selectedNodes)))
 
   }
 
@@ -260,6 +260,17 @@ export class SethlansService {
         observe: "response"
       })
       .pipe(catchError(this.handleError('stopProject', projectID)))
+  }
+
+  retrieveNetworkNodeList(manualNodeList: Array<NodeForm>): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<Array<NodeForm>>(this.rootURL + "/management/retrieve_node_detail_list", JSON.stringify(manualNodeList),
+      {headers: headers, observe: "response"})
+      .pipe(
+        catchError(this.handleError('retrieveNetworkNodes', manualNodeList)))
+
   }
 
 
