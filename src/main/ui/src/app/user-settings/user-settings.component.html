@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-md-10 mx-auto mt-3 mb-3">
+    <div class="card">
+      <div class="card-header">
+        <h4 style="font-family: 'Fjalla One', sans-serif">User Settings - {{user.username}}</h4>
+      </div>
+      <div class="card-body">
+        <p>Current Roles: <span *ngFor="let role of user.roles">{{role}}</span></p>
+
+        <div class="row">
+          <div class="col" *ngIf="mode != Mode.NODE">
+            <h6>Email Settings</h6>
+            <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
+              <input type="text"
+                     name="email"
+                     id="email"
+                     (keyup)="validateEmail()"
+                     value="{{user.email}}"
+                     [(ngModel)]="newEmail"
+                     placeholder="Email Address"
+                     class="form-control form-control-sm">
+              <div *ngIf="emailError" class="alert alert-danger">
+                <ul>
+                  <li>Email is required and must be valid.</li>
+                </ul>
+              </div>
+            </div>
+            <br/>
+            <button class="btn btn-outline-dark" [disabled]="!emailUpdated" (click)="changeEmail()">Change Email
+            </button>
+            <hr/>
+            <h6>Email Notification Settings</h6>
+          </div>
+          <div class="col">
+            <h6>Password Settings</h6>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

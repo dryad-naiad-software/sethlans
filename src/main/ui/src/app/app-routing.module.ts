@@ -25,11 +25,13 @@ import {AuthorizedServerComponent} from "./admin/authorized-server/authorized-se
 import {ComputeSettingsComponent} from "./admin/compute-settings/compute-settings.component";
 import {ProjectsComponent} from "./projects/projects.component";
 import {ProjectDetailsComponent} from "./projects/project-details/project-details.component";
+import {UserSettingsComponent} from "./user-settings/user-settings.component";
 
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'user_settings', component: UserSettingsComponent},
   {path: 'admin/nodes', component: NodesComponent},
   {path: 'admin/server', component: AuthorizedServerComponent},
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},

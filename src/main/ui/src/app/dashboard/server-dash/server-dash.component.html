@@ -43,3 +43,32 @@
 
   </div>
 </div>
+<hr *ngIf="mode == Mode.SERVER"/>
+<div *ngIf="mode == Mode.SERVER" class="row">
+  <div class="col-lg-5">
+    <h5>System Information</h5>
+    <ul>
+      <li>Processor: <i>{{serverDashboard.cpuName}}</i></li>
+      <li>Memory: <i>{{serverDashboard.totalMemory}}</i></li>
+      <li>Disk Space:
+        <ngb-progressbar
+          [max]="serverDashboard.totalSpace"
+          [value]="serverDashboard.usedSpace"
+          type="info">
+        </ngb-progressbar>
+        <span class="float-start">
+          <fa-icon [icon]="faSquare" style="color: #17a2b8; font-size: 0.75rem"></fa-icon>
+          &nbsp;Used - {{serverDashboard.usedSpace}} GiB</span>
+        <span class="float-end">
+                    <fa-icon [icon]="faSquare" style="color: #e9ecef; font-size: 0.75rem;"></fa-icon>
+          &nbsp;Free - {{serverDashboard.freeSpace}} GiB</span>
+      </li>
+
+    </ul>
+  </div>
+  <div class="col-lg-4">
+
+  </div>
+  <div class="col-lg-3">
+  </div>
+</div>

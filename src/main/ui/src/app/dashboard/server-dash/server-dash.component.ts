@@ -4,6 +4,9 @@ import {SethlansService} from "../../services/sethlans.service";
 import {ProjectView} from "../../models/project/projectview.model";
 import {ProjectState} from "../../enums/projectstate.enum";
 import {BehaviorSubject} from "rxjs";
+import {faSquare} from "@fortawesome/free-solid-svg-icons";
+import {Mode} from 'src/app/enums/mode.enum';
+
 
 @Component({
   selector: 'app-server-dash',
@@ -11,6 +14,9 @@ import {BehaviorSubject} from "rxjs";
   styleUrls: ['./server-dash.component.css']
 })
 export class ServerDashComponent implements OnInit {
+  mode: Mode = Mode.SETUP;
+  Mode = Mode;
+  faSquare = faSquare;
   serverDashboard = new ServerDashboard();
   activeProjects: ProjectView[] = [];
   projectDataSource = new BehaviorSubject<any[]>([]);
@@ -44,6 +50,9 @@ export class ServerDashComponent implements OnInit {
   }
 
   getProjects() {
+    this.sethlansService.mode().subscribe((data: any) => {
+      this.mode = data.mode;
+    });
     this.sethlansService.getProjects().subscribe((data: any) => {
       let projects: ProjectView[] = data;
       this.activeProjects = [];

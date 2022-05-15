@@ -43,6 +43,7 @@ import {FileUploadModule} from "primeng/fileupload";
 import {CdkTableModule} from "@angular/cdk/table";
 import {ProjectDetailsComponent} from './projects/project-details/project-details.component';
 import {ChartModule} from "primeng/chart";
+import {UserSettingsComponent} from './user-settings/user-settings.component';
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -65,7 +66,8 @@ import {ChartModule} from "primeng/chart";
     AuthorizedServerComponent,
     ComputeSettingsComponent,
     ProjectsComponent,
-    ProjectDetailsComponent],
+    ProjectDetailsComponent,
+    UserSettingsComponent],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, NgbModule, CdkTableModule,
     FontAwesomeModule, FormsModule, BrowserAnimationsModule, FileUploadModule, ChartModule,
