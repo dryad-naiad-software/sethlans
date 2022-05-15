@@ -265,7 +265,8 @@
         <div
           *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY
           || nodeWizardProgress == NodeWizardProgress.FINISHED">
-          <div *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY && !nodeListRetrieved">
+          <div
+            *ngIf="nodeWizardProgress == NodeWizardProgress.SUMMARY && !nodeListRetrieved && nodeWizardType == NodeWizardType.MANUAL">
             <div class="alert alert-primary text-center" role="alert">
               <span>Attempting to contact nodes</span>
               <div aria-hidden="true" class="ms-2 spinner-border spinner-border-sm text-center" role="status"></div>
@@ -277,9 +278,13 @@
               <div aria-hidden="true" class="ms-2 spinner-border spinner-border-sm text-center" role="status"></div>
             </div>
           </div>
-          <h4 *ngIf="nodeWizardType == NodeWizardType.MANUAL && nodeListRetrieved" class="pt-2 pb-2">Selected
+          <h4
+            *ngIf="nodeWizardType == NodeWizardType.MANUAL && nodeListRetrieved || nodeWizardType == NodeWizardType.SCAN"
+            class="pt-2 pb-2">Selected
             Nodes:</h4>
-          <table *ngIf="nodeWizardType == NodeWizardType.MANUAL && nodeListRetrieved" class="table table-responsive-md">
+          <table
+            *ngIf="nodeWizardType == NodeWizardType.MANUAL && nodeListRetrieved || nodeWizardType == NodeWizardType.SCAN"
+            class="table table-responsive-md">
             <thead>
             <tr>
               <th colspan="col">Hostname</th>

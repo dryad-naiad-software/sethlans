@@ -71,6 +71,10 @@ export class SethlansService {
     return this.http.get(this.rootURL + "/info/node_dashboard")
   }
 
+  getServerDashBoard() {
+    return this.http.get(this.rootURL + "/info/server_dashboard")
+  }
+
   getCurrentUser() {
     return this.http.get(this.rootURL + "/management/get_current_user")
   }

@@ -36,7 +36,7 @@ public interface NodeRepository extends JpaRepository<Node, Long> {
 
     boolean existsNodeByIpAddressAndNetworkPort(String ipAddress, String port);
 
-    int countNodesByActiveIsTrue();
+    long countNodesByActiveIsTrue();
 
     boolean existsNodeByActiveIsTrue();
 

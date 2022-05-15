@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-import {NodeType} from "../../enums/nodetype.enum";
 
 /**
  * File created by Mario Estrella on 5/14/2022
@@ -25,11 +24,28 @@ import {NodeType} from "../../enums/nodetype.enum";
  */
 
 export class ServerDashboard {
-  totalNodes: number = 0;
-  activeNodes: number = 0;
-  disabledNodes: number = 0;
-  totalSlots: number = 0;
-  nodeDistribution = new Map<NodeType, number>();
+  totalNodes: number;
+  activeNodes: number;
+  disabledNodes: number;
+  totalSlots: number;
+  nodeDistribution;
+  cpuName: string;
+  totalMemory: string;
+  freeSpace: number;
+  totalSpace: number;
+  usedSpace: number;
 
+  constructor() {
+    this.totalNodes = 0;
+    this.activeNodes = 0;
+    this.disabledNodes = 0;
+    this.totalSlots = 0;
+    this.cpuName = "";
+    this.totalMemory = "";
+    this.freeSpace = 0;
+    this.totalSpace = 0;
+    this.usedSpace = 0;
+    this.nodeDistribution = new Array<number>();
+  }
 
 }

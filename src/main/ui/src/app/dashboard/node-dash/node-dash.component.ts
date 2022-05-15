@@ -21,10 +21,18 @@ export class NodeDashComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.sethlansService.getNodeDashBoard().subscribe((obj) => {
-      this.nodeDashboard.setDashboard(obj);
-    })
+    this.getDashboard();
 
+
+  }
+
+  getDashboard() {
+    this.sethlansService.getNodeDashBoard().subscribe((obj: any) => {
+      this.nodeDashboard = obj;
+    })
+    setTimeout(() => {
+      this.getDashboard();
+    }, 15000);
   }
 
 }

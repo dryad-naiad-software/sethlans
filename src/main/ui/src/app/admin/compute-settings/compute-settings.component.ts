@@ -24,7 +24,7 @@ export class ComputeSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.sethlansService.getNodeDashBoard().subscribe((data: any) => {
-      this.nodeDashboard.setDashboard(data);
+      this.nodeDashboard = data;
     })
 
   }
@@ -40,7 +40,7 @@ export class ComputeSettingsComponent implements OnInit {
     this.sethlansService.setNodeSettings(this.nodeSettings).subscribe((response: any) => {
       if (response.statusText == "Accepted") {
         this.sethlansService.getNodeDashBoard().subscribe((data: any) => {
-          this.nodeDashboard.setDashboard(data);
+          this.nodeDashboard = data;
           this.changeSettingsScreen = false;
         })
       }

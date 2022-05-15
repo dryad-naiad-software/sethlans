@@ -57,21 +57,4 @@ export class NodeDashboard {
     this.tileSizeGPU = 0;
     this.tileSizeCPU = 0;
   }
-
-  setDashboard(obj: any) {
-    this.nodeType = obj.nodeType;
-    this.cpuName = obj.cpuName;
-    this.totalMemory = obj.totalMemory;
-    this.selectedCores = obj.selectedCores;
-    this.freeSpace = obj.freeSpace;
-    this.totalSpace = obj.totalSpace;
-    this.usedSpace = obj.usedSpace;
-    this.selectedGPUModels = obj.selectedGPUModels;
-    this.availableGPUModels = obj.availableGPUModels;
-    this.totalSlots = obj.totalSlots;
-    this.gpuCombined = obj.gpuCombined;
-    this.apiKeyPresent = obj.apiKeyPresent;
-    this.tileSizeGPU = obj.tileSizeGPU;
-    this.tileSizeCPU = obj.tileSizeCPU;
-  }
 }

@@ -17,13 +17,12 @@
  */
 package com.dryadandnaiad.sethlans.models.query;
 
-import com.dryadandnaiad.sethlans.enums.NodeType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * File created by Mario Estrella on 5/14/2022
@@ -40,5 +39,10 @@ public class ServerDashboard {
     private int activeNodes;
     private int disabledNodes;
     private int totalSlots;
-    private Map<NodeType, Integer> nodeDistribution;
+    private String cpuName;
+    private String totalMemory;
+    private Long freeSpace;
+    private Long totalSpace;
+    private Long usedSpace;
+    private List<Integer> nodeDistribution;
 }
