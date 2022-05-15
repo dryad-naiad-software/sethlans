@@ -21,6 +21,7 @@ import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
+import com.dryadandnaiad.sethlans.models.query.ServerDashboard;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Notification;
 import com.dryadandnaiad.sethlans.models.user.User;
@@ -71,6 +72,14 @@ public class AdminServerEndPointController {
         this.serverQueueService = serverQueueService;
         this.notificationRepository = notificationRepository;
         this.userRepository = userRepository;
+    }
+
+    @GetMapping("/server_dashboard")
+    @Profile({"SERVER", "DUAL"})
+    public ServerDashboard getServerDashboard() {
+        var dashboard = ServerDashboard.builder().build();
+
+        return dashboard;
     }
 
     @GetMapping("/server_api_key")
