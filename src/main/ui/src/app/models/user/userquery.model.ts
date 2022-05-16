@@ -18,6 +18,7 @@
 
 import {UserChallenge} from "./user-challenge.model";
 import {Role} from "../../enums/role.enum";
+import {NotificationSetttings} from "../settings/notificationsettings.model";
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -31,10 +32,7 @@ export class UserQuery {
   username: string;
   email: string;
   active: boolean;
-  systemEmailNotifications: boolean;
-  nodeEmailNotifications: boolean;
-  projectEmailNotifications: boolean;
-  videoEncodingEmailNotifications: boolean;
+  notificationSettings: NotificationSetttings;
   challengeList: Array<UserChallenge>;
   roles: Array<Role>;
 
@@ -43,10 +41,8 @@ export class UserQuery {
     this.username = '';
     this.email = '';
     this.active = false;
-    this.systemEmailNotifications = false;
-    this.nodeEmailNotifications = false;
-    this.projectEmailNotifications = false;
-    this.videoEncodingEmailNotifications = false;
+    this.notificationSettings = new NotificationSetttings();
+
     this.challengeList = new Array<UserChallenge>();
     this.roles = new Array<Role>();
   }
@@ -56,10 +52,7 @@ export class UserQuery {
     this.username = obj.username;
     this.email = obj.email;
     this.active = obj.active;
-    this.systemEmailNotifications = obj.systemEmailNotifications;
-    this.nodeEmailNotifications = obj.nodeEmailNotifications;
-    this.projectEmailNotifications = obj.projectEmailNotifications;
-    this.videoEncodingEmailNotifications = obj.videoEncodingEmailNotifications;
+    this.notificationSettings = obj.notificationSettings;
     this.challengeList = obj.challengeList;
     this.roles = obj.roles;
   }

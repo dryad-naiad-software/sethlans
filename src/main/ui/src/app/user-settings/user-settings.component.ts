@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {SethlansService} from "../services/sethlans.service";
 import {UserQuery} from "../models/user/userquery.model";
 import {Mode} from "../enums/mode.enum";
+import {Role} from "../enums/role.enum";
+import {faCheckSquare, faSquare} from '@fortawesome/free-regular-svg-icons';
 
 @Component({
   selector: 'app-user-settings',
@@ -12,6 +14,11 @@ export class UserSettingsComponent implements OnInit {
   user: UserQuery = new UserQuery();
   mode: Mode = Mode.SETUP;
   Mode = Mode;
+  faSquare = faSquare;
+  faCheckSquare = faCheckSquare;
+
+  isAdministrator = false;
+  isSuperAdministrator = false;
   newEmail: string = "";
   emailError: boolean = false;
   emailUpdated: boolean = false;
@@ -25,6 +32,15 @@ export class UserSettingsComponent implements OnInit {
     this.sethlansService.getCurrentUser().subscribe((data: any) => {
       this.user.setUserQuery(data);
       this.newEmail = this.user.email;
+      if (this.user.roles.indexOf(Role.ADMINISTRATOR) !== -1
+        || this.user.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+        this.isAdministrator = true;
+      }
+      if (this.user.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+        this.isSuperAdministrator = true;
+      }
+      console.log(this.user)
+
     });
     this.sethlansService.mode().subscribe((data: any) => {
       this.mode = data.mode;

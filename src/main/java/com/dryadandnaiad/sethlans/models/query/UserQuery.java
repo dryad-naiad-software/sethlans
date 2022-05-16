@@ -1,6 +1,7 @@
 package com.dryadandnaiad.sethlans.models.query;
 
 import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.models.settings.NotificationSettings;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,10 +22,8 @@ public class UserQuery {
     private Set<Role> roles;
     private String email;
     private boolean active;
-    private boolean systemEmailNotifications;
-    private boolean nodeEmailNotifications;
-    private boolean projectEmailNotifications;
-    private boolean videoEncodingEmailNotifications;
+    private NotificationSettings notificationSettings;
+
 
 
 }

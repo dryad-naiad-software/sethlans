@@ -30,6 +30,34 @@
             </button>
             <hr/>
             <h6>Email Notification Settings</h6>
+            <div class="form-group" *ngIf="isAdministrator">
+              <span><fa-icon class="pe-2"
+                             [icon]="user.notificationSettings.nodeEmailNotifications ? faCheckSquare : faSquare"
+                             (click)="user.notificationSettings.nodeEmailNotifications = !user.notificationSettings.nodeEmailNotifications"></fa-icon>Node Notifications</span>
+            </div>
+            <div class="form-group" *ngIf="isAdministrator">
+              <span><fa-icon class="pe-2"
+                             [icon]="user.notificationSettings.systemEmailNotifications ? faCheckSquare : faSquare"
+                             (click)="user.notificationSettings.systemEmailNotifications = !user.notificationSettings.systemEmailNotifications"></fa-icon>System Notifications</span>
+            </div>
+            <div class="form-group">
+              <span><fa-icon class="pe-2"
+                             [icon]="user.notificationSettings.projectEmailNotifications ? faCheckSquare : faSquare"
+                             (click)="user.notificationSettings.projectEmailNotifications = !user.notificationSettings.projectEmailNotifications">
+
+              </fa-icon>Project Notifications</span>
+            </div>
+            <div class="form-group">
+              <span><fa-icon class="pe-2"
+                             [icon]="user.notificationSettings.videoEncodingEmailNotifications ? faCheckSquare : faSquare"
+                             (click)="user.notificationSettings.videoEncodingEmailNotifications  = !user.notificationSettings.videoEncodingEmailNotifications ">
+
+              </fa-icon>Video Encoding Notifications</span>
+            </div>
+            <br/>
+            <button class="btn btn-outline-dark">Change Email Notification Settings
+            </button>
+
           </div>
           <div class="col">
             <h6>Password Settings</h6>
