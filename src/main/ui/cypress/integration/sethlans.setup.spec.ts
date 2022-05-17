@@ -6,7 +6,7 @@ describe('Sethlans Setup Wizard Tests', () => {
     cy.get('[id=start]').click()
     cy.get('[id=server]').click()
     cy.get('[id=next]').click()
-    cy.get('[id=username]').type("texhound")
+    cy.get('[id=username]').type("sampleuser")
     cy.get('[id=password]').type("test1234")
     cy.get('[id=passwordConfirm]').type("test1234")
 
@@ -18,7 +18,7 @@ describe('Sethlans Setup Wizard Tests', () => {
     cy.get('[id=start]').click()
     cy.get('[id=node]').click()
     cy.get('[id=next]').click()
-    cy.get('[id=username]').type("texhound")
+    cy.get('[id=username]').type("sampleuser")
     cy.get('[id=password]').type("test1234")
     cy.get('[id=passwordConfirm]').type("test1234")
 
