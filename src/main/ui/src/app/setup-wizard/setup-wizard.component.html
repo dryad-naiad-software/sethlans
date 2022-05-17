@@ -42,6 +42,7 @@
           <ul class="nav nav-tabs justify-content-between pb-3">
             <li>
               <button (click)="goToMode()"
+                      id="mode_nav"
                       [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED"
 
                       [ngClass]="setupWizardProgress == SetupWizardProgress.MODE
@@ -54,6 +55,7 @@
             <li>
               <button (click)="goToAdmin()"
                       [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED"
+                      id="admin_nav"
 
                       [ngClass]="setupWizardProgress == SetupWizardProgress.ADMIN_SETUP
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
@@ -65,6 +67,7 @@
             <li>
               <button (click)="goToModeSetup()"
                       [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED || !modeSettingsEnabled"
+                      id="mode_setup_nav"
 
                       [ngClass]="setupWizardProgress == SetupWizardProgress.MODE_SETUP
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
@@ -76,6 +79,7 @@
             <li>
               <button (click)="goToSettings()"
                       [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED || !settingsEnabled"
+                      id="settings_nav"
 
                       [ngClass]="setupWizardProgress == SetupWizardProgress.SETTINGS
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
@@ -87,6 +91,7 @@
             <li>
               <button (click)="goToSummary()"
                       [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED || !summaryEnabled"
+                      id="summary_nav"
                       [ngClass]="setupWizardProgress == SetupWizardProgress.SUMMARY
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Summary"
@@ -116,6 +121,7 @@
                        [value]="Mode.DUAL"
                        class="form-check-input"
                        name="mode"
+                       id="dual"
                        required
                        type="radio">Dual
               </label>
@@ -126,6 +132,7 @@
                        [value]="Mode.SERVER"
                        class="form-check-input"
                        name="mode"
+                       id="server"
                        required
                        type="radio">Server
               </label>
@@ -136,6 +143,7 @@
                        [value]="Mode.NODE"
                        class="form-check-input"
                        name="mode"
+                       id="node"
                        required
                        type="radio">Node
               </label>
@@ -249,6 +257,7 @@
               <div class="col-md">
                 <select (change)="updateChallenge(0, $any($event.target).value)" [(ngModel)]="challenge1"
                         class="form-select form-select-sm"
+                        id="challenge1"
                         name="challenge1">
                   <option *ngFor="let challenge of setupForm.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
@@ -257,6 +266,7 @@
               <div class="col-md">
                 <div class="input-group input-group-sm">
                   <input [(ngModel)]="response1"
+                         id="response1"
                          (keyup)="updateResponse(0, $any($event.target).value)"
                          class="form-control form-control-sm"
                          placeholder="Response" required>
@@ -267,6 +277,7 @@
               <div class="col-md ">
                 <select (change)="updateChallenge(1, $any($event.target).value)" [(ngModel)]="challenge2"
                         class="form-select form-select-sm"
+                        id="challenge2"
                         name="challenge2">
                   <option *ngFor="let challenge of setupForm.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
@@ -275,6 +286,7 @@
               <div class="col-md">
                 <div class="input-group input-group-sm">
                   <input [(ngModel)]="response2"
+                         id="response2"
                          (keyup)="updateResponse(1, $any($event.target).value)"
                          class="form-control form-control-sm"
                          placeholder="Response" required>
@@ -287,6 +299,7 @@
               <div class="col-md ">
                 <select (change)="updateChallenge(2, $any($event.target).value)" [(ngModel)]="challenge3"
                         class="form-select form-select-sm"
+                        id="challenge3"
                         name="challenge3">
                   <option *ngFor="let challenge of setupForm.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
@@ -295,6 +308,7 @@
               <div class="col-md">
                 <div class="input-group input-group-sm">
                   <input [(ngModel)]="response3"
+                         id="response3"
                          (keyup)="updateResponse(2, $any($event.target).value)"
                          class="form-control form-control-sm"
                          placeholder="Response" required>
@@ -648,6 +662,7 @@
       <div class="card-footer">
         <nav>
           <button (click)="previous()"
+                  id="previous"
                   *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN
                   && setupWizardProgress != SetupWizardProgress.FINISHED"
                   [disabled]="setupWizardProgress == SetupWizardProgress.MODE"
@@ -657,6 +672,7 @@
           <button (click)="next()" *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN && setupWizardProgress != SetupWizardProgress.SUMMARY
         && setupWizardProgress != SetupWizardProgress.FINISHED"
                   [disabled]="!nextEnabled"
+                  id="next"
                   class="btn btn-outline-primary float-end"> Next
           </button>
 
@@ -664,10 +680,12 @@
                   *ngIf="setupWizardProgress == SetupWizardProgress.SUMMARY ||
                   setupWizardProgress == SetupWizardProgress.FINISHED"
                   [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED || finishClicked"
+                  id="finish"
                   class="btn btn-outline-primary float-end"> Finish
           </button>
 
           <button (click)="loadSetupForm()" *ngIf="setupWizardProgress == SetupWizardProgress.BEGIN"
+                  id="start"
                   class="btn btn-outline-primary float-end"> Start
           </button>
         </nav>
