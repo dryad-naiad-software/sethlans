@@ -326,7 +326,7 @@
             <div class="col-md-12">
               <h6>Select Blender Binary Version</h6>
               <select [(ngModel)]="setupForm.serverSettings.blenderVersion" class="form-select form-select-sm"
-                      name="version">
+                      id="blenderVersion" name="version">
                 <option *ngFor="let version of setupForm.blenderVersions" ngValue="{{version}}">{{version}}</option>
               </select>
             </div>
