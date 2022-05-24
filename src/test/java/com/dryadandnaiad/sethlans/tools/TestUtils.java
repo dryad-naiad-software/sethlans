@@ -26,13 +26,18 @@ import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.undertow.util.StatusCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.io.File;
 import java.util.*;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.sessionId;
+import static io.restassured.RestAssured.*;
 
 /**
  * File created by Mario Estrella on 12/27/2020.
@@ -112,6 +117,22 @@ public class TestUtils {
                 .build();
     }
 
+    public static void copyBlendFilesForTest(File blendDirectory) {
+        blendDirectory.mkdirs();
+
+        var file1 = "wasp_bot.blend";
+        var file2 = "refract_monkey.blend";
+        var file3 = "bmw27_gpu.blend";
+        var file4 = "scene-helicopter-27.blend";
+        var file5 = "pavillon_barcelone_v1.2.zip";
+
+        TestFileUtils.copyTestArchiveToDisk(blendDirectory.toString(), "blend_files/" + file1, file1);
+        TestFileUtils.copyTestArchiveToDisk(blendDirectory.toString(), "blend_files/" + file2, file2);
+        TestFileUtils.copyTestArchiveToDisk(blendDirectory.toString(), "blend_files/" + file3, file3);
+        TestFileUtils.copyTestArchiveToDisk(blendDirectory.toString(), "blend_files/" + file4, file4);
+        TestFileUtils.copyTestArchiveToDisk(blendDirectory.toString(), "blend_files/" + file5, file5);
+    }
+
 
     public static String hostWithoutDomainName(String baseHost) {
         int iend = baseHost.indexOf(".");
@@ -144,7 +165,66 @@ public class TestUtils {
         return token;
     }
 
-    public static SetupForm setupDual(SetupForm setupForm) {
+    public static void setupDual() throws JsonProcessingException, InterruptedException {
+        var port = System.getProperty("sethlans.port");
+        if (port == null) {
+            RestAssured.port = 7443;
+        } else {
+            RestAssured.port = Integer.parseInt(port);
+        }
+
+        var basePath = System.getProperty("sethlans.base");
+        if (basePath == null) {
+            basePath = "/";
+        }
+        RestAssured.basePath = basePath;
+
+        var baseHost = System.getProperty("sethlans.host");
+        if (baseHost == null) {
+            baseHost = "https://localhost";
+        } else {
+            baseHost = hostWithoutDomainName(baseHost);
+        }
+        RestAssured.baseURI = baseHost;
+        RestAssured.useRelaxedHTTPSValidation();
+
+        log.info("Preparing system for test");
+        var mapper = new ObjectMapper();
+
+        var setupForm = mapper
+                .readValue(get("/api/v1/setup/get_setup")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), SetupForm.class);
+
+        setupForm = TestUtils.prepareSetupFormDual(setupForm);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(setupForm))
+                .post("/api/v1/setup/submit")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        log.info("Restarting Sethlans");
+
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/setup/restart")
+                .then()
+                .statusCode(StatusCodes.OK);
+        log.info("Waiting 10 seconds for Restart to complete");
+
+        Thread.sleep(10000);
+    }
+
+    public static SetupForm prepareSetupFormDual(SetupForm setupForm) {
         var blenderVersions = setupForm.getBlenderVersions();
 
         var nodeType = NodeType.CPU;
@@ -194,7 +274,7 @@ public class TestUtils {
         return setupForm;
     }
 
-    public static SetupForm setupNode(SetupForm setupForm) {
+    public static SetupForm prepareSetupFormNode(SetupForm setupForm) {
 
         var nodeType = NodeType.CPU;
         var selectedGPUs = new ArrayList<GPU>();
@@ -232,7 +312,7 @@ public class TestUtils {
         return setupForm;
     }
 
-    public static SetupForm setupServer(SetupForm setupForm) {
+    public static SetupForm prepareSetupFormServer(SetupForm setupForm) {
         var blenderVersions = setupForm.getBlenderVersions();
 
         var challenge = UserChallenge.builder()

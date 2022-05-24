@@ -5,7 +5,6 @@ import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.blender.project.VideoSettings;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
-import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.tools.TestFileUtils;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,60 +44,9 @@ public class NodeRenderTaskIntegrationTest {
 
     @BeforeAll
     public static void setup() throws FileNotFoundException, JsonProcessingException, InterruptedException {
-
-        var port = System.getProperty("sethlans.port");
-        if (port == null) {
-            RestAssured.port = 7443;
-        } else {
-            RestAssured.port = Integer.parseInt(port);
-        }
-
-        var basePath = System.getProperty("sethlans.base");
-        if (basePath == null) {
-            basePath = "/";
-        }
-        RestAssured.basePath = basePath;
-
-        var baseHost = System.getProperty("sethlans.host");
-        if (baseHost == null) {
-            baseHost = "https://localhost";
-        } else {
-            baseHost = hostWithoutDomainName(baseHost);
-        }
-        RestAssured.baseURI = baseHost;
-        RestAssured.useRelaxedHTTPSValidation();
-
-        log.info("Preparing system for test");
         var mapper = new ObjectMapper();
 
-        var setupForm = mapper
-                .readValue(get("/api/v1/setup/get_setup")
-                        .then()
-                        .extract()
-                        .response()
-                        .body()
-                        .asString(), SetupForm.class);
-
-        setupForm = TestUtils.setupDual(setupForm);
-
-        given()
-                .log()
-                .ifValidationFails()
-                .accept(ContentType.JSON)
-                .contentType(ContentType.JSON)
-                .body(mapper.writeValueAsString(setupForm))
-                .post("/api/v1/setup/submit")
-                .then()
-                .statusCode(StatusCodes.CREATED);
-
-        log.info("Restarting Sethlans");
-
-        given()
-                .log()
-                .ifValidationFails()
-                .get("/api/v1/setup/restart")
-                .then()
-                .statusCode(StatusCodes.OK);
+        TestUtils.setupDual();
 
         log.info("Waiting 20 seconds");
 
@@ -159,7 +106,7 @@ public class NodeRenderTaskIntegrationTest {
         log.info(nodeSet.toString());
 
         var nodeList = new ArrayList<NodeForm>();
-        if(System.getProperty("sethlans.host") != null) {
+        if (System.getProperty("sethlans.host") != null) {
             for (Node node : nodeSet) {
                 if (node.getHostname().equalsIgnoreCase(System.getProperty("sethlans.host"))) {
                     var nodeForm = NodeForm.builder()
@@ -202,7 +149,7 @@ public class NodeRenderTaskIntegrationTest {
                         .asString(), new TypeReference<List<Node>>() {
                 });
 
-        if(System.getProperty("sethlans.host") != null) {
+        if (System.getProperty("sethlans.host") != null) {
             assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
         }
         log.info("Added the following node to server:");
@@ -217,7 +164,7 @@ public class NodeRenderTaskIntegrationTest {
                         .asString(), new TypeReference<Server>() {
                 });
 
-        if(System.getProperty("sethlans.host") != null) {
+        if (System.getProperty("sethlans.host") != null) {
             assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
             log.info("Confirmed server is present on node:");
         }
@@ -250,7 +197,7 @@ public class NodeRenderTaskIntegrationTest {
 
         log.info("Benchmark Complete");
 
-        log.info("Starting Node Render Task Test on " + baseHost + ":" + RestAssured.port);
+        log.info("Starting Node Render Task Test on " + RestAssured.baseURI + ":" + RestAssured.port);
 
     }
 
@@ -583,7 +530,6 @@ public class NodeRenderTaskIntegrationTest {
 
 
     }
-
 
 
     @AfterAll

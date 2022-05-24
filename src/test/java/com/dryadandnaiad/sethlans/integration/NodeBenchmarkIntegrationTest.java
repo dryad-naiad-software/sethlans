@@ -69,7 +69,7 @@ public class NodeBenchmarkIntegrationTest {
                         .body()
                         .asString(), SetupForm.class);
 
-        setupForm = TestUtils.setupDual(setupForm);
+        setupForm = TestUtils.prepareSetupFormDual(setupForm);
 
         given()
                 .log()

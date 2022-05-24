@@ -4,8 +4,6 @@ import com.dryadandnaiad.sethlans.enums.AnimationType;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
-import com.dryadandnaiad.sethlans.models.forms.SetupForm;
-import com.dryadandnaiad.sethlans.tools.TestFileUtils;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,7 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,87 +30,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProjectCreationIntegrationTest {
 
     static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
-    static File BLEND_DIRECTORY = new File(TEST_DIRECTORY.toString() + File.separator + "blend_files/");
+    static File BLEND_DIRECTORY = new File(TEST_DIRECTORY + File.separator + "blend_files/");
 
 
     @BeforeAll
     public static void setup() throws FileNotFoundException, JsonProcessingException, InterruptedException {
-
-        var port = System.getProperty("sethlans.port");
-        if (port == null) {
-            RestAssured.port = 7443;
-        } else {
-            RestAssured.port = Integer.parseInt(port);
-        }
-
-        var basePath = System.getProperty("sethlans.base");
-        if (basePath == null) {
-            basePath = "/";
-        }
-        RestAssured.basePath = basePath;
-
-        var baseHost = System.getProperty("sethlans.host");
-        if (baseHost == null) {
-            baseHost = "https://localhost";
-        } else {
-            baseHost = hostWithoutDomainName(baseHost);
-        }
-        RestAssured.baseURI = baseHost;
-        RestAssured.useRelaxedHTTPSValidation();
-
-        log.info("Preparing system for test");
-        var mapper = new ObjectMapper();
-
-        var setupForm = mapper
-                .readValue(get("/api/v1/setup/get_setup")
-                        .then()
-                        .extract()
-                        .response()
-                        .body()
-                        .asString(), SetupForm.class);
-
-        setupForm = TestUtils.setupDual(setupForm);
-
-        given()
-                .log()
-                .ifValidationFails()
-                .accept(ContentType.JSON)
-                .contentType(ContentType.JSON)
-                .body(mapper.writeValueAsString(setupForm))
-                .post("/api/v1/setup/submit")
-                .then()
-                .statusCode(StatusCodes.CREATED);
-
-        log.info("Restarting Sethlans");
-
-        given()
-                .log()
-                .ifValidationFails()
-                .get("/api/v1/setup/restart")
-                .then()
-                .statusCode(StatusCodes.OK);
-
-        log.info("Waiting 20 seconds");
-
-        Thread.sleep(10000);
-
-        BLEND_DIRECTORY.mkdirs();
-
-        var file1 = "wasp_bot.blend";
-        var file2 = "refract_monkey.blend";
-        var file3 = "bmw27_gpu.blend";
-        var file4 = "scene-helicopter-27.blend";
-        var file5 = "pavillon_barcelone_v1.2.zip";
-
-        TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file2, file2);
-        TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file3, file3);
-        TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file4, file4);
-        TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file5, file5);
-
-        log.info("Starting Project Test on " + baseHost + ":" + RestAssured.port);
-
+        TestUtils.setupDual();
+        TestUtils.copyBlendFilesForTest(BLEND_DIRECTORY);
+        log.info("Starting Project Creation Tests on " + RestAssured.baseURI + ":" + RestAssured.port);
     }
+
 
     @Test
     public void delete_project() throws JsonProcessingException, InterruptedException {

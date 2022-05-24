@@ -6,7 +6,6 @@ import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
-import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.tools.TestFileUtils;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,60 +42,9 @@ public class ServerPendingQueueIntegrationTest {
 
     @BeforeAll
     public static void setup() throws FileNotFoundException, JsonProcessingException, InterruptedException {
-
-        var port = System.getProperty("sethlans.port");
-        if (port == null) {
-            RestAssured.port = 7443;
-        } else {
-            RestAssured.port = Integer.parseInt(port);
-        }
-
-        var basePath = System.getProperty("sethlans.base");
-        if (basePath == null) {
-            basePath = "/";
-        }
-        RestAssured.basePath = basePath;
-
-        var baseHost = System.getProperty("sethlans.host");
-        if (baseHost == null) {
-            baseHost = "https://localhost";
-        } else {
-            baseHost = hostWithoutDomainName(baseHost);
-        }
-        RestAssured.baseURI = baseHost;
-        RestAssured.useRelaxedHTTPSValidation();
-
-        log.info("Preparing system for test");
+        TestUtils.setupDual();
         var mapper = new ObjectMapper();
 
-        var setupForm = mapper
-                .readValue(get("/api/v1/setup/get_setup")
-                        .then()
-                        .extract()
-                        .response()
-                        .body()
-                        .asString(), SetupForm.class);
-
-        setupForm = TestUtils.setupDual(setupForm);
-
-        given()
-                .log()
-                .ifValidationFails()
-                .accept(ContentType.JSON)
-                .contentType(ContentType.JSON)
-                .body(mapper.writeValueAsString(setupForm))
-                .post("/api/v1/setup/submit")
-                .then()
-                .statusCode(StatusCodes.CREATED);
-
-        log.info("Restarting Sethlans");
-
-        given()
-                .log()
-                .ifValidationFails()
-                .get("/api/v1/setup/restart")
-                .then()
-                .statusCode(StatusCodes.OK);
 
         log.info("Waiting 20 seconds");
 
@@ -254,7 +201,7 @@ public class ServerPendingQueueIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
 
-        log.info("Starting Server Queue Test on " + baseHost + ":" + RestAssured.port);
+        log.info("Starting Server Queue Test on " + RestAssured.baseURI + ":" + RestAssured.port);
 
     }
 
