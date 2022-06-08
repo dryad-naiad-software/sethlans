@@ -390,14 +390,14 @@
         <!-- Settings Setup-->
         <div *ngIf="setupWizardProgress == SetupWizardProgress.SETTINGS" class="row">
           <ul class="nav nav-tabs">
-            <li class="nav-item">
+            <li class="nav-item" id="settings">
                 <span (click)="showMailSettings=false"
                       [ngClass]="showMailSettings
                       ? '' : 'active'"
                       class="nav-link"
                 >Settings</span>
             </li>
-            <li *ngIf="setupForm.mode != Mode.NODE" class="nav-item">
+            <li *ngIf="setupForm.mode != Mode.NODE" class="nav-item" id="mailSettings">
                 <span (click)="showMailSettings=true"
                       [ngClass]="showMailSettings
                       ? 'active' : ''"

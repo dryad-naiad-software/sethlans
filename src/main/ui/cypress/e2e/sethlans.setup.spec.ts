@@ -19,6 +19,7 @@ describe('Sethlans Setup Wizard Tests', () => {
     cy.get('[id=next]').click()
     cy.get('[id=blenderVersion]').select(0)
     cy.get('[id=next]').click()
+    cy.get('[id=ipAddress]').type("whatever")
 
 
   });
