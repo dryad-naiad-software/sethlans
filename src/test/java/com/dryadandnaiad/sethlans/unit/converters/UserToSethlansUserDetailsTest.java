@@ -19,7 +19,7 @@ package com.dryadandnaiad.sethlans.unit.converters;
 
 import com.dryadandnaiad.sethlans.converters.UserToSethlansUserDetails;
 import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -42,7 +42,7 @@ class UserToSethlansUserDetailsTest {
 
         roles.add(Role.SUPER_ADMINISTRATOR);
 
-        var user = User.builder()
+        var user = SethlansUser.builder()
                 .active(true)
                 .id(12345L)
                 .userID(UUID.randomUUID().toString())

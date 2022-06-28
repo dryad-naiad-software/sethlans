@@ -9,7 +9,7 @@ import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.system.Node;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -133,7 +133,7 @@ public class SetupIntegrationTest {
                 .mailEnabled(false)
                 .build();
 
-        var user = User.builder()
+        var user = SethlansUser.builder()
                 .username("testuser")
                 .password("testPa$$1234")
                 .active(true)
@@ -145,7 +145,7 @@ public class SetupIntegrationTest {
         setupForm.setServerSettings(serverSettings);
         setupForm.setNodeSettings(nodeSettings);
         setupForm.setMailSettings(mailSettings);
-        setupForm.setUser(user);
+        setupForm.setSethlansUser(user);
 
         log.info("Submitting Setup Form \n" + setupForm);
         given()

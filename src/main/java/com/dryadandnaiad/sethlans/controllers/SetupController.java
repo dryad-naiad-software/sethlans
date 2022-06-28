@@ -25,7 +25,7 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.services.SetupService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -74,7 +74,7 @@ public class SetupController {
                 .nodeSettings(nodeSettings)
                 .serverSettings(new ServerSettings())
                 .challengeQuestions(QueryUtils.challengeQuestions())
-                .user(new User())
+                .sethlansUser(new SethlansUser())
                 .systemInfo(systemInfo)
                 .blenderVersions(BlenderUtils.availableBlenderVersions())
                 .build();

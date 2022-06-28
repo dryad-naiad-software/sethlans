@@ -23,7 +23,7 @@ import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.system.SystemInfo;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,7 +43,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SetupForm {
     private SethlansMode mode;
-    private User user;
+    private SethlansUser sethlansUser;
     private LogLevel logLevel;
     private List<String> blenderVersions;
     private MailSettings mailSettings;

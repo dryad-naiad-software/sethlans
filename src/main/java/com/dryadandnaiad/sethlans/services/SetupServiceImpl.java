@@ -117,7 +117,7 @@ public class SetupServiceImpl implements SetupService {
             log.error(Throwables.getStackTraceAsString(e));
             return false;
         }
-        var user = setupForm.getUser();
+        var user = setupForm.getSethlansUser();
         user.setUsername(user.getUsername().toLowerCase());
         user.setUserID(UUID.randomUUID().toString());
         user.setRoles(Stream.of(Role.SUPER_ADMINISTRATOR).collect(Collectors.toSet()));
@@ -135,16 +135,16 @@ public class SetupServiceImpl implements SetupService {
 
     @Override
     public boolean validSetupForm(SetupForm setupForm) {
-        if (setupForm.getUser() == null) {
+        if (setupForm.getSethlansUser() == null) {
             return false;
         }
         if (!setupForm.getMode().equals(SethlansMode.NODE)) {
-            if (!EmailValidator.getInstance().isValid(setupForm.getUser().getEmail())) {
+            if (!EmailValidator.getInstance().isValid(setupForm.getSethlansUser().getEmail())) {
                 return false;
             }
         }
 
-        if (setupForm.getUser().getChallengeList() == null || setupForm.getUser().getChallengeList().isEmpty()) {
+        if (setupForm.getSethlansUser().getChallengeList() == null || setupForm.getSethlansUser().getChallengeList().isEmpty()) {
             return false;
         }
 

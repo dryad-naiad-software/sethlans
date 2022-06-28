@@ -45,7 +45,7 @@ class ProjectToProjectViewTest {
         var roles = new HashSet<Role>();
         roles.add(Role.USER);
         var project = TestUtils.getProject();
-        project.setUser(TestUtils.getUser(roles, "testuser1234", "test1234"));
+        project.setSethlansUser(TestUtils.getUser(roles, "testuser1234", "test1234"));
 
         var projectView = projectToProjectView.convert(project);
         for (Field f : projectView.getClass().getDeclaredFields()) {

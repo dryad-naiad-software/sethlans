@@ -26,7 +26,7 @@ import {Role} from "../../enums/role.enum";
  * Project: sethlans_ui
  */
 
-export class User {
+export class SethlansUser {
   userID: string;
   username: string;
   password: string;

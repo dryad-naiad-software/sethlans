@@ -17,7 +17,7 @@
  */
 
 import {Mode} from "../../enums/mode.enum";
-import {User} from "../user/user.model";
+import {SethlansUser} from "../user/sethlans-user.model";
 import {LogLevel} from "../../enums/loglevel.enum";
 import {MailSettings} from "../settings/mailsettings.model";
 import {NodeSettings} from "../settings/nodesettings.model";
@@ -33,7 +33,7 @@ import {SystemInfo} from "../system/systeminfo.model";
 
 export class SetupForm {
   mode: Mode;
-  user: User;
+  sethlansUser: SethlansUser;
   logLevel: LogLevel;
   hostname: string;
   blenderVersions: Array<string>;
@@ -49,7 +49,7 @@ export class SetupForm {
 
   constructor() {
     this.mode = Mode.DUAL;
-    this.user = new User();
+    this.sethlansUser = new SethlansUser();
     this.logLevel = LogLevel.INFO;
     this.blenderVersions = new Array<string>();
     this.mailSettings = new MailSettings();
@@ -65,7 +65,7 @@ export class SetupForm {
 
   setSetupForm(obj: any) {
     this.mode = obj.mode;
-    this.user = obj.user;
+    this.sethlansUser = obj.sethlansUser;
     this.logLevel = obj.logLevel;
     this.blenderVersions = obj.blenderVersions;
     this.mailSettings = obj.mailSettings;

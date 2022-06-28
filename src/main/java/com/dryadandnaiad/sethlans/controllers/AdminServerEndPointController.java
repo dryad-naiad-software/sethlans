@@ -24,7 +24,7 @@ import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.query.ServerDashboard;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Notification;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.NotificationRepository;
@@ -205,8 +205,8 @@ public class AdminServerEndPointController {
             var administrators = userRepository.findAllByRolesContaining(Role.ADMINISTRATOR);
             var admins = new LinkedHashSet<>(super_administrators);
             admins.addAll(administrators);
-            for (User user : admins) {
-                notification.setUserID(user.getUserID());
+            for (SethlansUser sethlansUser : admins) {
+                notification.setUserID(sethlansUser.getUserID());
                 notificationRepository.save(notification);
             }
             return new ResponseEntity<>(HttpStatus.CREATED);

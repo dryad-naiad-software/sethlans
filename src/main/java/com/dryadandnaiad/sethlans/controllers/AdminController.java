@@ -21,7 +21,7 @@ import com.dryadandnaiad.sethlans.converters.UserToUserQuery;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.query.UserQuery;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
@@ -105,19 +105,19 @@ public class AdminController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (userRepository.findUserByUsername(auth.getName()).isPresent()) {
             var requestingUser = userRepository.findUserByUsername(auth.getName()).get();
-            List<User> userList;
+            List<SethlansUser> sethlansUserList;
             if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
-                userList = userRepository.findAll();
+                sethlansUserList = userRepository.findAll();
             } else if (requestingUser.getRoles().contains(Role.ADMINISTRATOR) && !requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
-                userList = userRepository.findAllByRolesNotContaining(Role.SUPER_ADMINISTRATOR);
+                sethlansUserList = userRepository.findAllByRolesNotContaining(Role.SUPER_ADMINISTRATOR);
             } else {
-                userList = new ArrayList<>();
-                userList.add(requestingUser);
+                sethlansUserList = new ArrayList<>();
+                sethlansUserList.add(requestingUser);
             }
             var userQueryList = new ArrayList<UserQuery>();
 
-            for (User user : userList) {
-                userQueryList.add(userToUserQuery.convert(user));
+            for (SethlansUser sethlansUser : sethlansUserList) {
+                userQueryList.add(userToUserQuery.convert(sethlansUser));
             }
             return userQueryList;
 
@@ -126,40 +126,40 @@ public class AdminController {
     }
 
     @PostMapping("/create_user")
-    public ResponseEntity<Void> createUser(@RequestBody User user) {
-        if (user.getPassword().isEmpty() || user.getEmail().isEmpty()) {
+    public ResponseEntity<Void> createUser(@RequestBody SethlansUser sethlansUser) {
+        if (sethlansUser.getPassword().isEmpty() || sethlansUser.getEmail().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (userRepository.findUserByUsername(user.getUsername().toLowerCase()).isPresent()) {
+        if (userRepository.findUserByUsername(sethlansUser.getUsername().toLowerCase()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if(!EmailValidator.getInstance().isValid(user.getEmail())) {
+        if (!EmailValidator.getInstance().isValid(sethlansUser.getEmail())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if (user.getChallengeList() == null || user.getChallengeList().isEmpty()) {
+        if (sethlansUser.getChallengeList() == null || sethlansUser.getChallengeList().isEmpty()) {
             new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        user.setUsername(user.getUsername().toLowerCase());
-        user.setUserID(UUID.randomUUID().toString());
-        user.setRoles(Stream.of(Role.USER).collect(Collectors.toSet()));
-        user.setActive(true);
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        for (UserChallenge challenge : user.getChallengeList()) {
+        sethlansUser.setUsername(sethlansUser.getUsername().toLowerCase());
+        sethlansUser.setUserID(UUID.randomUUID().toString());
+        sethlansUser.setRoles(Stream.of(Role.USER).collect(Collectors.toSet()));
+        sethlansUser.setActive(true);
+        sethlansUser.setAccountNonExpired(true);
+        sethlansUser.setAccountNonLocked(true);
+        sethlansUser.setCredentialsNonExpired(true);
+        sethlansUser.setPassword(bCryptPasswordEncoder.encode(sethlansUser.getPassword()));
+        for (UserChallenge challenge : sethlansUser.getChallengeList()) {
             challenge.setResponse(bCryptPasswordEncoder.encode(challenge.getResponse()));
         }
-        userRepository.save(user);
+        userRepository.save(sethlansUser);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/update_user")
-    public ResponseEntity<Void> updateUser(@RequestBody User user) {
-        if (userRepository.findUserByUsername(user.getUsername().toLowerCase()).isPresent()) {
-            var userInDatabase = userRepository.findUserByUsername(user.getUsername().toLowerCase()).get();
-            userRepository.save(UserUtils.updateDatabaseUser(user, userInDatabase, bCryptPasswordEncoder));
+    public ResponseEntity<Void> updateUser(@RequestBody SethlansUser sethlansUser) {
+        if (userRepository.findUserByUsername(sethlansUser.getUsername().toLowerCase()).isPresent()) {
+            var userInDatabase = userRepository.findUserByUsername(sethlansUser.getUsername().toLowerCase()).get();
+            userRepository.save(UserUtils.updateDatabaseUser(sethlansUser, userInDatabase, bCryptPasswordEncoder));
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

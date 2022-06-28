@@ -22,7 +22,7 @@ import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.system.Notification;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NotificationRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
@@ -91,8 +91,8 @@ public class DownloadServiceImpl implements DownloadService {
                             var administrators = userRepository.findAllByRolesContaining(Role.ADMINISTRATOR);
                             var admins = new LinkedHashSet<>(super_administrators);
                             admins.addAll(administrators);
-                            for (User user : admins) {
-                                notification.setUserID(user.getUserID());
+                            for (SethlansUser sethlansUser : admins) {
+                                notification.setUserID(sethlansUser.getUserID());
                                 notificationRepository.save(notification);
                             }
                         } else {

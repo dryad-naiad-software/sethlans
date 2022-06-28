@@ -19,7 +19,7 @@ package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.AbstractModel;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,7 +46,7 @@ public class Project extends AbstractModel {
     private ProjectSettings projectSettings;
     private ProjectStatus projectStatus;
     @ManyToOne
-    private User user;
+    private SethlansUser sethlansUser;
     private String projectName;
     private String projectID;
     private String projectRootDir;

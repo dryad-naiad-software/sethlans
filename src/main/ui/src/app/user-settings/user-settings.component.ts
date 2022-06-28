@@ -11,7 +11,7 @@ import {faCheckSquare, faSquare} from '@fortawesome/free-regular-svg-icons';
   styleUrls: ['./user-settings.component.css']
 })
 export class UserSettingsComponent implements OnInit {
-  user: UserQuery = new UserQuery();
+  sethlansUser: UserQuery = new UserQuery();
   mode: Mode = Mode.SETUP;
   Mode = Mode;
   faSquare = faSquare;
@@ -30,16 +30,16 @@ export class UserSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.sethlansService.getCurrentUser().subscribe((data: any) => {
-      this.user.setUserQuery(data);
-      this.newEmail = this.user.email;
-      if (this.user.roles.indexOf(Role.ADMINISTRATOR) !== -1
-        || this.user.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+      this.sethlansUser.setUserQuery(data);
+      this.newEmail = this.sethlansUser.email;
+      if (this.sethlansUser.roles.indexOf(Role.ADMINISTRATOR) !== -1
+        || this.sethlansUser.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
         this.isAdministrator = true;
       }
-      if (this.user.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+      if (this.sethlansUser.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
         this.isSuperAdministrator = true;
       }
-      console.log(this.user)
+      console.log(this.sethlansUser)
 
     });
     this.sethlansService.mode().subscribe((data: any) => {
@@ -49,7 +49,7 @@ export class UserSettingsComponent implements OnInit {
 
   validateEmail() {
     this.emailError = !this.newEmail.match(this.emailRegEx);
-    this.emailUpdated = !this.emailError && this.newEmail !== this.user.email;
+    this.emailUpdated = !this.emailError && this.newEmail !== this.sethlansUser.email;
   }
 
   changeEmail() {

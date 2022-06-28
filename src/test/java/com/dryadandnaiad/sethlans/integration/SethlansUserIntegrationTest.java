@@ -2,7 +2,7 @@ package com.dryadandnaiad.sethlans.integration;
 
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +30,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-public class UserIntegrationTest {
+public class SethlansUserIntegrationTest {
 
     @BeforeAll
     public static void setup() throws FileNotFoundException, JsonProcessingException, InterruptedException {
@@ -119,7 +119,7 @@ public class UserIntegrationTest {
                 .challenge("Test1234")
                 .response("Test").build();
 
-        var user1 = User.builder()
+        var user1 = SethlansUser.builder()
                 .username("NewU3ser24")
                 .password("newPassWord1241")
                 .challengeList(List.of(challenge))
@@ -138,7 +138,7 @@ public class UserIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.CREATED);
 
-        var user2 = User.builder()
+        var user2 = SethlansUser.builder()
                 .username("newu3ser24")
                 .password("newPassWSa2ord1241")
                 .active(true)
@@ -177,7 +177,7 @@ public class UserIntegrationTest {
                 .challenge("Test 12345")
                 .response("Test").build();
 
-        var user = User.builder()
+        var user = SethlansUser.builder()
                 .username("NewUser24")
                 .password("newPassWord1241")
                 .challengeList(List.of(challenge))
@@ -204,14 +204,14 @@ public class UserIntegrationTest {
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
         var currentUser =  mapper
                 .readValue(get("/api/v1/management/get_current_user")
-                .then()
-                .extract()
-                .response()
-                .body()
-                .asString(),new TypeReference<User>() {
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<SethlansUser>() {
                 });
 
-        assertThat(currentUser).isInstanceOf(User.class);
+        assertThat(currentUser).isInstanceOf(SethlansUser.class);
     }
 
     @AfterAll

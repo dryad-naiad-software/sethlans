@@ -42,7 +42,7 @@ import java.util.Set;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class User extends AbstractModel {
+public class SethlansUser extends AbstractModel {
     private String userID;
     private String username;
     private String password;

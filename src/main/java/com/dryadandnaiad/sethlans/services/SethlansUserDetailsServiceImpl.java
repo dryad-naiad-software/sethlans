@@ -17,7 +17,7 @@
 
 package com.dryadandnaiad.sethlans.services;
 
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,9 +33,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SethlansUserDetailsServiceImpl implements SethlansUserDetailsService {
     private final UserRepository userRepository;
-    private final Converter<User, UserDetails> userDetailsConverter;
+    private final Converter<SethlansUser, UserDetails> userDetailsConverter;
 
-    public SethlansUserDetailsServiceImpl(UserRepository userRepository, Converter<User, UserDetails> userDetailsConverter) {
+    public SethlansUserDetailsServiceImpl(UserRepository userRepository, Converter<SethlansUser, UserDetails> userDetailsConverter) {
         this.userRepository = userRepository;
         this.userDetailsConverter = userDetailsConverter;
     }

@@ -92,27 +92,27 @@ create table project
     use_parts                  boolean not null,
     codec                      integer,
     frame_rate                 integer,
-    pixel_format               integer,
-    video_file_location        varchar(255),
-    video_output_format        integer,
-    video_quality              integer,
-    all_images_processed       boolean not null,
-    completed_frames           integer,
-    current_frame              integer,
-    current_part               integer,
-    current_percentage         integer,
-    project_state              integer,
-    queue_index                integer,
-    re_encode                  boolean not null,
-    remaining_queue_size       integer,
-    rendered_queue_items       integer,
-    timer_end                  bigint,
-    timer_start                bigint,
-    total_project_time         bigint,
-    total_queue_size           integer,
-    total_render_time          bigint,
-    project_type               integer,
-    user_id                    bigint,
+    pixel_format         integer,
+    video_file_location  varchar(255),
+    video_output_format  integer,
+    video_quality        integer,
+    all_images_processed boolean not null,
+    completed_frames     integer,
+    current_frame        integer,
+    current_part         integer,
+    current_percentage   integer,
+    project_state        integer,
+    queue_index          integer,
+    re_encode            boolean not null,
+    remaining_queue_size integer,
+    rendered_queue_items integer,
+    timer_end            bigint,
+    timer_start          bigint,
+    total_project_time   bigint,
+    total_queue_size     integer,
+    total_render_time    bigint,
+    project_type         integer,
+    sethlans_user_id     bigint,
     primary key (id)
 );
 create table render_task
@@ -166,7 +166,7 @@ create table render_task_deviceids
     render_task_id bigint not null,
     deviceids      varchar(255)
 );
-create table user
+create table sethlans_user
 (
     id                                 bigint  not null,
     date_created                       timestamp,
@@ -190,25 +190,25 @@ create table user
     welcome_email_sent                 boolean not null,
     primary key (id)
 );
-create table user_challenge_list
+create table sethlans_user_challenge_list
 (
-    user_id          bigint  not null,
+    sethlans_user_id bigint  not null,
     challenge        varchar(255),
     response         varchar(255),
     response_updated boolean not null
 );
-create table user_roles
+create table sethlans_user_roles
 (
-    user_id bigint not null,
-    roles   integer
+    sethlans_user_id bigint not null,
+    roles            integer
 );
 alter table node_selectedgpus
     add constraint FKecl1m1xgun9u2m0hgdkf0igv9 foreign key (node_id) references node;
 alter table project
-    add constraint FKo06v2e9kuapcugnyhttqa1vpt foreign key (user_id) references user;
+    add constraint FKpdji1h8ldrvhewbyay9ioky4v foreign key (sethlans_user_id) references sethlans_user;
 alter table render_task_deviceids
     add constraint FKj90ikv9jkqjje8cbf4tdurxlb foreign key (render_task_id) references render_task;
-alter table user_challenge_list
-    add constraint FKr851d51ro5a0we9puu6sg1fal foreign key (user_id) references user;
-alter table user_roles
-    add constraint FK55itppkw3i07do3h7qoclqd4k foreign key (user_id) references user;
+alter table sethlans_user_challenge_list
+    add constraint FKefber78m1dajh34h6srggt121 foreign key (sethlans_user_id) references sethlans_user;
+alter table sethlans_user_roles
+    add constraint FKok8vpag931sley6gweoc7a5jq foreign key (sethlans_user_id) references sethlans_user;

@@ -39,7 +39,7 @@ public class ProjectToProjectView implements Converter<Project, ProjectView> {
                 .projectStatus(project.getProjectStatus())
                 .projectType(project.getProjectType())
                 .projectRootDir(project.getProjectRootDir())
-                .userID(project.getUser().getUserID())
+                .userID(project.getSethlansUser().getUserID())
                 .build();
         return projectView;
     }

@@ -181,7 +181,7 @@
               <input class="form-control form-control-sm"
                      id="username"
                      (keyup)="validateUsername()"
-                     [(ngModel)]="setupForm.user.username"
+                     [(ngModel)]="setupForm.sethlansUser.username"
                      name="username"
                      placeholder="Username"
                      required type="text"/>
@@ -198,7 +198,7 @@
                      (keyup)="validateEmail()"
                      name="email"
                      placeholder="Email Address"
-                     [(ngModel)]="setupForm.user.email"
+                     [(ngModel)]="setupForm.sethlansUser.email"
                      required type="text">
               <div *ngIf="emailError" class="alert alert-danger">
                 <ul>
@@ -215,7 +215,7 @@
                   id="password"
                   name="password"
                   (keyup)="validatePassword()"
-                  [(ngModel)]="setupForm.user.password"
+                  [(ngModel)]="setupForm.sethlansUser.password"
                   [type]="showPass ? 'text' : 'password'"
                   placeholder="Password" required>
                 <span (mousedown)="showPass=true" (mouseup)="showPass=false"
@@ -562,7 +562,7 @@
               </tr>
               <tr>
                 <td>Administrative User</td>
-                <td>{{setupForm.user.username}}</td>
+                <td>{{setupForm.sethlansUser.username}}</td>
               </tr>
               <tr>
                 <td>Hostname</td>

@@ -18,7 +18,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -31,11 +31,11 @@ import java.util.Optional;
  * Project: sethlans
  */
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    List<Project> getProjectsByUser(User user);
+    List<Project> getProjectsBySethlansUser(SethlansUser sethlansUser);
 
     Optional<Project> getProjectByProjectID(String projectID);
 
-    Optional<Project> getProjectByUserAndProjectID(User user, String projectID);
+    Optional<Project> getProjectBySethlansUserAndProjectID(SethlansUser sethlansUser, String projectID);
 
-    void deleteAllByUser(User user);
+    void deleteAllBySethlansUser(SethlansUser sethlansUser);
 }

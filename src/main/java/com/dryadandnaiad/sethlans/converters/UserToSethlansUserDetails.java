@@ -17,8 +17,8 @@
 
 package com.dryadandnaiad.sethlans.converters;
 
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.models.user.SethlansUserDetails;
-import com.dryadandnaiad.sethlans.models.user.User;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,19 +34,19 @@ import java.util.Collection;
  * Project: sethlans
  */
 @Component
-public class UserToSethlansUserDetails implements Converter<User, UserDetails> {
+public class UserToSethlansUserDetails implements Converter<SethlansUser, UserDetails> {
     @Override
-    public UserDetails convert(User user) {
+    public UserDetails convert(SethlansUser sethlansUser) {
         var userDetails = new SethlansUserDetails();
-        userDetails.setUsername(user.getUsername().toLowerCase());
-        userDetails.setPassword(user.getPassword());
-        userDetails.setEnabled(user.isActive());
-        userDetails.setCredentialsNonExpired(user.isCredentialsNonExpired());
-        userDetails.setAccountNonLocked(user.isAccountNonLocked());
-        userDetails.setAccountNonExpired(user.isAccountNonExpired());
+        userDetails.setUsername(sethlansUser.getUsername().toLowerCase());
+        userDetails.setPassword(sethlansUser.getPassword());
+        userDetails.setEnabled(sethlansUser.isActive());
+        userDetails.setCredentialsNonExpired(sethlansUser.isCredentialsNonExpired());
+        userDetails.setAccountNonLocked(sethlansUser.isAccountNonLocked());
+        userDetails.setAccountNonExpired(sethlansUser.isAccountNonExpired());
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().forEach(role -> {
+        sethlansUser.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.toString()));
         });
         userDetails.setAuthorities(authorities);

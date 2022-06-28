@@ -104,13 +104,13 @@ export class SetupWizardComponent implements OnInit {
       this.setupForm.nodeSettings.cores = this.setupForm.systemInfo.cpu.cores - 1;
       this.setupForm.nodeSettings.apiKey = "";
       this.setupForm.nodeSettings.tileSizeCPU = 32;
-      this.setupForm.user.challengeList = new Array<UserChallenge>();
-      this.setupForm.user.roles = new Array<Role>()
-      this.setupForm.user.roles.push(Role.SUPER_ADMINISTRATOR)
-      this.setupForm.user.active = true;
-      this.setupForm.user.username = ''
-      this.setupForm.user.password = ''
-      this.setupForm.user.email = ''
+      this.setupForm.sethlansUser.challengeList = new Array<UserChallenge>();
+      this.setupForm.sethlansUser.roles = new Array<Role>()
+      this.setupForm.sethlansUser.roles.push(Role.SUPER_ADMINISTRATOR)
+      this.setupForm.sethlansUser.active = true;
+      this.setupForm.sethlansUser.username = ''
+      this.setupForm.sethlansUser.password = ''
+      this.setupForm.sethlansUser.email = ''
       let challenge1: UserChallenge = new UserChallenge();
       challenge1.setUserChallange({
         challenge: this.setupForm.challengeQuestions[0],
@@ -133,23 +133,23 @@ export class SetupWizardComponent implements OnInit {
       this.challenge2 = this.setupForm.challengeQuestions[1];
       this.challenge3 = this.setupForm.challengeQuestions[2];
 
-      this.setupForm.user.challengeList.push(challenge1);
-      this.setupForm.user.challengeList.push(challenge2);
-      this.setupForm.user.challengeList.push(challenge3);
+      this.setupForm.sethlansUser.challengeList.push(challenge1);
+      this.setupForm.sethlansUser.challengeList.push(challenge2);
+      this.setupForm.sethlansUser.challengeList.push(challenge3);
     })
   }
 
   checkUser() {
-    if (this.setupForm?.user.username == '') {
+    if (this.setupForm?.sethlansUser.username == '') {
       return false;
-    } else if (this.setupForm?.user.password == '') {
+    } else if (this.setupForm?.sethlansUser.password == '') {
       return false;
-    } else if (this.confirmPass != this.setupForm?.user.password) {
+    } else if (this.confirmPass != this.setupForm?.sethlansUser.password) {
       return false;
     } else if (this.usernameError || this.responseError1 || this.responseError2 || this.responseError3
       || this.passwordError) {
       return false;
-    } else if (this.setupForm.user.email == '' && this.setupForm.mode != Mode.NODE) {
+    } else if (this.setupForm.sethlansUser.email == '' && this.setupForm.mode != Mode.NODE) {
       return false;
     } else if (this.emailError && this.setupForm?.mode != Mode.NODE) {
       return false;
@@ -159,13 +159,13 @@ export class SetupWizardComponent implements OnInit {
   }
 
   updateChallenge(id: number, question: string) {
-    let challenge: UserChallenge | undefined = this.setupForm?.user.challengeList[id];
+    let challenge: UserChallenge | undefined = this.setupForm?.sethlansUser.challengeList[id];
     // @ts-ignore
     challenge.challenge = question;
   }
 
   updateResponse(id: number, response: string) {
-    let challenge: UserChallenge | undefined = this.setupForm?.user.challengeList[id];
+    let challenge: UserChallenge | undefined = this.setupForm?.sethlansUser.challengeList[id];
     // @ts-ignore
     challenge?.response = response;
     // @ts-ignore
@@ -183,24 +183,24 @@ export class SetupWizardComponent implements OnInit {
   }
 
   validateUsername() {
-    this.usernameError = !this.setupForm?.user.username.match(this.usernameRegEx);
+    this.usernameError = !this.setupForm?.sethlansUser.username.match(this.usernameRegEx);
     this.nextEnabled = this.checkUser()
   }
 
   validateEmail() {
-    this.emailError = !this.setupForm?.user.email.match(this.emailRegEx);
+    this.emailError = !this.setupForm?.sethlansUser.email.match(this.emailRegEx);
     this.nextEnabled = this.checkUser()
 
   }
 
   validatePassword() {
-    this.passwordError = !this.setupForm?.user.password.match(this.passwordRegEx);
+    this.passwordError = !this.setupForm?.sethlansUser.password.match(this.passwordRegEx);
     this.nextEnabled = this.checkUser()
 
   }
 
   checkPasswordConfirm() {
-    this.passwordMatch = this.setupForm?.user.password === this.confirmPass;
+    this.passwordMatch = this.setupForm?.sethlansUser.password === this.confirmPass;
     this.nextEnabled = this.checkUser()
   }
 

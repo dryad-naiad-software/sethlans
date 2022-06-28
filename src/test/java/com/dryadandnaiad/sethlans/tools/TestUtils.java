@@ -24,7 +24,7 @@ import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -43,8 +43,8 @@ import static io.restassured.RestAssured.sessionId;
 @Slf4j
 public class TestUtils {
 
-    public static User getUser(Set<Role> roles, String username, String password) {
-        return User.builder()
+    public static SethlansUser getUser(Set<Role> roles, String username, String password) {
+        return SethlansUser.builder()
                 .active(true)
                 .userID(UUID.randomUUID().toString())
                 .username(username)
@@ -177,7 +177,7 @@ public class TestUtils {
                 .gpuCombined(false)
                 .build();
 
-        var user = User.builder()
+        var user = SethlansUser.builder()
                 .username("testuser")
                 .password("testPa$$1234")
                 .active(true)
@@ -190,7 +190,7 @@ public class TestUtils {
         setupForm.setServerSettings(serverSettings);
         setupForm.setMailSettings(mailSettings);
         setupForm.setNodeSettings(nodeSettings);
-        setupForm.setUser(user);
+        setupForm.setSethlansUser(user);
         return setupForm;
     }
 
@@ -217,7 +217,7 @@ public class TestUtils {
                 .gpuCombined(false)
                 .build();
 
-        var user = User.builder()
+        var user = SethlansUser.builder()
                 .username("testuser")
                 .password("testPa$$1234")
                 .active(true)
@@ -228,7 +228,7 @@ public class TestUtils {
         setupForm.setMode(SethlansMode.NODE);
         setupForm.setLogLevel(LogLevel.DEBUG);
         setupForm.setNodeSettings(nodeSettings);
-        setupForm.setUser(user);
+        setupForm.setSethlansUser(user);
         return setupForm;
     }
 
@@ -247,7 +247,7 @@ public class TestUtils {
                 .mailEnabled(false)
                 .build();
 
-        var user = User.builder()
+        var user = SethlansUser.builder()
                 .username("testuser")
                 .password("testPa$$1234")
                 .active(true)
@@ -259,7 +259,7 @@ public class TestUtils {
         setupForm.setLogLevel(LogLevel.DEBUG);
         setupForm.setServerSettings(serverSettings);
         setupForm.setMailSettings(mailSettings);
-        setupForm.setUser(user);
+        setupForm.setSethlansUser(user);
         return setupForm;
     }
 

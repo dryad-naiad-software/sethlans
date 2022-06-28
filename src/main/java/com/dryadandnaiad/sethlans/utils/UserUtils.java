@@ -1,38 +1,38 @@
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.SethlansUser;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserUtils {
 
-    public static User updateDatabaseUser(User updatedUser, User userInDatabase, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        var passwordPresent = !updatedUser.getPassword().isEmpty();
-        var challengePresent = !updatedUser.getChallengeList().isEmpty();
+    public static SethlansUser updateDatabaseUser(SethlansUser updatedSethlansUser, SethlansUser sethlansUserInDatabase, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        var passwordPresent = !updatedSethlansUser.getPassword().isEmpty();
+        var challengePresent = !updatedSethlansUser.getChallengeList().isEmpty();
         if (passwordPresent) {
-            userInDatabase.setPassword(bCryptPasswordEncoder.encode(updatedUser.getPassword()));
+            sethlansUserInDatabase.setPassword(bCryptPasswordEncoder.encode(updatedSethlansUser.getPassword()));
         }
-        if(challengePresent) {
-            for (UserChallenge challenge: updatedUser.getChallengeList()) {
+        if (challengePresent) {
+            for (UserChallenge challenge : updatedSethlansUser.getChallengeList()) {
                 challenge.setResponse(bCryptPasswordEncoder.encode(challenge.getResponse()));
             }
-            userInDatabase.setChallengeList(updatedUser.getChallengeList());
+            sethlansUserInDatabase.setChallengeList(updatedSethlansUser.getChallengeList());
         }
-        if(EmailValidator.getInstance().isValid(updatedUser.getEmail())) {
-            userInDatabase.setEmail(updatedUser.getEmail());
+        if (EmailValidator.getInstance().isValid(updatedSethlansUser.getEmail())) {
+            sethlansUserInDatabase.setEmail(updatedSethlansUser.getEmail());
         }
-        if(updatedUser.getRoles() != null) {
-            userInDatabase.setRoles(updatedUser.getRoles());
+        if (updatedSethlansUser.getRoles() != null) {
+            sethlansUserInDatabase.setRoles(updatedSethlansUser.getRoles());
         }
-        userInDatabase.setActive(updatedUser.isActive());
-        userInDatabase.setPromptPasswordChange(updatedUser.isPromptPasswordChange());
-        userInDatabase.setNodeEmailNotifications(updatedUser.isNodeEmailNotifications());
-        userInDatabase.setProjectEmailNotifications(updatedUser.isProjectEmailNotifications());
-        userInDatabase.setSystemEmailNotifications(updatedUser.isSystemEmailNotifications());
-        userInDatabase.setVideoEncodingEmailNotifications(updatedUser.isVideoEncodingEmailNotifications());
+        sethlansUserInDatabase.setActive(updatedSethlansUser.isActive());
+        sethlansUserInDatabase.setPromptPasswordChange(updatedSethlansUser.isPromptPasswordChange());
+        sethlansUserInDatabase.setNodeEmailNotifications(updatedSethlansUser.isNodeEmailNotifications());
+        sethlansUserInDatabase.setProjectEmailNotifications(updatedSethlansUser.isProjectEmailNotifications());
+        sethlansUserInDatabase.setSystemEmailNotifications(updatedSethlansUser.isSystemEmailNotifications());
+        sethlansUserInDatabase.setVideoEncodingEmailNotifications(updatedSethlansUser.isVideoEncodingEmailNotifications());
 
-        return userInDatabase;
+        return sethlansUserInDatabase;
     }
 
 }

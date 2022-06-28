@@ -115,7 +115,7 @@ public class ProjectQueryController {
         } else {
             if (userRepository.findUserByUsername(auth.getName()).isPresent()) {
                 var user = userRepository.findUserByUsername(auth.getName()).get();
-                projects = projectRepository.getProjectsByUser(user);
+                projects = projectRepository.getProjectsBySethlansUser(user);
             } else {
                 return new ArrayList<>();
             }
@@ -136,7 +136,7 @@ public class ProjectQueryController {
             project = projectRepository.getProjectByProjectID(projectID);
         } else {
             var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
-            project = projectRepository.getProjectByUserAndProjectID(user, projectID);
+            project = projectRepository.getProjectBySethlansUserAndProjectID(user, projectID);
         }
 
         return project.map(value -> new ResponseEntity<>(projectToProjectView.convert(value), HttpStatus.OK))
@@ -151,7 +151,7 @@ public class ProjectQueryController {
             project = projectRepository.getProjectByProjectID(projectID).get();
         } else {
             var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
-            project = projectRepository.getProjectByUserAndProjectID(user, projectID).get();
+            project = projectRepository.getProjectBySethlansUserAndProjectID(user, projectID).get();
         }
         try {
             var movieFile = new File(project
@@ -183,7 +183,7 @@ public class ProjectQueryController {
             project = projectRepository.getProjectByProjectID(projectID).get();
         } else {
             var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
-            project = projectRepository.getProjectByUserAndProjectID(user, projectID).get();
+            project = projectRepository.getProjectBySethlansUserAndProjectID(user, projectID).get();
         }
         try {
             var zipFile = new File(project
@@ -215,7 +215,7 @@ public class ProjectQueryController {
             project = projectRepository.getProjectByProjectID(projectID).get();
         } else {
             var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
-            project = projectRepository.getProjectByUserAndProjectID(user, projectID).get();
+            project = projectRepository.getProjectBySethlansUserAndProjectID(user, projectID).get();
         }
 
         return ImageUtils.getFrameList(project);

@@ -97,12 +97,12 @@ public class ProjectServiceImpl implements ProjectService {
                     if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
                         serverQueueService.addRenderTasksToPendingQueue(project);
                     } else {
-                        if (project.getUser().getUsername().equals(auth.getName())) {
+                        if (project.getSethlansUser().getUsername().equals(auth.getName())) {
                             serverQueueService.addRenderTasksToPendingQueue(project);
                         }
                     }
                     var notification = Notification.builder()
-                            .userID(project.getUser().getUserID())
+                            .userID(project.getSethlansUser().getUserID())
                             .notificationID(UUID.randomUUID().toString())
                             .messageDate(LocalDateTime.now())
                             .message(project.getProjectName() + " has been started.")
@@ -132,7 +132,7 @@ public class ProjectServiceImpl implements ProjectService {
                     project = projectRepository.getProjectByProjectID(projectID).get();
                     serverQueueService.addRenderTasksToPendingQueue(project);
                     return true;
-                } else if (project.getUser().getUsername().equals(auth.getName())) {
+                } else if (project.getSethlansUser().getUsername().equals(auth.getName())) {
                     project.getProjectStatus().setProjectState(ProjectState.PENDING);
                     projectRepository.save(project);
                     log.debug("Saving project" + project.toString());
@@ -157,7 +157,7 @@ public class ProjectServiceImpl implements ProjectService {
                     log.debug("Saving project" + project.toString());
 
                     return true;
-                } else if (project.getUser().getUsername().equals(auth.getName())) {
+                } else if (project.getSethlansUser().getUsername().equals(auth.getName())) {
                     project.getProjectStatus().setProjectState(ProjectState.PAUSED);
                     projectRepository.save(project);
                     log.debug("Saving project" + project.toString());
@@ -183,14 +183,14 @@ public class ProjectServiceImpl implements ProjectService {
                     log.debug("Saving project" + project.toString());
 
                     var notification = Notification.builder()
-                            .userID(project.getUser().getUserID())
+                            .userID(project.getSethlansUser().getUserID())
                             .notificationID(UUID.randomUUID().toString())
                             .messageDate(LocalDateTime.now())
                             .message(project.getProjectName() + " has been stopped and reset.")
                             .build();
                     notificationRepository.save(notification);
                     return true;
-                } else if (project.getUser().getUsername().equals(auth.getName())) {
+                } else if (project.getSethlansUser().getUsername().equals(auth.getName())) {
                     project.getProjectStatus().setProjectState(ProjectState.STOPPED);
                     resetProject(project);
                     projectRepository.save(project);
@@ -198,7 +198,7 @@ public class ProjectServiceImpl implements ProjectService {
 
                     var notification = Notification.builder()
                             .notificationID(UUID.randomUUID().toString())
-                            .userID(project.getUser().getUserID())
+                            .userID(project.getSethlansUser().getUserID())
                             .messageDate(LocalDateTime.now())
                             .message(project.getProjectName() + " has been stopped and reset.")
                             .build();
@@ -219,7 +219,7 @@ public class ProjectServiceImpl implements ProjectService {
             if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
                 projectRepository.delete(project);
             } else {
-                if (project.getUser().getUsername().equals(auth.getName())) {
+                if (project.getSethlansUser().getUsername().equals(auth.getName())) {
                     projectRepository.delete(project);
                 }
             }
@@ -233,7 +233,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (userRepository.findUserByUserID(userID).isPresent()) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-                projectRepository.deleteAllByUser(userRepository.findUserByUserID(userID).get());
+                projectRepository.deleteAllBySethlansUser(userRepository.findUserByUserID(userID).get());
                 var notification = Notification.builder()
                         .notificationID(UUID.randomUUID().toString())
                         .userID(userID)
@@ -243,7 +243,7 @@ public class ProjectServiceImpl implements ProjectService {
                 notificationRepository.save(notification);
             } else {
                 if (userRepository.findUserByUserID(userID).get().getUsername().equals(auth.getName())) {
-                    projectRepository.deleteAllByUser(userRepository.findUserByUserID(userID).get());
+                    projectRepository.deleteAllBySethlansUser(userRepository.findUserByUserID(userID).get());
                     var notification = Notification.builder()
                             .notificationID(UUID.randomUUID().toString())
                             .userID(userID)
@@ -263,7 +263,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectRepository.deleteAll();
         } else {
             if (userRepository.findUserByUsername(auth.getName()).isPresent())
-                projectRepository.deleteAllByUser(userRepository.findUserByUsername(auth.getName()).get());
+                projectRepository.deleteAllBySethlansUser(userRepository.findUserByUsername(auth.getName()).get());
         }
     }
 
@@ -431,7 +431,7 @@ public class ProjectServiceImpl implements ProjectService {
             log.debug("Saving project" + project);
 
             var notification = Notification.builder()
-                    .userID(project.getUser().getUserID())
+                    .userID(project.getSethlansUser().getUserID())
                     .notificationID(UUID.randomUUID().toString())
                     .messageDate(LocalDateTime.now())
                     .message(project.getProjectName() + " has been created.")
@@ -497,7 +497,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectRepository.save(originalProject);
             log.debug("Saving project" + project);
             var notification = Notification.builder()
-                    .userID(project.getUser().getUserID())
+                    .userID(project.getSethlansUser().getUserID())
                     .notificationID(UUID.randomUUID().toString())
                     .messageDate(LocalDateTime.now())
                     .message(project.getProjectName() + " has been updated.")
@@ -533,7 +533,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectForm editProjectForm(String projectID) {
         if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
             var project = projectRepository.getProjectByProjectID(projectID).get();
-            var user = project.getUser();
+            var user = project.getSethlansUser();
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth.getAuthorities().toString().contains("ADMINISTRATOR")
                     || user.getUsername().equals(auth.getName())) {
@@ -631,7 +631,7 @@ public class ProjectServiceImpl implements ProjectService {
                         project.getProjectStatus().setProjectState(ProjectState.FINISHED);
                         var notification = Notification.builder()
                                 .notificationID(UUID.randomUUID().toString())
-                                .userID(project.getUser().getUserID())
+                                .userID(project.getSethlansUser().getUserID())
                                 .messageDate(LocalDateTime.now())
                                 .message("Rendering has completed for " + project.getProjectName() + ".")
                                 .build();
@@ -648,7 +648,7 @@ public class ProjectServiceImpl implements ProjectService {
                                 if (encoded) {
                                     var videoNotification = Notification.builder()
                                             .notificationID(UUID.randomUUID().toString())
-                                            .userID(finalProject.getUser().getUserID())
+                                            .userID(finalProject.getSethlansUser().getUserID())
                                             .messageDate(LocalDateTime.now())
                                             .message("Video Encoding complete for " + finalProject.getProjectName() + ".")
                                             .build();
