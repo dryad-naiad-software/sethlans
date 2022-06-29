@@ -438,11 +438,10 @@
             <input [(ngModel)]="setupForm.appURL"
                    class="form-control form-control-sm"
                    id="sethlansURL"
-                   id="sethlansURL"
                    required type="text"/>
             <br/>
             <h6>Log Level</h6>
-            <select [(ngModel)]="setupForm.logLevel" class="form-select form-select-sm"
+            <select [(ngModel)]="setupForm.logLevel" class="form-select form-select-sm" id="logLevel"
                     name="logLevel">
               <option>{{LogLevel.INFO}}</option>
               <option>{{LogLevel.DEBUG}}</option>

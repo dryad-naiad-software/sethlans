@@ -1,10 +1,24 @@
 import {Mode} from "../../src/app/enums/mode.enum";
 
-function checkNetwork() {
+function checkSettings(mode: Mode) {
   cy.get('[id=ipAddress]').invoke('val').should('not.be.empty')
   cy.get('[id=networkPort]').invoke('val').should('not.be.empty')
   cy.get('[id=sethlansHostname]').invoke('val').should('not.be.empty')
   cy.get('[id=sethlansURL]').invoke('val').should('not.be.empty')
+  cy.get('[id=logLevel]').select(1)
+  if (mode === Mode.SERVER || mode === Mode.DUAL) {
+    cy.get('[id=mailSettings]').click()
+    cy.get('[id=smtpServer]').should('be.disabled')
+    cy.get('[id=smtpPort]').should('be.disabled')
+    cy.get('[id=replyToAddress]').should('be.disabled')
+    cy.get('[id=smtpUser]').should('be.disabled')
+    cy.get('[id=smtpPassword]').should('be.disabled')
+    cy.get('[id=enableSMTP]').click()
+    cy.get('[id=smtpServer]').should('be.enabled')
+    cy.get('[id=smtpPort]').should('be.enabled')
+    cy.get('[id=replyToAddress]').should('be.enabled')
+  }
+
 }
 
 function configureUser(mode: Mode) {
@@ -35,7 +49,8 @@ describe('Sethlans Setup Wizard Tests', () => {
     cy.get('[id=next]').click()
     cy.get('[id=blenderVersion]').select(0)
     cy.get('[id=next]').click()
-    checkNetwork()
+    checkSettings(Mode.SERVER)
+
   });
 
   it('Node Mode Test', () => {
