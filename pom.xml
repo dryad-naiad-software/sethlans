@@ -67,11 +67,6 @@
                 </os>
             </activation>
             <dependencies>
-                <dependency>
-                    <groupId>org.jcuda</groupId>
-                    <artifactId>jcuda</artifactId>
-                    <version>10.2.0</version>
-                </dependency>
             </dependencies>
         </profile>
     </profiles>

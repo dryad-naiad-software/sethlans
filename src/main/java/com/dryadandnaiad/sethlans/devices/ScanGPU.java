@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.google.common.base.Throwables;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
-import jcuda.driver.CUresult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.jocl.cl_device_id;
@@ -56,98 +55,100 @@ public class ScanGPU {
         if (path == null) {
             log.debug("no CUDA lib path found");
 
-        }
-        CUDA cudalib;
-        int result;
-        try {
-            cudalib = load(path, CUDA.class);
-            result = cudalib.cuInit(0);
-            if (result != CUresult.CUDA_SUCCESS) {
-                log.error("cuInit failed (ret: " + result + ")");
-                if (result == CUresult.CUDA_ERROR_UNKNOWN) {
-                    log.error("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
-                            "Relaunch the application as root or load the module. " +
-                            "Most of time it does fix the issue.");
-                    return;
-                }
-            }
-
-            if (result == CUresult.CUDA_ERROR_NO_DEVICE) {
-                log.debug("No Device Found");
-                return;
-            }
-
-            IntByReference count = new IntByReference();
-            result = cudalib.cuDeviceGetCount(count);
-
-            if (result != CUresult.CUDA_SUCCESS) {
-                log.error("cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
-                return;
-            }
-
-            for (int num = 0; num < count.getValue(); num++) {
-                byte[] name = new byte[256];
-
-                result = cudalib.cuDeviceGetName(name, 256, num);
-                if (result != CUresult.CUDA_SUCCESS) {
-                    log.error("cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
-                    continue;
+        } else {
+            CUDA cudalib;
+            int result;
+            try {
+                cudalib = load(path, CUDA.class);
+                result = cudalib.cuInit(0);
+                if (result != jcuda.driver.CUresult.CUDA_SUCCESS) {
+                    log.error("cuInit failed (ret: " + result + ")");
+                    if (result == jcuda.driver.CUresult.CUDA_ERROR_UNKNOWN) {
+                        log.error("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
+                                "Relaunch the application as root or load the module. " +
+                                "Most of time it does fix the issue.");
+                        return;
+                    }
                 }
 
-                String modelName = new String(name).trim();
-
-
-                LongByReference ram = new LongByReference();
-                try {
-                    result = cudalib.cuDeviceTotalMem_v2(ram, num);
-                } catch (UnsatisfiedLinkError e) {
-                    // fall back to old function
-                    result = cudalib.cuDeviceTotalMem(ram, num);
-                }
-
-                if (result != CUresult.CUDA_SUCCESS) {
-                    log.error("cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
+                if (result == jcuda.driver.CUresult.CUDA_ERROR_NO_DEVICE) {
+                    log.debug("No Device Found");
                     return;
                 }
 
-                optix = modelName.contains("RTX");
+                IntByReference count = new IntByReference();
+                result = cudalib.cuDeviceGetCount(count);
 
-                String gpuID;
-
-                if (optix) {
-                    gpuID = "OPTIX_" + num;
-
-                } else {
-                    gpuID = "CUDA_" + num;
+                if (result != jcuda.driver.CUresult.CUDA_SUCCESS) {
+                    log.error("cuDeviceGetCount failed (ret: " + jcuda.driver.CUresult.stringFor(result) + ")");
+                    return;
                 }
 
-                log.debug("One CUDA Device found, adding to list.");
+                for (int num = 0; num < count.getValue(); num++) {
+                    byte[] name = new byte[256];
 
-                var gpuToAdd = GPU.builder()
-                        .model(modelName)
-                        .memory(ram.getValue())
-                        .gpuID(gpuID)
-                        .build();
+                    result = cudalib.cuDeviceGetName(name, 256, num);
+                    if (result != jcuda.driver.CUresult.CUDA_SUCCESS) {
+                        log.error("cuDeviceGetName failed (ret: " + jcuda.driver.CUresult.stringFor(result) + ")");
+                        continue;
+                    }
 
-                if (optix) {
-                    gpuToAdd.setDeviceType(DeviceType.OPTIX);
-                } else {
-                    gpuToAdd.setDeviceType(DeviceType.CUDA);
+                    String modelName = new String(name).trim();
+
+
+                    LongByReference ram = new LongByReference();
+                    try {
+                        result = cudalib.cuDeviceTotalMem_v2(ram, num);
+                    } catch (UnsatisfiedLinkError e) {
+                        // fall back to old function
+                        result = cudalib.cuDeviceTotalMem(ram, num);
+                    }
+
+                    if (result != jcuda.driver.CUresult.CUDA_SUCCESS) {
+                        log.error("cuDeviceTotalMem failed (ret: " + jcuda.driver.CUresult.stringFor(result) + ")");
+                        return;
+                    }
+
+                    optix = modelName.contains("RTX");
+
+                    String gpuID;
+
+                    if (optix) {
+                        gpuID = "OPTIX_" + num;
+
+                    } else {
+                        gpuID = "CUDA_" + num;
+                    }
+
+                    log.debug("One CUDA Device found, adding to list.");
+
+                    var gpuToAdd = GPU.builder()
+                            .model(modelName)
+                            .memory(ram.getValue())
+                            .gpuID(gpuID)
+                            .build();
+
+                    if (optix) {
+                        gpuToAdd.setDeviceType(DeviceType.OPTIX);
+                    } else {
+                        gpuToAdd.setDeviceType(DeviceType.CUDA);
+                    }
+
+                    devices.add(gpuToAdd);
                 }
 
-                devices.add(gpuToAdd);
+            } catch (UnsatisfiedLinkError e) {
+                log.error("Failed to load CUDA lib (path: " + path + "). CUDA is probably not installed.");
+                log.error(e.getMessage());
+            } catch (ExceptionInInitializerError e) {
+                log.error("ExceptionInInitializerError: " + e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
             }
-
-        } catch (UnsatisfiedLinkError e) {
-            log.error("Failed to load CUDA lib (path: " + path + "). CUDA is probably not installed.");
-            log.error(e.getMessage());
-        } catch (ExceptionInInitializerError e) {
-            log.error("ExceptionInInitializerError: " + e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
         }
+
     }
 
     private static void generateOpenCL() {
