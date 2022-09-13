@@ -70,13 +70,6 @@ public class CommonBeanConfig implements AsyncConfigurer {
         return authenticationProvider;
     }
 
-    @Bean
-    public Client feignClient()
-    {
-        Client trustSSLSockets = new Client.Default(getSSLSocketFactory(), new NoopHostnameVerifier());
-        return trustSSLSockets;
-    }
-
     @Override
     public Executor getAsyncExecutor() {
         log.info("Sethlans Version: " + QueryUtils.getVersion());
@@ -91,20 +84,5 @@ public class CommonBeanConfig implements AsyncConfigurer {
         return new CustomAsyncExceptionHandler();
     }
 
-    private SSLSocketFactory getSSLSocketFactory() {
-        try {
-            TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
-                @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    return true;
-                }
-            };
-
-            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
-            return sslContext.getSocketFactory();
-        } catch (Exception exception) {
-        }
-        return null;
-    }
 
 }

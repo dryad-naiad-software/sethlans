@@ -17,7 +17,6 @@
 
 package com.dryadandnaiad.sethlans.services;
 
-import com.dryadandnaiad.sethlans.clients.EndPointClient;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
@@ -38,7 +37,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -53,13 +51,11 @@ import java.util.List;
 public class ServerServiceImpl implements ServerService {
     private final NodeRepository nodeRepository;
     private final BlenderArchiveRepository blenderArchiveRepository;
-    private final EndPointClient endPointClient;
 
-    public ServerServiceImpl(NodeRepository nodeRepository, BlenderArchiveRepository blenderArchiveRepository,
-                             EndPointClient endPointClient) {
+    public ServerServiceImpl(NodeRepository nodeRepository, BlenderArchiveRepository blenderArchiveRepository) {
         this.nodeRepository = nodeRepository;
         this.blenderArchiveRepository = blenderArchiveRepository;
-        this.endPointClient = endPointClient;
+
     }
 
     @Override
@@ -87,11 +83,9 @@ public class ServerServiceImpl implements ServerService {
                 }
                 var addServerURL = "/api/v1/management/add_server_to_node";
                 var getSystemIDURL = "/api/v1/management/system_id";
-                var determinedBasePathUri = URI.create("https://" + selectedNode.getIpAddress()
-                        + ":" + selectedNode.getNetworkPort() + addServerURL);
-//                if (NetworkUtils.postJSONToURL(addServerURL, selectedNode.getIpAddress(),
-//                        selectedNode.getNetworkPort(), serverAsJson, true)) {
-                if(endPointClient.addServerToNode(determinedBasePathUri, server)) {
+                if (NetworkUtils.postJSONToURL(addServerURL, selectedNode.getIpAddress(),
+                        selectedNode.getNetworkPort(), serverAsJson, true)) {
+
                     var node = NetworkUtils.getNodeViaJson(selectedNode.getIpAddress(),
                             selectedNode.getNetworkPort());
                     var params = ImmutableMap.<String, String>builder()
