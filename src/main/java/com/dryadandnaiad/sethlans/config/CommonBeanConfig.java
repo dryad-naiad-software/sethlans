@@ -21,7 +21,11 @@ import com.dryadandnaiad.sethlans.exceptions.CustomAsyncExceptionHandler;
 import com.dryadandnaiad.sethlans.executor.MainExecutor;
 import com.dryadandnaiad.sethlans.services.SethlansUserDetailsService;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import feign.Client;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.ssl.SSLContexts;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +34,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.Executor;
 
 /**
@@ -62,6 +70,12 @@ public class CommonBeanConfig implements AsyncConfigurer {
         return authenticationProvider;
     }
 
+    @Bean
+    public Client feignClient()
+    {
+        Client trustSSLSockets = new Client.Default(getSSLSocketFactory(), new NoopHostnameVerifier());
+        return trustSSLSockets;
+    }
 
     @Override
     public Executor getAsyncExecutor() {
@@ -77,5 +91,20 @@ public class CommonBeanConfig implements AsyncConfigurer {
         return new CustomAsyncExceptionHandler();
     }
 
+    private SSLSocketFactory getSSLSocketFactory() {
+        try {
+            TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    return true;
+                }
+            };
+
+            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+            return sslContext.getSocketFactory();
+        } catch (Exception exception) {
+        }
+        return null;
+    }
 
 }

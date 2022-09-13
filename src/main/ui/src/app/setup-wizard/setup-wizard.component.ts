@@ -140,36 +140,37 @@ export class SetupWizardComponent implements OnInit {
   }
 
   checkUser() {
-    if (this.setupForm?.sethlansUser.username == '') {
-      return false;
-    } else if (this.setupForm?.sethlansUser.password == '') {
-      return false;
-    } else if (this.confirmPass != this.setupForm?.sethlansUser.password) {
-      return false;
-    } else if (this.usernameError || this.responseError1 || this.responseError2 || this.responseError3
-      || this.passwordError) {
-      return false;
-    } else if (this.setupForm.sethlansUser.email == '' && this.setupForm.mode != Mode.NODE) {
-      return false;
-    } else if (this.emailError && this.setupForm?.mode != Mode.NODE) {
-      return false;
-    } else {
-      return true;
+    if(this.setupForm != undefined) {
+      if (this.setupForm.sethlansUser.username == '') {
+        return false;
+      } else if (this.setupForm.sethlansUser.password == '') {
+        return false;
+      } else if (this.confirmPass != this.setupForm.sethlansUser.password) {
+        return false;
+      } else if (this.usernameError || this.responseError1 || this.responseError2 || this.responseError3
+        || this.passwordError) {
+        return false;
+      } else if (this.setupForm.sethlansUser.email == '' && this.setupForm.mode != Mode.NODE) {
+        return false;
+      } else if (this.emailError && this.setupForm?.mode != Mode.NODE) {
+        return false;
+      } else {
+        return true;
+      }
     }
+    return false;
+
   }
 
   updateChallenge(id: number, question: string) {
     let challenge: UserChallenge | undefined = this.setupForm?.sethlansUser.challengeList[id];
-    // @ts-ignore
     challenge.challenge = question;
   }
 
   updateResponse(id: number, response: string) {
     let challenge: UserChallenge | undefined = this.setupForm?.sethlansUser.challengeList[id];
-    // @ts-ignore
-    challenge?.response = response;
-    // @ts-ignore
-    challenge?.responseUpdated = true;
+    challenge.response = response;
+    challenge.responseUpdated = true;
     if (id == 0) {
       this.response1 = response;
     }
