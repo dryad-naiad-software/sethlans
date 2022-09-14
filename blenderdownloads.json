@@ -1,27 +1,27 @@
 [
   {
-    "blenderVersion": "3.3.0",
+    "blenderVersion": "3.2.2",
     "macOS": [
-      "https://download.blender.org/release/Blender3.3/blender-3.3.0-macos-x64.dmg",
-      "https://mirror.clarkson.edu/blender/release/Blender3.3/blender-3.3.0-macos-x64.dmg",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender3.3/blender-3.3.0-macos-x64.dmg",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender3.3/blender-3.3.0-macos-x64.dmg"
+      "https://download.blender.org/release/Blender3.2/blender-3.2.2-macos-x64.dmg",
+      "https://mirror.clarkson.edu/blender/release/Blender3.2/blender-3.2.2-macos-x64.dmg",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender3.2/blender-3.2.2-macos-x64.dmg",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender3.2/blender-3.2.2-macos-x64.dmg"
     ],
     "windows64": [
-      "https://download.blender.org/release/Blender3.3/blender-3.3.0-windows-x64.zip",
-      "https://mirror.clarkson.edu/blender/release/Blender3.3/blender-3.3.0-windows-x64.zip",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender3.3/blender-3.3.0-windows-x64.zip",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender3.3/blender-3.3.0-windows-x64.zip"
+      "https://download.blender.org/release/Blender3.2/blender-3.2.2-windows-x64.zip",
+      "https://mirror.clarkson.edu/blender/release/Blender3.2/blender-3.2.2-windows-x64.zip",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender3.2/blender-3.2.2-windows-x64.zip",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender3.2/blender-3.2.2-windows-x64.zip"
     ],
     "linux64": [
-      "https://download.blender.org/release/Blender3.3/blender-3.3.0-linux-x64.tar.xz",
-      "https://mirror.clarkson.edu/blender/release/Blender3.3/blender-3.3.0-linux-x64.tar.xz",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender3.3/blender-3.3.0-linux-x64.tar.xz",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender3.3/blender-3.3.0-linux-x64.tar.xz"
+      "https://download.blender.org/release/Blender3.2/blender-3.2.2-linux-x64.tar.xz",
+      "https://mirror.clarkson.edu/blender/release/Blender3.2/blender-3.2.2-linux-x64.tar.xz",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender3.2/blender-3.2.2-linux-x64.tar.xz",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender3.2/blender-3.2.2-linux-x64.tar.xz"
     ],
-    "md5MacOS": "7b0a62a6141ca0e980a0fe7f06816ddd",
-    "md5Windows64": "fe5d36a8b4c526b239534d6cbcca5810",
-    "md5Linux64": "86781ec0b3910f0721c8281b9f8c98ff"
+    "md5MacOS": "8837bda1f8066bd9ab7134a292d17915",
+    "md5Windows64": "5b84ed96fd1d5b93081d792eeaa9198c",
+    "md5Linux64": "d2653c8a024a1b25598d7f2291673bc4"
   },
   {
     "blenderVersion": "2.93",
