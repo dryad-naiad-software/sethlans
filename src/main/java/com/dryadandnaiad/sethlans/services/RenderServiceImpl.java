@@ -9,10 +9,7 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
-import com.dryadandnaiad.sethlans.utils.ConfigUtils;
-import com.dryadandnaiad.sethlans.utils.FileUtils;
-import com.dryadandnaiad.sethlans.utils.NetworkUtils;
-import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.dryadandnaiad.sethlans.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
@@ -264,13 +261,27 @@ public class RenderServiceImpl implements RenderService {
         }
 
         if (renderTaskToAssign.getScriptInfo().getComputeOn().equals(ComputeOn.GPU)) {
+            var blenderVersion = renderTaskToAssign.getBlenderVersion();
+            var versionAsFloat = QueryUtils.versionAsFloat(blenderVersion);
+
             var ids = new ArrayList<String>();
             if (selectedGPUs.size() > 1) {
                 for (GPU gpu : selectedGPUs) {
-                    ids.add(gpu.getGpuID());
+                    if(versionAsFloat < 2.99){
+                        ids.add(gpu.getGpuID());
+                    } else {
+                        ids.add(gpu.getPciBusID());
+                    }
+
                 }
             } else {
-                ids.add(selectedGPUs.get(0).getGpuID());
+                if(versionAsFloat < 2.99){
+                    ids.add(selectedGPUs.get(0).getGpuID());
+                }
+                else {
+                    ids.add(selectedGPUs.get(0).getPciBusID());
+                }
+
             }
             log.debug("Current GPU Id's on System "
                     + ids);
@@ -283,9 +294,16 @@ public class RenderServiceImpl implements RenderService {
                 log.debug("Current GPU ID's available " + freeIds);
                 if (freeIds.size() > 0) {
                     for (GPU gpu : selectedGPUs) {
-                        if (freeIds.get(0).equals(gpu.getGpuID())) {
-                            renderTaskToAssign.getScriptInfo().setDeviceType(gpu.getDeviceType());
+                        if(versionAsFloat < 2.99){
+                            if (freeIds.get(0).equals(gpu.getGpuID())) {
+                                renderTaskToAssign.getScriptInfo().setDeviceType(gpu.getDeviceType());
+                            }
+                        } else {
+                            if (freeIds.get(0).equals(gpu.getPciBusID())) {
+                                renderTaskToAssign.getScriptInfo().setDeviceType(gpu.getDeviceType());
+                            }
                         }
+
                     }
                     renderTaskToAssign.getScriptInfo().setDeviceIDs(Collections.singletonList(freeIds.get(0)));
                 }

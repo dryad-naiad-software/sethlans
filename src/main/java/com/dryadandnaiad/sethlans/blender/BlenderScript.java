@@ -251,7 +251,6 @@ public class BlenderScript {
 
 
     private static boolean cyclesScript(PrintStream scriptWriter, RenderTask renderTask, Float versionAsFloat) {
-        var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
         scriptWriter.println("bpy.context.scene.cycles.device = 'GPU'");
         switch (renderTask.getScriptInfo().getDeviceType()) {
             case CUDA:
@@ -286,9 +285,17 @@ public class BlenderScript {
 
         scriptWriter.println("selected_id = []");
         scriptWriter.println("selected_hardware = []");
-        for (String id : strippedIDs) {
-            scriptWriter.println("selected_id.append(" + id + ")");
+        if(versionAsFloat < 2.99) {
+            var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
+            for (String id : strippedIDs) {
+                scriptWriter.println("selected_id.append(" + id + ")");
+            }
+        } else {
+            for (String id : renderTask.getScriptInfo().getDeviceIDs()) {
+                scriptWriter.println("selected_id.append('" + id + "')");
+            }
         }
+
         scriptWriter.println();
         scriptWriter.println("for id in selected_id:");
         scriptWriter.println("\thardware_devices[id].use = True");
