@@ -19,8 +19,10 @@ package com.dryadandnaiad.sethlans.blender;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.DeviceType;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * File created by Mario Estrella on 5/3/2020.
@@ -46,6 +49,7 @@ public class BlenderScript {
         File script = new File(renderTask.getTaskDir() + File.separator + renderTask.getTaskID() + ".py");
         try {
             var location = renderTask.getTaskDir().replace("\\", "/");
+            var versionAsFloat = QueryUtils.versionAsFloat(renderTask.getBlenderVersion());
 
             PrintStream scriptWriter = new PrintStream(script);
 
@@ -79,7 +83,7 @@ public class BlenderScript {
                     + "\"" + location + "\"");
 
             scriptWriter.println();
-            scriptWriter.println("scene = bpy.context.scene");
+            scriptWriter.println("scene = bpy.data.scenes[0]");
 
             if (renderTask.getScriptInfo().getBlenderEngine() == null) {
                 log.error("BlenderEngine cannot be null.");
@@ -96,7 +100,7 @@ public class BlenderScript {
                     scriptWriter.println();
                     scriptWriter.println("cycles_prefs = prefs.addons['cycles'].preferences");
                     if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU) || renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID)) {
-                        if (!cyclesScript(scriptWriter, renderTask)) {
+                        if (!cyclesScript(scriptWriter, renderTask, versionAsFloat)) {
                             return false;
                         }
                     } else {
@@ -196,9 +200,13 @@ public class BlenderScript {
                 script.delete();
                 return false;
             }
-            // Tile Sizes
-            scriptWriter.println("\tscene.render.tile_x = " + renderTask.getScriptInfo().getTaskTileSize());
-            scriptWriter.println("\tscene.render.tile_y = " + renderTask.getScriptInfo().getTaskTileSize());
+
+
+            if(versionAsFloat < 2.99) {
+                scriptWriter.println("\tscene.render.tile_x = " + renderTask.getScriptInfo().getTaskTileSize());
+                scriptWriter.println("\tscene.render.tile_y = " + renderTask.getScriptInfo().getTaskTileSize());
+            }
+
 
 
             // Final Settings
@@ -242,19 +250,35 @@ public class BlenderScript {
     }
 
 
-    private static boolean cyclesScript(PrintStream scriptWriter, RenderTask renderTask) {
+    private static boolean cyclesScript(PrintStream scriptWriter, RenderTask renderTask, Float versionAsFloat) {
         var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
-        scriptWriter.println("scene.cycles.device = 'GPU'");
+        scriptWriter.println("bpy.context.scene.cycles.device = 'GPU'");
         switch (renderTask.getScriptInfo().getDeviceType()) {
             case CUDA:
                 scriptWriter.println("cycles_prefs.compute_device_type = 'CUDA'");
-                scriptWriter.println("devices = cycles_prefs.get_devices()");
-                scriptWriter.println("hardware_devices = devices[0]");
+                if(versionAsFloat < 2.99) {
+                    scriptWriter.println("devices = cycles_prefs.get_devices()");
+                    scriptWriter.println("hardware_devices = devices[0]");
+
+                } else {
+                    scriptWriter.println("cycles_prefs.refresh_devices()");
+                    scriptWriter.println("hardware_devices = cycles_prefs.devices[0]");
+                }
+
+
                 break;
             case OPENCL:
                 scriptWriter.println("cycles_prefs.compute_device_type = 'OPENCL'");
-                scriptWriter.println("devices = cycles_prefs.get_devices()");
-                scriptWriter.println("hardware_devices = devices[1]");
+
+                if(versionAsFloat < 2.99) {
+                    scriptWriter.println("devices = cycles_prefs.get_devices()");
+                    scriptWriter.println("hardware_devices = devices[1]");
+                } else {
+                    scriptWriter.println("cycles_prefs.refresh_devices()");
+                    scriptWriter.println("hardware_devices = cycles_prefs.devices[1]");
+                }
+
+
                 break;
             default:
                 return false;

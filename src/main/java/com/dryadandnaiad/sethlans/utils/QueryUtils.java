@@ -114,6 +114,12 @@ public class QueryUtils {
         return hostname.toUpperCase();
     }
 
+    public static Float versionAsFloat(String version) {
+        var index = StringUtils.ordinalIndexOf(version, ".", 2);
+        var versionString = version.substring(0,index);
+        return Float.parseFloat(versionString);
+    }
+
     public static SystemInfo getCurrentSystemInfo() {
         return SystemInfo.builder()
                 .hostname(getHostname())

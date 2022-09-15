@@ -43,4 +43,5 @@ public class GPU {
     private Long rating;
     private DeviceType deviceType;
     private String gpuID;
+    private String pciBusID;
 }

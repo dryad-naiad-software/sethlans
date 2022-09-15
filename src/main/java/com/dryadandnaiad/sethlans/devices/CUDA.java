@@ -43,4 +43,6 @@ public interface CUDA extends Library {
     int cuDeviceTotalMem_v2(LongByReference bytes, int dev);
 
     int cuDeviceTotalMem(LongByReference bytes, int dev);
+
+    int cuDeviceGetAttribute(int[] array, int attribute, int dev);
 }

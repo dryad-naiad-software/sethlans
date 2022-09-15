@@ -46,7 +46,8 @@ create table node_selectedgpus
     gpuid       varchar(255),
     memory      bigint,
     model       varchar(255),
-    rating      bigint
+    rating      bigint,
+    pci_busid   varchar(255)
 );
 create table notification
 (

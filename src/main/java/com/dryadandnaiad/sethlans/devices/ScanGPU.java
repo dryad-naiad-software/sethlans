@@ -24,6 +24,7 @@ import com.google.common.base.Throwables;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.jocl.cl_device_id;
 import org.jocl.cl_platform_id;
@@ -34,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.sun.jna.Native.load;
+import static jcuda.driver.CUdevice_attribute.CU_DEVICE_ATTRIBUTE_PCI_BUS_ID;
 import static org.jocl.CL.*;
 
 /**
@@ -45,6 +47,9 @@ import static org.jocl.CL.*;
 @Slf4j
 public class ScanGPU {
     private static final int CL_DEVICE_BOARD_NAME_AMD = 0x4038;
+    private static final int CU_DEVICE_ATTRIBUTE_PCI_BUS_ID = 33;
+    private static final int CU_DEVICE_ATTRIBUTE_PCI_DEVICE_ID = 34;
+    public static final int CU_DEVICE_ATTRIBUTE_PCI_DOMAIN_ID = 50;
     private static List<GPU> devices;
 
     private static void generateCUDA() {
@@ -109,6 +114,29 @@ public class ScanGPU {
                         return;
                     }
 
+                    var intArray = new int[]{0};
+                    result = cudalib.cuDeviceGetAttribute(intArray, CU_DEVICE_ATTRIBUTE_PCI_DEVICE_ID, num);
+
+                    if (result != jcuda.driver.CUresult.CUDA_SUCCESS) {
+                        log.error("cuDeviceGetAttribute failed (ret: " + jcuda.driver.CUresult.stringFor(result) + ")");
+                        return;
+                    }
+
+                    var pciDeviceID = intArray[0];
+
+                    result = cudalib.cuDeviceGetAttribute(intArray, CU_DEVICE_ATTRIBUTE_PCI_BUS_ID, num);
+
+                    if (result != jcuda.driver.CUresult.CUDA_SUCCESS) {
+                        log.error("cuDeviceGetAttribute failed (ret: " + jcuda.driver.CUresult.stringFor(result) + ")");
+                        return;
+                    }
+
+                    var pciBusID = intArray[0];
+
+                    var bdf = StringUtils.leftPad(String.valueOf(pciBusID), 2, "0") + ":" +
+                            StringUtils.leftPad(String.valueOf(pciDeviceID), 2, "0");
+
+
                     optix = modelName.contains("RTX");
 
                     String gpuID;
@@ -126,6 +154,7 @@ public class ScanGPU {
                             .model(modelName)
                             .memory(ram.getValue())
                             .gpuID(gpuID)
+                            .pciBusID(bdf)
                             .build();
 
                     if (optix) {
@@ -133,7 +162,6 @@ public class ScanGPU {
                     } else {
                         gpuToAdd.setDeviceType(DeviceType.CUDA);
                     }
-
                     devices.add(gpuToAdd);
                 }
 
@@ -148,7 +176,6 @@ public class ScanGPU {
                 log.error(Throwables.getStackTraceAsString(e));
             }
         }
-
     }
 
     private static void generateOpenCL() {
