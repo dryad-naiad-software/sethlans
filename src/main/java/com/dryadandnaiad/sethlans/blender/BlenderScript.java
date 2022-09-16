@@ -261,7 +261,7 @@ public class BlenderScript {
 
                 } else {
                     scriptWriter.println("cycles_prefs.refresh_devices()");
-                    scriptWriter.println("hardware_devices = cycles_prefs.devices[0]");
+                    scriptWriter.println("hardware_devices = cycles_prefs['devices']");
                 }
 
 
@@ -274,7 +274,7 @@ public class BlenderScript {
                     scriptWriter.println("hardware_devices = devices[1]");
                 } else {
                     scriptWriter.println("cycles_prefs.refresh_devices()");
-                    scriptWriter.println("hardware_devices = cycles_prefs.devices[1]");
+                    scriptWriter.println("hardware_devices = cycles_prefs['devices']");
                 }
 
 
@@ -283,49 +283,53 @@ public class BlenderScript {
                 return false;
         }
 
-        scriptWriter.println("selected_id = []");
         scriptWriter.println("selected_hardware = []");
         if(versionAsFloat < 2.99) {
+            scriptWriter.println("selected_id = []");
             var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
             for (String id : strippedIDs) {
                 scriptWriter.println("selected_id.append(" + id + ")");
             }
+            scriptWriter.println();
+            scriptWriter.println("for id in selected_id:");
+            scriptWriter.println("\thardware_devices[id].use = True");
+            scriptWriter.println("\tselected_hardware.append(hardware_devices[id])");
+            scriptWriter.println();
+            scriptWriter.println("print(\"Selected Devices: \" + str(selected_hardware))");
+            scriptWriter.println("unselected_hardware = list(set(hardware_devices) - set(selected_hardware))");
+            scriptWriter.println("print(\"Unselected Devices: \" + str(unselected_hardware))");
+            scriptWriter.println();
+            scriptWriter.println("if len(unselected_hardware) > 0:");
+            scriptWriter.println("\tfor unselected in unselected_hardware:");
+            scriptWriter.println("\t\tunselected.use = False");
+            scriptWriter.println();
+            if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID) && !renderTask.getBlenderVersion().contains("2.7")) {
+                scriptWriter.println("hardware_devices[-1].use = True");
+                scriptWriter.println("print(\"CPU Device enabled: \" + str(hardware_devices[-1].use))");
+                scriptWriter.println();
+            }
+            switch (renderTask.getScriptInfo().getDeviceType()) {
+                case CUDA:
+                    scriptWriter.println("for dev in devices[1]:");
+                    scriptWriter.println("\tdev.use = False");
+                    return true;
+                case OPENCL:
+                    scriptWriter.println("for dev in devices[0]:");
+                    scriptWriter.println("\tdev.use = False");
+                    return true;
+                default:
+                    return false;
+            }
         } else {
             for (String id : renderTask.getScriptInfo().getDeviceIDs()) {
-                scriptWriter.println("selected_id.append('" + id + "')");
+                scriptWriter.println("for gpu in hardware_devices:");
+                scriptWriter.println("\tif '" +id +"' in gpu['id'] and 'OptiX' not in gpu['id']:");
+                scriptWriter.println("\t\tselected_id.append(gpu)");
             }
         }
 
-        scriptWriter.println();
-        scriptWriter.println("for id in selected_id:");
-        scriptWriter.println("\thardware_devices[id].use = True");
-        scriptWriter.println("\tselected_hardware.append(hardware_devices[id])");
-        scriptWriter.println();
-        scriptWriter.println("print(\"Selected Devices: \" + str(selected_hardware))");
-        scriptWriter.println("unselected_hardware = list(set(hardware_devices) - set(selected_hardware))");
-        scriptWriter.println("print(\"Unselected Devices: \" + str(unselected_hardware))");
-        scriptWriter.println();
-        scriptWriter.println("if len(unselected_hardware) > 0:");
-        scriptWriter.println("\tfor unselected in unselected_hardware:");
-        scriptWriter.println("\t\tunselected.use = False");
-        scriptWriter.println();
-        if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID) && !renderTask.getBlenderVersion().contains("2.7")) {
-            scriptWriter.println("hardware_devices[-1].use = True");
-            scriptWriter.println("print(\"CPU Device enabled: \" + str(hardware_devices[-1].use))");
-            scriptWriter.println();
-        }
-        switch (renderTask.getScriptInfo().getDeviceType()) {
-            case CUDA:
-                scriptWriter.println("for dev in devices[1]:");
-                scriptWriter.println("\tdev.use = False");
-                return true;
-            case OPENCL:
-                scriptWriter.println("for dev in devices[0]:");
-                scriptWriter.println("\tdev.use = False");
-                return true;
-            default:
-                return false;
-        }
+
+        return false;
     }
 
 
