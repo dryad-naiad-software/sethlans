@@ -258,17 +258,13 @@ public class BlenderScript {
                 if(versionAsFloat < 2.99) {
                     scriptWriter.println("devices = cycles_prefs.get_devices()");
                     scriptWriter.println("hardware_devices = devices[0]");
-
                 } else {
                     scriptWriter.println("cycles_prefs.refresh_devices()");
                     scriptWriter.println("hardware_devices = cycles_prefs['devices']");
                 }
-
-
                 break;
             case OPENCL:
                 scriptWriter.println("cycles_prefs.compute_device_type = 'OPENCL'");
-
                 if(versionAsFloat < 2.99) {
                     scriptWriter.println("devices = cycles_prefs.get_devices()");
                     scriptWriter.println("hardware_devices = devices[1]");
@@ -276,8 +272,6 @@ public class BlenderScript {
                     scriptWriter.println("cycles_prefs.refresh_devices()");
                     scriptWriter.println("hardware_devices = cycles_prefs['devices']");
                 }
-
-
                 break;
             default:
                 return false;
@@ -324,12 +318,25 @@ public class BlenderScript {
             for (String id : renderTask.getScriptInfo().getDeviceIDs()) {
                 scriptWriter.println("for gpu in hardware_devices:");
                 scriptWriter.println("\tif '" +id +"' in gpu['id'] and 'OptiX' not in gpu['id']:");
-                scriptWriter.println("\t\tselected_id.append(gpu)");
+                scriptWriter.println("\t\tgpu['use'] = True");
+                scriptWriter.println("\t\tselected_hardware.append(gpu)");
+                if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID) && !renderTask.getBlenderVersion().contains("2.7")) {
+                    scriptWriter.println("\tif 'CPU' in gpu['id']:");
+                    scriptWriter.println("\t\tgpu['use'] = True");
+                    scriptWriter.println("\t\tselected_hardware.append(gpu)");
+                }
             }
+            scriptWriter.println();
+            scriptWriter.println("print(\"Selected Devices: \")");
+            scriptWriter.println("for gpu in selected_hardware:");
+            scriptWriter.println("\tprint(gpu['id'])");
+            scriptWriter.println();
+            scriptWriter.println("unselected_hardware = list(set(hardware_devices) - set(selected_hardware))");
+            scriptWriter.println("print(\"Unselected Devices: \")");
+            scriptWriter.println("for gpu in unselected_hardware:");
+            scriptWriter.println("\tprint(gpu['id'])");
+            return true;
         }
-
-
-        return false;
     }
 
 
