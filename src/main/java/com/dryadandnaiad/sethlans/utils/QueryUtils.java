@@ -115,8 +115,13 @@ public class QueryUtils {
     }
 
     public static Float versionAsFloat(String version) {
+        var versionString = "";
         var index = StringUtils.ordinalIndexOf(version, ".", 2);
-        var versionString = version.substring(0,index);
+        if (index != -1) {
+            versionString = version.substring(0, index);
+        } else {
+            return Float.parseFloat(version);
+        }
         return Float.parseFloat(versionString);
     }
 

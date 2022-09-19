@@ -35,7 +35,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.sun.jna.Native.load;
-import static jcuda.driver.CUdevice_attribute.CU_DEVICE_ATTRIBUTE_PCI_BUS_ID;
 import static org.jocl.CL.*;
 
 /**
@@ -131,10 +130,11 @@ public class ScanGPU {
                         return;
                     }
 
+
                     var pciBusID = intArray[0];
 
-                    var bdf = StringUtils.leftPad(String.valueOf(pciBusID), 2, "0") + ":" +
-                            StringUtils.leftPad(String.valueOf(pciDeviceID), 2, "0");
+                    var bdf = StringUtils.leftPad(Integer.toHexString(pciBusID), 2, "0") + ":" +
+                            StringUtils.leftPad(Integer.toHexString(pciDeviceID), 2, "0");
 
 
                     optix = modelName.contains("RTX");

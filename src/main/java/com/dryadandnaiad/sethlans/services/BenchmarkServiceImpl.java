@@ -32,7 +32,6 @@ import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
-import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
@@ -299,13 +298,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     private RenderTask gpuBenchmark(GPU gpu, String blenderExecutable,
                                     TaskFrameInfo taskFrameInfo,
                                     TaskServerInfo taskServerInfo, String benchmarkFile, String blenderVersion) {
-        var versionAsFloat = QueryUtils.versionAsFloat(blenderVersion);
         var deviceIDList = new ArrayList<String>();
-        if(versionAsFloat < 2.99) {
-            deviceIDList.add(gpu.getGpuID());
-        } else {
-            deviceIDList.add(gpu.getPciBusID());
-        }
+        deviceIDList.add(gpu.getPciBusID());
 
         var taskScriptInfo = TaskScriptInfo.builder()
                 .taskResolutionX(640)

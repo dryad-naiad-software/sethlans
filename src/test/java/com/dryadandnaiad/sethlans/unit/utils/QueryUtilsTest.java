@@ -50,6 +50,14 @@ class QueryUtilsTest {
     }
 
     @Test
+    void versionAsFloat() {
+        var value = QueryUtils.versionAsFloat("3.3.0");
+        assertThat(value).isEqualTo(3.3f);
+        value = QueryUtils.versionAsFloat("2.93");
+        assertThat(value).isEqualTo(2.93f);
+    }
+
+    @Test
     void getIP() {
         val ipAddress = QueryUtils.getIP();
         val validator = InetAddressValidator.getInstance();

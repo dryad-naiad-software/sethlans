@@ -25,13 +25,10 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -180,7 +177,8 @@ public class BlenderScript {
             }
 
             //Set Cores (CPU rendering)
-            if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.CPU) || renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID)) {
+            if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.CPU) ||
+                    renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID)) {
                 if (renderTask.getScriptInfo().getCores() == null) {
                     log.error("Cores cannot be null when computing on CPU.");
                     scriptWriter.flush();
@@ -241,23 +239,23 @@ public class BlenderScript {
         }
     }
 
-    private static List<String> stripDeviceTypeFromID(List<String> deviceIDs) {
-        List<String> strippedIDs = new ArrayList<>();
-        for (String deviceID : deviceIDs) {
-            strippedIDs.add(StringUtils.substringAfter(deviceID, "_"));
-        }
-        return strippedIDs;
-    }
-
 
     private static boolean cyclesScript(PrintStream scriptWriter, RenderTask renderTask, Float versionAsFloat) {
         scriptWriter.println("bpy.context.scene.cycles.device = 'GPU'");
         switch (renderTask.getScriptInfo().getDeviceType()) {
+            case OPTIX:
+                scriptWriter.println("cycles_prefs.compute_device_type = 'OPTIX'");
+                if (versionAsFloat < 2.99) {
+                    scriptWriter.println("hardware_devices = cycles_prefs.get_devices_for_type('OPTIX')");
+                } else {
+                    scriptWriter.println("cycles_prefs.refresh_devices()");
+                    scriptWriter.println("hardware_devices = cycles_prefs['devices']");
+                }
+                break;
             case CUDA:
                 scriptWriter.println("cycles_prefs.compute_device_type = 'CUDA'");
-                if(versionAsFloat < 2.99) {
-                    scriptWriter.println("devices = cycles_prefs.get_devices()");
-                    scriptWriter.println("hardware_devices = devices[0]");
+                if (versionAsFloat < 2.99) {
+                    scriptWriter.println("hardware_devices = cycles_prefs.get_devices_for_type('CUDA')");
                 } else {
                     scriptWriter.println("cycles_prefs.refresh_devices()");
                     scriptWriter.println("hardware_devices = cycles_prefs['devices']");
@@ -265,66 +263,30 @@ public class BlenderScript {
                 break;
             case OPENCL:
                 scriptWriter.println("cycles_prefs.compute_device_type = 'OPENCL'");
-                if(versionAsFloat < 2.99) {
-                    scriptWriter.println("devices = cycles_prefs.get_devices()");
-                    scriptWriter.println("hardware_devices = devices[1]");
-                } else {
-                    scriptWriter.println("cycles_prefs.refresh_devices()");
-                    scriptWriter.println("hardware_devices = cycles_prefs['devices']");
-                }
+                scriptWriter.println("hardware_devices = cycles_prefs.get_devices_for_type('OPENCL')");
                 break;
             default:
                 return false;
         }
 
         scriptWriter.println("selected_hardware = []");
-        if(versionAsFloat < 2.99) {
-            scriptWriter.println("selected_id = []");
-            var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
-            for (String id : strippedIDs) {
-                scriptWriter.println("selected_id.append(" + id + ")");
+        for (String id : renderTask.getScriptInfo().getDeviceIDs()) {
+            scriptWriter.println("for gpu in hardware_devices:");
+            if (versionAsFloat < 2.99) {
+                scriptWriter.println("\tif '" + id + "' in gpu['id']:");
+            } else {
+                if (renderTask.getScriptInfo().getDeviceType() == DeviceType.OPTIX) {
+                    scriptWriter.println("\tif '" + id + "' in gpu['id'] and 'OptiX' in gpu['id']:");
+                } else {
+                    scriptWriter.println("\tif '" + id + "' in gpu['id'] and 'OptiX' not in gpu['id']:");
+                }
             }
-            scriptWriter.println();
-            scriptWriter.println("for id in selected_id:");
-            scriptWriter.println("\thardware_devices[id].use = True");
-            scriptWriter.println("\tselected_hardware.append(hardware_devices[id])");
-            scriptWriter.println();
-            scriptWriter.println("print(\"Selected Devices: \" + str(selected_hardware))");
-            scriptWriter.println("unselected_hardware = list(set(hardware_devices) - set(selected_hardware))");
-            scriptWriter.println("print(\"Unselected Devices: \" + str(unselected_hardware))");
-            scriptWriter.println();
-            scriptWriter.println("if len(unselected_hardware) > 0:");
-            scriptWriter.println("\tfor unselected in unselected_hardware:");
-            scriptWriter.println("\t\tunselected.use = False");
-            scriptWriter.println();
+            scriptWriter.println("\t\tgpu['use'] = True");
+            scriptWriter.println("\t\tselected_hardware.append(gpu)");
             if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID) && !renderTask.getBlenderVersion().contains("2.7")) {
-                scriptWriter.println("hardware_devices[-1].use = True");
-                scriptWriter.println("print(\"CPU Device enabled: \" + str(hardware_devices[-1].use))");
-                scriptWriter.println();
-            }
-            switch (renderTask.getScriptInfo().getDeviceType()) {
-                case CUDA:
-                    scriptWriter.println("for dev in devices[1]:");
-                    scriptWriter.println("\tdev.use = False");
-                    return true;
-                case OPENCL:
-                    scriptWriter.println("for dev in devices[0]:");
-                    scriptWriter.println("\tdev.use = False");
-                    return true;
-                default:
-                    return false;
-            }
-        } else {
-            for (String id : renderTask.getScriptInfo().getDeviceIDs()) {
-                scriptWriter.println("for gpu in hardware_devices:");
-                scriptWriter.println("\tif '" +id +"' in gpu['id'] and 'OptiX' not in gpu['id']:");
+                scriptWriter.println("\tif 'CPU' in gpu['id']:");
                 scriptWriter.println("\t\tgpu['use'] = True");
                 scriptWriter.println("\t\tselected_hardware.append(gpu)");
-                if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID) && !renderTask.getBlenderVersion().contains("2.7")) {
-                    scriptWriter.println("\tif 'CPU' in gpu['id']:");
-                    scriptWriter.println("\t\tgpu['use'] = True");
-                    scriptWriter.println("\t\tselected_hardware.append(gpu)");
-                }
             }
             scriptWriter.println();
             scriptWriter.println("print(\"Selected Devices: \")");
@@ -334,9 +296,41 @@ public class BlenderScript {
             scriptWriter.println("unselected_hardware = list(set(hardware_devices) - set(selected_hardware))");
             scriptWriter.println("print(\"Unselected Devices: \")");
             scriptWriter.println("for gpu in unselected_hardware:");
+            scriptWriter.println("\tgpu['use'] = False");
             scriptWriter.println("\tprint(gpu['id'])");
+            if (versionAsFloat < 2.99) {
+                switch (renderTask.getScriptInfo().getDeviceType()) {
+                    case OPTIX -> {
+                        scriptWriter.println("other_devices = cycles_prefs.get_devices_for_type('CUDA')");
+                        scriptWriter.println("for gpu in other_devices:");
+                        scriptWriter.println("\tgpu['use'] = False");
+                        scriptWriter.println("other_devices = cycles_prefs.get_devices_for_type('OPENCL')");
+                        scriptWriter.println("for gpu in other_devices:");
+                        scriptWriter.println("\tgpu['use'] = False");
+                    }
+                    case CUDA -> {
+                        scriptWriter.println("other_devices = cycles_prefs.get_devices_for_type('OPTIX')");
+                        scriptWriter.println("for gpu in other_devices:");
+                        scriptWriter.println("\tgpu['use'] = False");
+                        scriptWriter.println("other_devices = cycles_prefs.get_devices_for_type('OPENCL')");
+                        scriptWriter.println("for gpu in other_devices:");
+                        scriptWriter.println("\tgpu['use'] = False");
+                    }
+                    case OPENCL -> {
+                        scriptWriter.println("other_devices = cycles_prefs.get_devices_for_type('CUDA')");
+                        scriptWriter.println("for gpu in other_devices:");
+                        scriptWriter.println("\tgpu['use'] = False");
+                        scriptWriter.println("other_devices = cycles_prefs.get_devices_for_type('OPTIX')");
+                        scriptWriter.println("for gpu in other_devices:");
+                        scriptWriter.println("\tgpu['use'] = False");
+                    }
+                }
+
+
+            }
             return true;
         }
+        return false;
     }
 
 
