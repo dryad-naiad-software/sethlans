@@ -46,6 +46,7 @@ import static org.jocl.CL.*;
 @Slf4j
 public class ScanGPU {
     private static final int CL_DEVICE_BOARD_NAME_AMD = 0x4038;
+    private static final int CL_DEVICE_TOPOLOGY_AMD = 0x4037;
     private static final int CU_DEVICE_ATTRIBUTE_PCI_BUS_ID = 33;
     private static final int CU_DEVICE_ATTRIBUTE_PCI_DEVICE_ID = 34;
     public static final int CU_DEVICE_ATTRIBUTE_PCI_DOMAIN_ID = 50;
@@ -221,7 +222,7 @@ public class ScanGPU {
                     String openCLgpuID = JOCLSupport.getString(device, CL_DEVICE_BOARD_NAME_AMD);
                     memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
                     float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
-                    gpuID = "OPENCL_" + i;
+                    gpuID = Integer.toString(i);
                     model = openCLgpuID;
                     if (openCLVersion > 1.2) {
                         log.debug("One OpenCL device found, adding to list");

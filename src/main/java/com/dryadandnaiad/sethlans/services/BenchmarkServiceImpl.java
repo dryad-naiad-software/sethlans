@@ -299,7 +299,12 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                                     TaskFrameInfo taskFrameInfo,
                                     TaskServerInfo taskServerInfo, String benchmarkFile, String blenderVersion) {
         var deviceIDList = new ArrayList<String>();
-        deviceIDList.add(gpu.getPciBusID());
+        if (gpu.getDeviceType() == DeviceType.OPENCL) {
+            deviceIDList.add(gpu.getGpuID());
+        } else {
+            deviceIDList.add(gpu.getPciBusID());
+
+        }
 
         var taskScriptInfo = TaskScriptInfo.builder()
                 .taskResolutionX(640)

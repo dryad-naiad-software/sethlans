@@ -4,6 +4,7 @@ import com.dryadandnaiad.sethlans.blender.BlenderScript;
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.DeviceType;
 import com.dryadandnaiad.sethlans.models.blender.BlenderExecutable;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
@@ -268,10 +269,20 @@ public class RenderServiceImpl implements RenderService {
             var ids = new ArrayList<String>();
             if (selectedGPUs.size() > 1) {
                 for (GPU gpu : selectedGPUs) {
-                    ids.add(gpu.getPciBusID());
+                    if (gpu.getDeviceType() == DeviceType.OPENCL) {
+                        ids.add(gpu.getGpuID());
+                    } else {
+                        ids.add(gpu.getPciBusID());
+                    }
                 }
             } else {
-                ids.add(selectedGPUs.get(0).getPciBusID());
+                if (selectedGPUs.get(0).getDeviceType() == DeviceType.OPENCL) {
+                    ids.add(selectedGPUs.get(0).getGpuID());
+                } else {
+                    ids.add(selectedGPUs.get(0).getPciBusID());
+                }
+
+
             }
             log.debug("Current GPU Id's on System "
                     + ids);

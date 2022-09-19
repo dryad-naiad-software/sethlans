@@ -200,11 +200,10 @@ public class BlenderScript {
             }
 
 
-            if(versionAsFloat < 2.99) {
+            if (versionAsFloat < 2.99) {
                 scriptWriter.println("\tscene.render.tile_x = " + renderTask.getScriptInfo().getTaskTileSize());
                 scriptWriter.println("\tscene.render.tile_y = " + renderTask.getScriptInfo().getTaskTileSize());
             }
-
 
 
             // Final Settings
@@ -271,18 +270,26 @@ public class BlenderScript {
 
         scriptWriter.println("selected_hardware = []");
         for (String id : renderTask.getScriptInfo().getDeviceIDs()) {
-            scriptWriter.println("for gpu in hardware_devices:");
-            if (versionAsFloat < 2.99) {
-                scriptWriter.println("\tif '" + id + "' in gpu['id']:");
-            } else {
-                if (renderTask.getScriptInfo().getDeviceType() == DeviceType.OPTIX) {
-                    scriptWriter.println("\tif '" + id + "' in gpu['id'] and 'OptiX' in gpu['id']:");
-                } else {
-                    scriptWriter.println("\tif '" + id + "' in gpu['id'] and 'OptiX' not in gpu['id']:");
+            if (renderTask.getScriptInfo().getDeviceType() == DeviceType.OPENCL) {
+                if (versionAsFloat < 2.99) {
+                    scriptWriter.println("hardware_devices[" + id + "]['use'] = True");
+                    scriptWriter.println("selected_hardware.append(hardware_devices[" + id + "])");
                 }
+            } else {
+                scriptWriter.println("for gpu in hardware_devices:");
+                if (versionAsFloat < 2.99) {
+                    scriptWriter.println("\tif '" + id + "' in gpu['id']:");
+                } else {
+                    if (renderTask.getScriptInfo().getDeviceType() == DeviceType.OPTIX) {
+                        scriptWriter.println("\tif '" + id + "' in gpu['id'] and 'OptiX' in gpu['id']:");
+                    } else {
+                        scriptWriter.println("\tif '" + id + "' in gpu['id'] and 'OptiX' not in gpu['id']:");
+                    }
+                }
+                scriptWriter.println("\t\tgpu['use'] = True");
+                scriptWriter.println("\t\tselected_hardware.append(gpu)");
             }
-            scriptWriter.println("\t\tgpu['use'] = True");
-            scriptWriter.println("\t\tselected_hardware.append(gpu)");
+
             if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID) && !renderTask.getBlenderVersion().contains("2.7")) {
                 scriptWriter.println("\tif 'CPU' in gpu['id']:");
                 scriptWriter.println("\t\tgpu['use'] = True");
